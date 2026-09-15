@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
+  <defs>
+    <linearGradient id="brandGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0284c7" />
+      <stop offset="100%" stop-color="#10b981" />
+    </linearGradient>
+    <filter id="dropShadow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="8" stdDeviation="10" flood-color="#021a3a" flood-opacity="0.35" />
+    </filter>
+  </defs>
+  
+  <!-- Rounded Squircle Badge -->
+  <rect x="20" y="20" width="472" height="472" rx="110" fill="url(#brandGrad)" />
+  <rect x="20" y="20" width="472" height="472" rx="110" fill="none" stroke="rgba(255,255,255,0.25)" stroke-width="8" />
+  
+  <!-- Donut Chart -->
+  <g filter="url(#dropShadow)">
+    <!-- Main Donut Body -->
+    <path fill="#ffffff" d="M 375 272 A 135 135 0 1 1 240 137 L 240 204.5 A 67.5 67.5 0 1 0 307.5 272 Z" />
+    <!-- Separated Slice -->
+    <path fill="#ffffff" d="M 272 105 A 135 135 0 0 1 407 240 L 339.5 240 A 67.5 67.5 0 0 0 272 172.5 Z" />
+  </g>
+</svg>
