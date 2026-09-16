@@ -1,87 +1,99 @@
-# Sistema de Diagnóstico & Mentoria Contábil
+# Plataforma de Diagnóstico & Governança da Empresa Familiar
 
-Plataforma completa de diagnóstico empresarial e perfilamento de leads, desenvolvida especialmente para serviços de **Mentoria Contábil e Consultoria Estratégica**.
+> **Metodologia Científica Aplicada:** Dissertação de Mestrado Profissional em Administração de **Taís Trevisol Scherner (2024)**, orientada pela **Prof.ª Dra. Ieda Margarete Oro** — Universidade do Oeste de Santa Catarina (Unoesc Chapecó/SC).  
+> **Tema:** *Envolvimento da Família no Processo de Profissionalização e no Desempenho Organizacional: Um estudo de caso em uma empresa familiar.*
+
+Plataforma interativa desenvolvida para avaliação diagnóstica, consultoria e mentoria estratégica de empresas familiares, identificando pontos críticos de governança, autonomia decisória, formalização de processos, sucessão e impacto no desempenho organizacional.
 
 ---
 
 ## 🌟 Principais Funcionalidades
 
-1. **Troca de Tema Instantânea:**
-   - Modo Claro (*Clean Corporate*) e Modo Escuro (*Dark Executive*) com salvamento automático da preferência do usuário.
-2. **Identificação & Perfilamento Completo:**
-   - Captura de Nome, Empresa, Porte, WhatsApp, E-mail e Cargo Executivo (Sócio/Proprietário, CEO, Gerente Financeiro, Gestor Operacional, MEI/Autônomo).
-3. **40 Perguntas Divididas em 5 Pilares Estratégicos:**
-   - **Pilar 1:** Gestão Financeira & Fluxo de Caixa (Perguntas 1 a 8)
-   - **Pilar 2:** Planejamento Tributário & Fiscal (Perguntas 9 a 16)
-   - **Pilar 3:** Processos Internos & Governança (Perguntas 17 a 24)
-   - **Pilar 4:** Gestão de Pessoas & Custos Trabalhistas (Perguntas 25 a 32)
-   - **Pilar 5:** Estratégia, Precificação & Crescimento (Perguntas 33 a 40)
-4. **Escala de Maturidade em 5 Níveis:**
-   - **Nível 1:** Não implantado / Inexistente (Crítico)
-   - **Nível 2:** Em estruturação inicial / Esporádico
-   - **Nível 3:** Parcialmente implementado
-   - **Nível 4:** Bem estruturado / Quase total
-   - **Nível 5:** Efetivamente implantado e monitorado (Excelência)
-5. **Diagnóstico Inteligente & Plano de Ação:**
-   - Cálculo automático do percentual global e por pilar.
-   - Destaque imediato de todos os itens com nota 1, 2 ou 3 com orientações práticas para melhoria imediata.
-6. **Exportação de Relatório Executivo em PDF:**
-   - Gera um dossiê pronto para impressão ou download contendo os dados do cliente, notas, resumo executivo, recomendações e auditoria de todas as 40 perguntas.
-7. **Integração com WhatsApp:**
-   - Botão para o cliente enviar o resultado diretamente para o WhatsApp da mentora, pronto para agendar a primeira sessão de consultoria.
+1. **24 Perguntas Essenciais em 5 Eixos Estratégicos (Polat, 2020):**
+   - **Eixo 1 — Gestão:** Envolvimento não familiar, delegação e descentralização da autoridade, comitê estratégico e liderança dos gerentes.
+   - **Eixo 2 — Estrutura, Processos e Operações:** Organogramas, controles formais (ERP/BI), práticas de RH e planejamento estratégico.
+   - **Eixo 3 — Família e Negócio:** Governança societária, diferenciação de papéis e planejamento sucessório.
+   - **Eixo 4 — Pessoas:** Competência ocupacional e profissionalismo comportamental da equipe.
+   - **Eixo 5 — Cultura e Ambiente de Trabalho:** Valores profissionais compartilhados e preservação do legado histórico com abertura a inovações.
+
+2. **Escala de Maturidade em 5 Níveis (Documento de Embasamento):**
+   - **1 — Não acontece:** Inexistente ou não observada na empresa.
+   - **2 — Acontece pouco:** Ocorre de maneira esporádica ou incipiente.
+   - **3 — Acontece parcialmente:** Acontece em algumas ocasiões ou áreas, sem padrão definitivo.
+   - **4 — Acontece de forma consistente:** Rotineira e bem aplicada na maior parte do tempo.
+   - **5 — Está consolidado:** Totalmente incorporado à cultura, rotinas e processos.
+
+3. **Modo Anônimo / Confidencial (Garantia de Sigilo):**
+   - Permite que o participante responda à avaliação sem fornecer dados pessoais ou da empresa, ideal para coletas acadêmicas e diagnósticos prévios de alta confidencialidade.
+
+4. **Teia de Governança (Gráfico Radar Interativo via Chart.js):**
+   - Exibe visualmente o equilíbrio e eventuais assimetrias da empresa familiar nos 5 eixos simultaneamente, comparando com a referência de 100% de consolidação. Suporta modo claro e escuro.
+
+5. **Mapeamento de Impacto no Balanced Scorecard (BSC):**
+   - Conecta a maturidade das práticas de governança aos impactos diretos nas 4 perspectivas de Kaplan & Norton (1997) e Songini et al. (2023):
+     - **Financeira:** Caixa, margens EBITDA, lucratividade e retorno sobre ativo/capital (ROA/ROE).
+     - **Clientes:** Retenção, ticket médio e fortalecimento da marca.
+     - **Processos Internos:** Padronização, agilidade, ERP/BI e redução de retrabalho.
+     - **Aprendizagem & Crescimento:** Retenção de lideranças, redução de turnover e preparação para a sucessão.
+
+6. **Matriz de Priorização de Ações (Gaps - Notas 1, 2 e 3):**
+   - Filtros dinâmicos por horizontes de ação:
+     - ⚡ *Vitórias Rápidas (Curto Prazo):* Ações imediatas de baixo custo (pautas de reunião, feedbacks, canais de ideias).
+     - 🏛️ *Governança Estruturante (Médio Prazo):* Comitê estratégico, conselho de família, protocolo familiar e sucessão.
+     - 📊 *Controle & Sistemas (Longo Prazo):* Implantação de BI/ERP e metas formais plurianuais.
+
+7. **Persistência de Dados & Arquivamento:**
+   - Salvamento automático contínuo em `localStorage` para não perder respostas.
+   - Botão para **Salvar / Exportar Diagnóstico em JSON** (para arquivamento ou comparação temporal).
+   - Botão para **Carregar Diagnóstico prévio em JSON** na barra de navegação.
+
+8. **Exportação de Dossiê Executivo em PDF:**
+   - Documento editorial completo de alta fidelidade contendo capa institucional da Unoesc, perfil do participante, imagem do gráfico radar, pontuações, módulo BSC, matriz de prioridades e tabela com as 24 questões auditadas.
+
+9. **Integração com WhatsApp:**
+   - Disparo de mensagem personalizada com perfil, percentual de maturidade e os principais gaps identificados para contato direto com a mentora **Taís Trevisol Scherner**.
 
 ---
 
 ## 🚀 Como Executar o Sistema
 
-Não requer instalação de Node.js, banco de dados ou servidores pesados.
+Não requer instalação de Node.js, banco de dados ou compiladores.
 
 ### Opção 1: Direto no Navegador (Mais Rápido)
-Basta dar um **duplo clique no arquivo `index.html`** no seu computador. Ele abrirá instantaneamente no Chrome, Edge, Firefox ou qualquer navegador moderno.
+Basta dar um **duplo clique no arquivo `index.html`** no computador. Ele abrirá instantaneamente em qualquer navegador moderno (Chrome, Edge, Firefox, Safari).
 
-### Opção 2: Servidor Local (Recomendado para testar em rede/celular)
-No terminal dentro da pasta `mentoria-diagnostico`, você pode rodar:
+### Opção 2: Servidor Local (Recomendado para testar no celular ou tablet)
+No terminal dentro da pasta do projeto, execute:
 ```bash
-# Com Python:
 python -m http.server 8080
-
-# Ou com npx:
-npx serve .
 ```
-E acessar no navegador: `http://localhost:8080`.
+E acesse no navegador: `http://localhost:8080`.
 
 ---
 
-## ✏️ Como Personalizar as Perguntas e Dados da Mentora
+## ✏️ Personalização & Configuração
 
-### 1. Para alterar as 40 Perguntas ou Adicionar Novas:
-Abra o arquivo [`js/questions.js`](js/questions.js). Cada pergunta segue esta estrutura simples:
-```javascript
-{
-    id: 1,
-    pillarId: "financeiro",
-    title: "Pergunta 1: Nome do Assunto",
-    description: "Texto da pergunta explicativa...",
-    tip: "Orientação e conselho da mentora caso o cliente marque uma nota baixa..."
-}
-```
-
-### 2. Para colocar o WhatsApp e Contatos da sua Madrinha:
-- No arquivo [`js/app.js`](js/app.js), procure por `defaultPhone` e coloque o número com DDD (ex: `"5511999999999"`).
-- No arquivo [`js/pdf-generator.js`](js/pdf-generator.js), edite o objeto `mentorConfig` com o nome, telefone e e-mail que sairão no rodapé do PDF.
+- **Perguntas, Pilares e Textos Teóricos:** Edite o arquivo [`js/questions.js`](js/questions.js).
+- **Contatos da Mentora / Consultora:** No objeto `DIAGNOSTIC_FRAMEWORK` em `js/questions.js` e em `mentorConfig` dentro de [`js/pdf-generator.js`](js/pdf-generator.js).
+- **Lógica e Cálculos de Pontuação:** Arquivo [`js/app.js`](js/app.js).
+- **Design System e Temas:** Arquivo [`css/styles.css`](css/styles.css).
 
 ---
 
 ## 📂 Estrutura de Arquivos
 
 ```
-mentoria-diagnostico/
-├── index.html              # Tela de início, quiz e resultados
+diagnosticoprofissional-main/
+├── index.html              # Interface completa (Onboarding, Questionário, Resultados e Analytics)
 ├── css/
-│   └── styles.css          # Estilos modernos, temas Claro/Escuro e responsividade
+│   └── styles.css          # Design System executivo, temas Claro/Escuro, Gráficos e Responsividade
 ├── js/
-│   ├── questions.js        # Definição das 40 perguntas, pilares e níveis
-│   ├── app.js              # Lógica da aplicação e cálculos de notas
-│   └── pdf-generator.js    # Formatação e geração do PDF executivo
-└── README.md               # Este guia explicativo
+│   ├── questions.js        # Definição das 24 questões, 5 pilares, 11 subdimensões e perspectivas BSC
+│   ├── app.js              # Lógica de estados, Chart.js Radar, cálculos BSC, filtros e persistência
+│   └── pdf-generator.js    # Formatação e geração do dossiê executivo em PDF
+├── EMBASAMENTO/            # Pasta com a dissertação acadêmica (PDF), áudio e questionário base (DOCX)
+│   ├── Dissertação TAÍS TREVISOL SCHERNER.pdf
+│   ├── WhatsApp Ptt 2026-09-15 at 22.22.34.ogg
+│   └── perguntas iniciais diagnostico.docx
+└── README.md               # Documentação técnica e metodológica da plataforma
 ```

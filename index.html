@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Diagnóstico de Governança & Maturidade da Empresa Familiar | Metodologia Scherner</title>
+    <title>Diagnóstico de Governança & Profissionalização da Empresa Familiar | Metodologia Taís Trevisol Scherner</title>
     
     <!-- Favicon & Ícones de Navegador -->
     <link rel="icon" type="image/svg+xml" href="favicon.svg">
@@ -15,12 +15,15 @@
     <!-- Google Fonts: Inter & Plus Jakarta Sans -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap" rel="stylesheet">
     
     <!-- FontAwesome 6 (Ícones) -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
-    <!-- html2pdf.js para Exportação do Relatório -->
+    <!-- Chart.js para o Gráfico Radar de Governança -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+
+    <!-- html2pdf.js para Exportação do Relatório Executivo -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
     
     <!-- Estilos Customizados -->
@@ -28,21 +31,28 @@
 </head>
 <body>
 
-    <!-- NAVBAR SUPERIOR -->
+    <!-- NAVBAR SUPERIOR EXECUTIVA -->
     <header class="navbar">
         <div class="nav-container">
-            <a href="#" class="brand-logo">
+            <a href="#" class="brand-logo" id="nav-brand-link">
                 <div class="brand-icon">
                     <i class="fas fa-landmark"></i>
                 </div>
                 <div>
-                    <div class="brand-title">Mentoria & Governança Familiar</div>
-                    <div class="brand-subtitle">Diagnóstico de Profissionalização • Metodologia Scherner</div>
+                    <div class="brand-title">Governança & Empresa Familiar</div>
+                    <div class="brand-subtitle">Diagnóstico Multidimensional • Metodologia Taís Trevisol Scherner (Unoesc)</div>
                 </div>
             </a>
 
             <div class="nav-actions">
-                <button id="theme-toggle-btn" class="theme-toggle-btn" type="button" aria-label="Alternar tema">
+                <!-- Input oculto para carregar JSON -->
+                <input type="file" id="json-file-input" accept=".json" style="display: none;">
+                <button type="button" id="load-json-btn" class="btn-nav-action" title="Carregar diagnóstico salvo anteriormente">
+                    <i class="fas fa-folder-open"></i>
+                    <span class="btn-text-responsive">Carregar Diagnóstico</span>
+                </button>
+
+                <button id="theme-toggle-btn" class="theme-toggle-btn" type="button" aria-label="Alternar tema" title="Alternar entre modo claro e escuro">
                     <i id="theme-icon" class="fas fa-moon"></i>
                 </button>
             </div>
@@ -58,94 +68,127 @@
         <section id="welcome-screen">
             <div class="welcome-hero">
                 <div class="badge-tag">
-                    <i class="fas fa-university"></i> Metodologia Científica Aplicada • Unoesc
+                    <i class="fas fa-graduation-cap"></i> Metodologia Científica Aplicada • Unoesc Chapecó (2024)
                 </div>
                 <h1 class="welcome-title">Avalie a Governança & Maturidade da sua Empresa Familiar</h1>
                 <p class="welcome-desc">
-                    Descubra os pontos cegos de governança, autonomia de gestão, processos e sucessão que impactam a perenidade e os lucros do seu negócio. 
-                    Responda às 24 perguntas essenciais e receba um dossiê executivo fundamentado com plano de ação prioritário e parecer da mentoria.
+                    Identifique pontos de atrito societário, gargalos na delegação de autoridade, ausência de controles e desafios de sucessão. 
+                    Responda às <strong>24 perguntas essenciais</strong> distribuídas nos 5 eixos fundamentais e receba um dossiê executivo com matriz de priorização e impacto no Balanced Scorecard (BSC).
                 </p>
 
-                <!-- Prévia dos 5 Pilares -->
+                <!-- Prévia dos 5 Pilares Teóricos -->
                 <div class="pillars-preview-grid">
                     <div class="pillar-mini-card">
                         <div class="pillar-mini-icon"><i class="fas fa-user-tie"></i></div>
                         <div class="pillar-mini-title">1. Gestão</div>
+                        <div class="pillar-mini-sub">Liderança, Comitê e Delegação</div>
                     </div>
                     <div class="pillar-mini-card">
                         <div class="pillar-mini-icon"><i class="fas fa-cogs"></i></div>
                         <div class="pillar-mini-title">2. Estrutura & Processos</div>
+                        <div class="pillar-mini-sub">Controles, ERP/BI e Estratégia</div>
                     </div>
                     <div class="pillar-mini-card">
                         <div class="pillar-mini-icon"><i class="fas fa-users-cog"></i></div>
                         <div class="pillar-mini-title">3. Família & Negócio</div>
+                        <div class="pillar-mini-sub">Governança e Sucessão</div>
                     </div>
                     <div class="pillar-mini-card">
                         <div class="pillar-mini-icon"><i class="fas fa-users"></i></div>
-                        <div class="pillar-mini-title">4. Pessoas & Equipe</div>
+                        <div class="pillar-mini-title">4. Pessoas</div>
+                        <div class="pillar-mini-sub">Competência e Equidade</div>
                     </div>
                     <div class="pillar-mini-card">
                         <div class="pillar-mini-icon"><i class="fas fa-landmark"></i></div>
                         <div class="pillar-mini-title">5. Cultura & Ambiente</div>
+                        <div class="pillar-mini-sub">Valores e Legado Familiar</div>
                     </div>
                 </div>
             </div>
 
             <!-- Formulário de Identificação do Participante -->
             <div class="app-card">
-                <div class="form-section-title">
-                    <i class="fas fa-user-shield" style="color: var(--primary);"></i>
-                    <span>Informações do Participante (100% Opcional)</span>
+                <div class="form-header-box">
+                    <div class="form-section-title">
+                        <i class="fas fa-id-card-clip" style="color: var(--primary);"></i>
+                        <span>Perfil do Participante & Organização</span>
+                    </div>
+                    <span class="confidential-badge">
+                        <i class="fas fa-shield-alt"></i> Sigilo e Confidencialidade Garantidos
+                    </span>
                 </div>
-                <p style="color: var(--text-muted); font-size: 0.92rem; margin-bottom: 1.5rem; line-height: 1.5;">
-                    <i class="fas fa-lock" style="color: var(--primary);"></i> <strong>Sigilo & Anonimato Garantidos:</strong> Nome, empresa, telefone e e-mail são <strong>totalmente opcionais</strong>. Você pode realizar a avaliação com 100% de confidencialidade caso prefira não se identificar.
-                </p>
+
+                <!-- Toggle para Modo Anônimo (Sugestão de Áudio da Autora) -->
+                <div class="anonymous-toggle-card">
+                    <div class="anonymous-toggle-left">
+                        <div class="anonymous-icon-circle">
+                            <i class="fas fa-user-secret"></i>
+                        </div>
+                        <div>
+                            <div class="anonymous-toggle-title">Desejo responder em Modo Anônimo / Confidencial</div>
+                            <div class="anonymous-toggle-desc">
+                                Ative esta opção caso prefira não informar seu nome e contatos pessoais. Seus dados serão mantidos 100% confidenciais.
+                            </div>
+                        </div>
+                    </div>
+                    <label class="switch" for="anonymous-toggle">
+                        <input type="checkbox" id="anonymous-toggle">
+                        <span class="slider"></span>
+                    </label>
+                </div>
 
                 <form id="onboarding-form">
-                    <div class="form-grid">
-                        <div>
-                            <label class="form-label" for="client-name">Seu Nome Completo <span style="font-size: 0.8rem; color: var(--text-muted); font-weight: normal;">(Opcional)</span></label>
-                            <input type="text" id="client-name" class="form-input" placeholder="Opcional (ou deixe em branco)">
+                    <div class="form-grid" id="ident-fields-container">
+                        <div class="form-field">
+                            <label class="form-label" for="client-name">
+                                Seu Nome Completo <span class="optional-tag" id="label-name-optional">(Opcional)</span>
+                            </label>
+                            <input type="text" id="client-name" class="form-input" placeholder="Ex: Maria Santos">
                         </div>
 
-                        <div>
-                            <label class="form-label" for="client-company">Nome da sua Empresa / Negócio <span style="font-size: 0.8rem; color: var(--text-muted); font-weight: normal;">(Opcional)</span></label>
-                            <input type="text" id="client-company" class="form-input" placeholder="Opcional (Ex: Empresa Confidencial)">
+                        <div class="form-field">
+                            <label class="form-label" for="client-company">
+                                Nome da Empresa / Grupo Familiar <span class="optional-tag" id="label-company-optional">(Opcional)</span>
+                            </label>
+                            <input type="text" id="client-company" class="form-input" placeholder="Ex: Indústria Familiar Exemplo Ltda.">
                         </div>
 
-                        <div>
-                            <label class="form-label" for="client-phone">WhatsApp para Contato <span style="font-size: 0.8rem; color: var(--text-muted); font-weight: normal;">(Opcional)</span></label>
-                            <input type="tel" id="client-phone" class="form-input" placeholder="Opcional (Ex: 49 98836-9445)">
+                        <div class="form-field">
+                            <label class="form-label" for="client-phone">
+                                WhatsApp para Contato <span class="optional-tag" id="label-phone-optional">(Opcional)</span>
+                            </label>
+                            <input type="tel" id="client-phone" class="form-input" placeholder="Ex: (49) 99999-9999">
                         </div>
 
-                        <div>
-                            <label class="form-label" for="client-email">E-mail Profissional <span style="font-size: 0.8rem; color: var(--text-muted); font-weight: normal;">(Opcional)</span></label>
-                            <input type="email" id="client-email" class="form-input" placeholder="Opcional (Ex: contato@empresa.com.br)">
+                        <div class="form-field">
+                            <label class="form-label" for="client-email">
+                                E-mail Profissional <span class="optional-tag" id="label-email-optional">(Opcional)</span>
+                            </label>
+                            <input type="email" id="client-email" class="form-input" placeholder="Ex: gestao@empresa.com.br">
                         </div>
 
                         <div class="form-group-full">
-                            <label class="form-label" for="client-segment">Porte / Estrutura da Empresa</label>
+                            <label class="form-label" for="client-segment">Porte / Estrutura da Empresa Familiar:</label>
                             <select id="client-segment" class="form-select">
-                                <option value="Microempresa (ME)">Microempresa (ME)</option>
-                                <option value="Empresa de Pequeno Porte (EPP)" selected>Empresa de Pequeno Porte (EPP)</option>
-                                <option value="Média Empresa">Média Empresa</option>
-                                <option value="Grande Empresa / Grupo Familiar">Grande Empresa / Grupo Familiar</option>
-                                <option value="Holding Familiar / Patrimonial">Holding Familiar / Patrimonial</option>
-                                <option value="Microempreendedor Individual (MEI)">Microempreendedor Individual (MEI)</option>
+                                <option value="Microempresa (ME)">Microempresa (ME) • Até 9 colaboradores</option>
+                                <option value="Empresa de Pequeno Porte (EPP)" selected>Empresa de Pequeno Porte (EPP) • 10 a 49 colaboradores</option>
+                                <option value="Média Empresa">Média Empresa • 50 a 249 colaboradores</option>
+                                <option value="Grande Empresa / Indústria">Grande Empresa / Indústria • 250+ colaboradores</option>
+                                <option value="Holding Familiar / Patrimonial">Holding Familiar / Grupo Multifamiliar</option>
                             </select>
                         </div>
 
                         <div class="form-group-full">
-                            <label class="form-label">Seu Papel / Cargo de Decisão na Empresa:</label>
+                            <label class="form-label">Seu Papel / Posição de Tomada de Decisão na Empresa:</label>
                             <div class="role-grid" id="roles-container">
                                 <!-- Preenchido dinamicamente via questions.js -->
                             </div>
                         </div>
                     </div>
 
-                    <div style="margin-top: 2rem; text-align: center;">
-                        <button type="submit" class="btn btn-primary btn-lg" style="min-width: 280px;">
-                            <span>Iniciar Avaliação (24 Perguntas)</span>
+                    <div style="margin-top: 2.25rem; text-align: center;">
+                        <button type="submit" class="btn btn-primary btn-lg" style="min-width: 300px;">
+                            <span>Iniciar Avaliação (24 Questões)</span>
                             <i class="fas fa-arrow-right"></i>
                         </button>
                     </div>
@@ -154,7 +197,7 @@
         </section>
 
         <!-- =============================================================
-             TELA 2: QUESTIONÁRIO INTERATIVO (24 PERGUNTAS)
+             TELA 2: QUESTIONÁRIO INTERATIVO (24 QUESTÕES)
              ============================================================= -->
         <section id="quiz-screen" style="display: none;">
             <!-- Barra Superior Fixa de Progresso -->
@@ -169,22 +212,36 @@
 
                 <!-- Abas Rápidas de Navegação pelos 5 Pilares -->
                 <div class="pillar-tabs" id="pillar-tabs">
-                    <!-- Gerado via JavaScript -->
+                    <!-- Gerado dinamicamente -->
                 </div>
             </div>
 
-            <div style="display: flex; justify-content: flex-end; margin-bottom: 1rem;">
-                <button type="button" id="fill-sample-btn" class="btn btn-secondary" style="font-size: 0.8rem; padding: 0.4rem 0.8rem;" title="Preenche respostas de exemplo para visualizar o relatório rapidamente">
-                    <i class="fas fa-magic"></i> Preencher Exemplo de Demonstração
-                </button>
+            <!-- Toolbar de Utilidades do Quiz -->
+            <div class="quiz-utility-toolbar">
+                <div class="autosave-status" id="autosave-status">
+                    <i class="fas fa-check-circle"></i> <span>Respostas salvas automaticamente</span>
+                </div>
+                <div class="quiz-toolbar-actions">
+                    <button type="button" id="fill-sample-btn" class="btn btn-secondary btn-sm" title="Preenche respostas com dados de demonstração para visualizar os relatórios e gráficos rapidamente">
+                        <i class="fas fa-magic"></i> Preencher Exemplo de Demonstração
+                    </button>
+                    <button type="button" id="reset-answers-btn" class="btn btn-secondary btn-sm" title="Limpar todas as respostas e recomeçar">
+                        <i class="fas fa-eraser"></i> Limpar
+                    </button>
+                </div>
             </div>
 
             <!-- Cabeçalho do Pilar Ativo -->
             <div class="app-card" style="margin-bottom: 1.5rem;">
                 <div class="pillar-section-header">
-                    <h2 class="pillar-section-title" id="current-pillar-name">
-                        <!-- Nome do Pilar -->
-                    </h2>
+                    <div>
+                        <div class="pillar-academic-badge" id="current-pillar-ref">
+                            <!-- Referência Acadêmica -->
+                        </div>
+                        <h2 class="pillar-section-title" id="current-pillar-name">
+                            <!-- Nome do Pilar -->
+                        </h2>
+                    </div>
                     <p class="pillar-section-desc" id="current-pillar-desc">
                         <!-- Descrição do Pilar -->
                     </p>
@@ -200,12 +257,12 @@
                     <button type="button" id="prev-pillar-btn" class="btn btn-secondary" style="display: none;">
                         <i class="fas fa-arrow-left"></i> Pilar Anterior
                     </button>
-                    <div></div>
+                    <div class="actions-spacer"></div>
                     <button type="button" id="next-pillar-btn" class="btn btn-primary">
                         <span>Próximo Pilar</span> <i class="fas fa-arrow-right"></i>
                     </button>
                     <button type="button" id="finish-quiz-btn" class="btn btn-success btn-lg" style="display: none;">
-                        <i class="fas fa-check-double"></i> Concluir e Ver Diagnóstico
+                        <i class="fas fa-check-double"></i> Concluir e Gerar Diagnóstico
                     </button>
                 </div>
             </div>
@@ -215,103 +272,200 @@
              TELA 3: RESULTADOS, DIAGNÓSTICO & PDF
              ============================================================= -->
         <section id="results-screen" style="display: none;">
-            <!-- Banner Principal de Classificação -->
+            
+            <!-- Banner Principal de Classificação com Gauge Circular -->
             <div class="results-header-banner">
-                <div class="results-user-greeting" id="results-greeting">
-                    Diagnóstico Concluído
+                <div class="results-banner-left">
+                    <div class="results-user-greeting" id="results-greeting">
+                        Diagnóstico Concluído
+                    </div>
+                    <div class="maturity-badge" id="maturity-badge-text">
+                        Nível de Maturidade
+                    </div>
+                    <h2 class="results-headline" id="maturity-headline">
+                        Parecer Geral da Mentora
+                    </h2>
+                    <p class="results-summary-text" id="maturity-summary">
+                        <!-- Descrição da maturidade -->
+                    </p>
                 </div>
-                <div class="score-circle-display">
-                    <div class="score-value" id="score-circle-value">0%</div>
-                    <div class="score-label">Maturidade</div>
-                </div>
-                <div class="maturity-badge" id="maturity-badge-text">
-                    Nível de Maturidade
-                </div>
-            </div>
 
-            <!-- Resumo Executivo & Análise de Perfil -->
-            <div class="profile-overview-card">
-                <h2 class="profile-headline" id="maturity-headline">
-                    Parecer Geral da Mentora
-                </h2>
-                <p class="profile-summary-text" id="maturity-summary">
-                    <!-- Descrição da maturidade -->
-                </p>
-            </div>
-
-            <!-- Pontuação Individual dos 5 Pilares -->
-            <h3 style="font-size: 1.25rem; font-weight: 700; margin-bottom: 1rem; color: var(--text-heading);">
-                <i class="fas fa-chart-bar" style="color: var(--primary);"></i> Desempenho por Eixo Estratégico
-            </h3>
-            <div class="pillars-score-grid" id="pillars-score-grid">
-                <!-- Injetado dinamicamente -->
-            </div>
-
-            <!-- Chamada para Ação (Mentoria Estratégica) -->
-            <div class="mentorship-cta-card">
-                <h3 class="cta-title">Agende sua Sessão de Mentoria Estratégica</h3>
-                <p class="cta-subtitle">
-                    Com base no diagnóstico da sua empresa, converse diretamente com a mentora <strong>Taís Trevisol Scherner (Mestra em Administração - Unoesc)</strong> para estruturar a jornada prática de profissionalização, governança e sucessão da sua empresa familiar.
-                </p>
-                <div class="cta-buttons">
-                    <button type="button" id="download-pdf-btn" class="btn btn-primary btn-lg">
-                        <i class="fas fa-file-pdf"></i> Baixar Relatório Executivo Completo (PDF)
-                    </button>
-                    <a href="#" id="whatsapp-cta-btn" target="_blank" class="btn btn-success btn-lg">
-                        <i class="fab fa-whatsapp"></i> Falar com Taís no WhatsApp
-                    </a>
-                    <button type="button" id="retake-test-btn" class="btn btn-secondary">
-                        <i class="fas fa-redo"></i> Refazer Avaliação
-                    </button>
+                <div class="results-banner-right">
+                    <div class="score-circle-container">
+                        <svg class="score-svg-ring" viewBox="0 0 120 120">
+                            <circle class="score-svg-bg" cx="60" cy="60" r="50"></circle>
+                            <circle class="score-svg-progress" id="score-svg-circle" cx="60" cy="60" r="50"></circle>
+                        </svg>
+                        <div class="score-inner-text">
+                            <div class="score-value" id="score-circle-value">0%</div>
+                            <div class="score-label">Maturidade Geral</div>
+                            <div class="score-subpoints" id="score-points-text">0 de 120 pts</div>
+                        </div>
+                    </div>
                 </div>
             </div>
 
-            <!-- Diretrizes Estratégicas Recomendadas para o Estágio Atual -->
-            <div class="app-card" id="maturity-actions-card" style="margin-bottom: 2rem; border-left: 4px solid var(--primary);">
-                <div style="display: flex; align-items: center; gap: 0.75rem; margin-bottom: 0.5rem;">
-                    <i class="fas fa-compass" style="font-size: 1.5rem; color: var(--primary);"></i>
-                    <h3 style="font-size: 1.15rem; font-weight: 700; color: var(--text-heading); margin: 0;">Diretrizes Estratégicas Recomendadas para o seu Estágio</h3>
+            <!-- Grid de Visual Analytics: Gráfico Radar + Resumo dos 5 Pilares -->
+            <div class="analytics-row-grid">
+                <!-- Card 1: Gráfico Radar (Chart.js) -->
+                <div class="app-card chart-card">
+                    <div class="chart-header">
+                        <div>
+                            <h3 class="chart-title"><i class="fas fa-chart-pie" style="color: var(--primary);"></i> Teia de Governança (Gráfico Radar)</h3>
+                            <p class="chart-subtitle">Equilíbrio comparativo de maturidade entre os 5 eixos da empresa familiar</p>
+                        </div>
+                    </div>
+                    <div class="radar-chart-wrapper">
+                        <canvas id="governance-radar-chart"></canvas>
+                    </div>
                 </div>
-                <p style="font-size: 0.9rem; color: var(--text-muted); margin-bottom: 1rem;">
-                    Iniciativas prioritárias fundamentadas na literatura de governança familiar para alavancar a maturidade da sua empresa:
-                </p>
-                <ul id="maturity-actions-list" style="margin: 0; padding-left: 1.25rem; display: flex; flex-direction: column; gap: 0.5rem; color: var(--text-main); font-size: 0.92rem;">
-                    <!-- Injetado dinamicamente via app.js -->
-                </ul>
+
+                <!-- Card 2: Pontuação Individual dos 5 Pilares -->
+                <div class="app-card pillars-summary-card">
+                    <div class="chart-header">
+                        <div>
+                            <h3 class="chart-title"><i class="fas fa-layer-group" style="color: var(--primary);"></i> Desempenho por Eixo Estratégico</h3>
+                            <p class="chart-subtitle">Pontuação acumulada e percentual em cada dimensão de Polat (2020)</p>
+                        </div>
+                    </div>
+                    <div class="pillars-score-grid" id="pillars-score-grid">
+                        <!-- Injetado dinamicamente -->
+                    </div>
+                </div>
             </div>
 
-            <!-- Lista de Gaps: O que precisa ser melhorado (Notas 1, 2 e 3) -->
-            <div class="gaps-section">
-                <div class="gaps-header">
-                    <i class="fas fa-exclamation-triangle" style="font-size: 1.6rem; color: var(--warning);"></i>
+            <!-- MÓDULO DE IMPACTO NO BALANCED SCORECARD (BSC) -->
+            <div class="app-card bsc-section-card">
+                <div class="bsc-section-header">
                     <div>
-                        <h3 class="gaps-title">Plano de Ação Prioritário: O que sua empresa precisa melhorar</h3>
-                        <p style="font-size: 0.9rem; color: var(--text-muted);">
-                            Itens com pontuação abaixo do ideal identificados no seu questionário, acompanhados de orientações práticas da mentoria:
+                        <div class="badge-tag" style="background: rgba(2, 132, 199, 0.1); color: var(--primary);">
+                            <i class="fas fa-sitemap"></i> Desempenho Organizacional Holístico
+                        </div>
+                        <h3 class="bsc-main-title">Impacto Estimado no Balanced Scorecard (BSC)</h3>
+                        <p class="bsc-main-desc">
+                            Conforme demonstrado na dissertação de Scherner (2024), a profissionalização da empresa familiar 
+                            potencializa diretamente o desempenho financeiro e não financeiro nas 4 perspectivas de Kaplan & Norton (1997):
                         </p>
                     </div>
                 </div>
 
-                <div id="gaps-list">
-                    <!-- Injetado dinamicamente -->
+                <div class="bsc-grid" id="bsc-cards-grid">
+                    <!-- Cards BSC gerados dinamicamente via app.js -->
                 </div>
             </div>
+
+            <!-- Chamada para Ação e Botões Executivos -->
+            <div class="mentorship-cta-card">
+                <div class="cta-inner">
+                    <div class="cta-text-content">
+                        <h3 class="cta-title">Leve a Governança da sua Empresa Familiar ao Próximo Nível</h3>
+                        <p class="cta-subtitle">
+                            Agende uma devolutiva estratégica com a mentora <strong>Taís Trevisol Scherner (Mestra em Administração - Unoesc)</strong> para estruturar o conselho de família, comitê estratégico, plano de sucessão e processos de gestão.
+                        </p>
+                    </div>
+                    <div class="cta-actions-grid">
+                        <button type="button" id="download-pdf-btn" class="btn btn-primary btn-lg">
+                            <i class="fas fa-file-pdf"></i> Baixar Relatório Executivo Completo (PDF)
+                        </button>
+                        <a href="#" id="whatsapp-cta-btn" target="_blank" class="btn btn-success btn-lg">
+                            <i class="fab fa-whatsapp"></i> Falar com a Mentora no WhatsApp
+                        </a>
+                        <button type="button" id="export-json-btn" class="btn btn-secondary" title="Exportar dados do diagnóstico em formato JSON para arquivamento ou comparação futura">
+                            <i class="fas fa-download"></i> Salvar Diagnóstico (JSON)
+                        </button>
+                        <button type="button" id="retake-test-btn" class="btn btn-secondary">
+                            <i class="fas fa-redo"></i> Refazer Avaliação
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Diretrizes Estratégicas para o Estágio Atual -->
+            <div class="app-card" id="maturity-actions-card">
+                <div class="card-title-icon-row">
+                    <div class="icon-bubble primary"><i class="fas fa-compass"></i></div>
+                    <div>
+                        <h3 class="subcard-title">Diretrizes Estratégicas Recomendadas para o seu Estágio</h3>
+                        <p class="subcard-desc">Iniciativas prioritárias fundamentadas na literatura de governança familiar para alavancar sua maturidade:</p>
+                    </div>
+                </div>
+                <ul id="maturity-actions-list" class="strategic-actions-list">
+                    <!-- Injetado dinamicamente via app.js -->
+                </ul>
+            </div>
+
+            <!-- Matriz de Priorização e Plano de Ação (Gaps: Notas 1, 2 e 3) -->
+            <div class="gaps-section app-card">
+                <div class="gaps-header">
+                    <div class="icon-bubble warning"><i class="fas fa-triangle-exclamation"></i></div>
+                    <div style="flex: 1;">
+                        <h3 class="gaps-title">Plano de Ação Prioritário: Gaps Identificados</h3>
+                        <p class="gaps-desc">
+                            Práticas avaliadas com notas 1, 2 ou 3 classificadas por horizonte de execução com orientações práticas fundamentadas:
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Filtros por Horizonte de Ação -->
+                <div class="gap-filter-tabs" id="gap-filter-tabs">
+                    <button type="button" class="gap-filter-btn active" data-filter="all">Todos os Gaps (<span id="count-all-gaps">0</span>)</button>
+                    <button type="button" class="gap-filter-btn" data-filter="quick_win">⚡ Vitórias Rápidas (<span id="count-quick-gaps">0</span>)</button>
+                    <button type="button" class="gap-filter-btn" data-filter="estruturante">🏛️ Governança Estruturante (<span id="count-struct-gaps">0</span>)</button>
+                    <button type="button" class="gap-filter-btn" data-filter="sistemas">📊 Controle & Sistemas (<span id="count-sys-gaps">0</span>)</button>
+                </div>
+
+                <div id="gaps-list" class="gaps-list-container">
+                    <!-- Injetado dinamicamente via app.js -->
+                </div>
+            </div>
+
+            <!-- Seção de Auditoria das 24 Questões (Tabela Detalhada) -->
+            <div class="app-card audit-card">
+                <details class="audit-details">
+                    <summary class="audit-summary">
+                        <div style="display: flex; align-items: center; gap: 0.75rem;">
+                            <i class="fas fa-clipboard-check" style="color: var(--primary);"></i>
+                            <span style="font-weight: 700; font-size: 1.05rem;">Auditoria Completa: Matriz com as 24 Questões e Respostas</span>
+                        </div>
+                        <span class="audit-toggle-hint">Clique para expandir/recolher</span>
+                    </summary>
+                    <div class="audit-table-wrapper">
+                        <table class="audit-table">
+                            <thead>
+                                <tr>
+                                    <th style="width: 45px; text-align: center;">#</th>
+                                    <th>Pilar / Subdimensão de Polat</th>
+                                    <th>Pergunta / Situação Avaliada</th>
+                                    <th style="width: 170px; text-align: center;">Maturidade Informada</th>
+                                </tr>
+                            </thead>
+                            <tbody id="audit-table-body">
+                                <!-- Injetado dinamicamente -->
+                            </tbody>
+                        </table>
+                    </div>
+                </details>
+            </div>
+
         </section>
 
     </main>
 
     <!-- NOTIFICAÇÃO FLUTUANTE (TOAST) -->
     <div id="toast-notification" class="toast-notification">
-        <i class="fas fa-info-circle" style="color: var(--primary);"></i>
+        <i class="fas fa-info-circle toast-icon"></i>
         <span id="toast-message">Mensagem</span>
     </div>
 
-    <!-- RODAPÉ -->
+    <!-- RODAPÉ EXECUTIVO -->
     <footer class="footer">
-        <p><strong>Mentoria em Governança & Gestão de Empresas Familiares</strong> • Taís Trevisol Scherner</p>
-        <p style="margin-top: 0.35rem; font-size: 0.8rem;">
-            Plataforma Executiva de Diagnóstico de Maturidade • Metodologia baseada em pesquisa acadêmica (Estratégia e Competitividade - Unoesc).
-        </p>
+        <div class="footer-content">
+            <p><strong>Mentoria em Governança & Gestão da Empresa Familiar</strong> • Taís Trevisol Scherner</p>
+            <p class="footer-sub">
+                Dissertação de Mestrado Profissional em Administração • Linha de Pesquisa: Estratégia e Competitividade<br>
+                Universidade do Oeste de Santa Catarina (Unoesc) • Chapecó – SC • Orientadora: Prof.ª Dra. Ieda Margarete Oro
+            </p>
+        </div>
     </footer>
 
     <!-- SCRIPTS -->
