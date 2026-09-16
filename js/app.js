@@ -120,12 +120,12 @@ document.addEventListener("DOMContentLoaded", () => {
 
         state.userData = {
             name: nameInput || "",
-            company: companyInput || "Empresa Confidencial",
+            company: companyInput || "",
             role: roleObj.id,
             roleLabel: roleObj.label,
             segment: segmentInput,
-            phone: phoneInput,
-            email: emailInput
+            phone: phoneInput || "",
+            email: emailInput || ""
         };
 
         // Transiciona para a tela do quiz
@@ -393,9 +393,15 @@ document.addEventListener("DOMContentLoaded", () => {
         if (!res) return;
 
         // Saudação e Cabeçalho
-        document.getElementById("results-greeting").textContent = state.userData.name 
-            ? `Diagnóstico de ${state.userData.name} • ${state.userData.company}`
-            : `Diagnóstico Empresarial • ${state.userData.company}`;
+        if (state.userData.name && state.userData.company) {
+            document.getElementById("results-greeting").textContent = `Diagnóstico de ${state.userData.name} • ${state.userData.company}`;
+        } else if (state.userData.company) {
+            document.getElementById("results-greeting").textContent = `Diagnóstico de Governança • ${state.userData.company}`;
+        } else if (state.userData.name) {
+            document.getElementById("results-greeting").textContent = `Diagnóstico de ${state.userData.name}`;
+        } else {
+            document.getElementById("results-greeting").textContent = `Diagnóstico de Governança & Maturidade`;
+        }
         document.getElementById("score-circle-value").textContent = `${res.overallPercentage}%`;
         document.getElementById("maturity-badge-text").textContent = res.maturity.level;
         document.getElementById("maturity-headline").textContent = res.maturity.headline;
@@ -465,12 +471,22 @@ document.addEventListener("DOMContentLoaded", () => {
         // WhatsApp CTA Button
         const whatsappBtn = document.getElementById("whatsapp-cta-btn");
         const defaultPhone = "5549988369445"; // Contato da Mentora Taís Trevisol Scherner
-        const participantInfo = state.userData.name 
-            ? `Meu nome é ${state.userData.name} (${state.userData.roleLabel}).\n`
-            : `Cargo/Função: ${state.userData.roleLabel}.\n`;
+
+        let participantInfo = "";
+        if (state.userData.name && state.userData.company) {
+            participantInfo = `Meu nome é ${state.userData.name} e avaliei a empresa "${state.userData.company}" (${state.userData.roleLabel}).\n`;
+        } else if (state.userData.name) {
+            participantInfo = `Meu nome é ${state.userData.name} (${state.userData.roleLabel}).\n`;
+        } else if (state.userData.company) {
+            participantInfo = `Avaliação da empresa "${state.userData.company}" no papel de ${state.userData.roleLabel}.\n`;
+        } else {
+            participantInfo = `Perfil: ${state.userData.roleLabel} (${state.userData.segment}).\n`;
+        }
+
+        const companyStr = state.userData.company ? ` para a empresa "${state.userData.company}"` : "";
 
         const waMsg = encodeURIComponent(
-            `Olá, Taís! Acabei de realizar o Diagnóstico de Governança & Maturidade para a empresa "${state.userData.company}".\n` +
+            `Olá, Taís! Acabei de realizar o Diagnóstico de Governança & Maturidade${companyStr}.\n` +
             participantInfo +
             `Meu índice geral foi de ${res.overallPercentage}% (${res.maturity.level}).\n` +
             `Gostaria de agendar uma sessão de mentoria para analisar o plano de ação e os pontos prioritários da empresa.`

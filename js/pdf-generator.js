@@ -48,7 +48,7 @@ class DiagnosticPdfGenerator {
 
         document.body.appendChild(reportContainer);
 
-        const companyOrName = userData.company || userData.name || 'Empresa';
+        const companyOrName = userData.company || userData.name || 'Anonimo';
         const fileName = `Diagnostico_Governanca_${companyOrName.replace(/\s+/g, '_')}_${new Date().toISOString().slice(0, 10)}.pdf`;
 
         // Verifica se html2pdf está carregado
@@ -207,16 +207,16 @@ class DiagnosticPdfGenerator {
                 </h3>
                 <table style="width: 100%; border-collapse: collapse; font-size: 12px;">
                     <tr>
-                        <td style="padding: 4px 0; width: 50%;"><strong>Nome do Gestor:</strong> ${userData.name || 'Não informado'}</td>
-                        <td style="padding: 4px 0; width: 50%;"><strong>Empresa / Negócio:</strong> ${userData.company || 'Não informado'}</td>
+                        <td style="padding: 4px 0; width: 50%;"><strong>Nome do Gestor:</strong> ${userData.name || 'Não informado (Anônimo)'}</td>
+                        <td style="padding: 4px 0; width: 50%;"><strong>Empresa / Negócio:</strong> ${userData.company || 'Não informada (Confidencial)'}</td>
                     </tr>
                     <tr>
                         <td style="padding: 4px 0;"><strong>Cargo / Função:</strong> ${userData.roleLabel || userData.role}</td>
                         <td style="padding: 4px 0;"><strong>Porte da Empresa:</strong> ${userData.segment || 'Não informado'}</td>
                     </tr>
                     <tr>
-                        <td style="padding: 4px 0;"><strong>E-mail:</strong> ${userData.email || 'Não informado'}</td>
-                        <td style="padding: 4px 0;"><strong>WhatsApp / Contato:</strong> ${userData.phone || 'Não informado'}</td>
+                        <td style="padding: 4px 0;"><strong>E-mail:</strong> ${userData.email || 'Não informado (Anônimo)'}</td>
+                        <td style="padding: 4px 0;"><strong>WhatsApp / Contato:</strong> ${userData.phone || 'Não informado (Anônimo)'}</td>
                     </tr>
                 </table>
             </div>

@@ -94,33 +94,33 @@
             <!-- Formulário de Identificação do Participante -->
             <div class="app-card">
                 <div class="form-section-title">
-                    <i class="fas fa-id-card" style="color: var(--primary);"></i>
-                    <span>Informações do Participante & Empresa</span>
+                    <i class="fas fa-user-shield" style="color: var(--primary);"></i>
+                    <span>Informações do Participante (100% Opcional)</span>
                 </div>
-                <p style="color: var(--text-muted); font-size: 0.92rem; margin-bottom: 1.5rem;">
-                    Esses dados serão utilizados no cabeçalho do seu relatório executivo e no plano de mentoria personalizado.
+                <p style="color: var(--text-muted); font-size: 0.92rem; margin-bottom: 1.5rem; line-height: 1.5;">
+                    <i class="fas fa-lock" style="color: var(--primary);"></i> <strong>Sigilo & Anonimato Garantidos:</strong> Nome, empresa, telefone e e-mail são <strong>totalmente opcionais</strong>. Você pode realizar a avaliação com 100% de confidencialidade caso prefira não se identificar.
                 </p>
 
                 <form id="onboarding-form">
                     <div class="form-grid">
                         <div>
                             <label class="form-label" for="client-name">Seu Nome Completo <span style="font-size: 0.8rem; color: var(--text-muted); font-weight: normal;">(Opcional)</span></label>
-                            <input type="text" id="client-name" class="form-input" placeholder="Ex: Roberto Silva">
+                            <input type="text" id="client-name" class="form-input" placeholder="Opcional (ou deixe em branco)">
                         </div>
 
                         <div>
-                            <label class="form-label" for="client-company">Nome da sua Empresa / Negócio</label>
-                            <input type="text" id="client-company" class="form-input" placeholder="Ex: Silva Comércio & Serviços">
+                            <label class="form-label" for="client-company">Nome da sua Empresa / Negócio <span style="font-size: 0.8rem; color: var(--text-muted); font-weight: normal;">(Opcional)</span></label>
+                            <input type="text" id="client-company" class="form-input" placeholder="Opcional (Ex: Empresa Confidencial)">
                         </div>
 
                         <div>
-                            <label class="form-label" for="client-phone">WhatsApp para Contato</label>
-                            <input type="tel" id="client-phone" class="form-input" placeholder="Ex: (11) 98765-4321">
+                            <label class="form-label" for="client-phone">WhatsApp para Contato <span style="font-size: 0.8rem; color: var(--text-muted); font-weight: normal;">(Opcional)</span></label>
+                            <input type="tel" id="client-phone" class="form-input" placeholder="Opcional (Ex: 49 98836-9445)">
                         </div>
 
                         <div>
-                            <label class="form-label" for="client-email">E-mail Profissional</label>
-                            <input type="email" id="client-email" class="form-input" placeholder="Ex: roberto@empresa.com.br">
+                            <label class="form-label" for="client-email">E-mail Profissional <span style="font-size: 0.8rem; color: var(--text-muted); font-weight: normal;">(Opcional)</span></label>
+                            <input type="email" id="client-email" class="form-input" placeholder="Opcional (Ex: contato@empresa.com.br)">
                         </div>
 
                         <div class="form-group-full">
