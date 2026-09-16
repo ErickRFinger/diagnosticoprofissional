@@ -1,339 +1,275 @@
 /**
- * Base de Perguntas para Diagnóstico e Mentoria Empresarial / Contábil
- * Cada pergunta possui 5 níveis de maturidade (1 a 5).
- * A 5ª opção representa a excelência ("Efetivamente implantado").
+ * Base de Perguntas para Diagnóstico e Mentoria de Empresas Familiares
+ * Metodologia: Taís Trevisol Scherner (2024), M.Sc. em Administração (Estratégia e Competitividade - Unoesc).
+ * Fundamentação Teórica: Modelo Multidimensional de Profissionalização (Polat, 2020; Hiebl & Mayrleitner, 2019; Dekker et al., 2015).
+ * Escala de maturidade de 1 a 5.
  */
+
+const DIAGNOSTIC_FRAMEWORK = {
+    author: "Taís Trevisol Scherner",
+    credentials: "Mestra em Administração (Estratégia e Competitividade - Unoesc) • Especialista em Governança & Empresas Familiares",
+    institution: "Universidade do Oeste de Santa Catarina (Unoesc)",
+    methodology: "Matriz Multidimensional de Governança e Profissionalização da Empresa Familiar",
+    theoreticalBase: "Polat (2020), Hiebl & Mayrleitner (2019), Dyer (2006), Dekker et al. (2015), Kaplan & Norton (1997)"
+};
 
 const PILLARS = [
     {
-        id: "financeiro",
-        name: "Gestão Financeira & Fluxo de Caixa",
-        icon: "fas fa-wallet",
-        description: "Controle de entradas, saídas, conciliação e previsibilidade financeira."
+        id: "gestao",
+        name: "Gestão",
+        shortName: "Gestão",
+        icon: "fas fa-user-tie",
+        description: "Envolvimento não familiar na gestão, delegação de autoridade, conselho/comitê estratégico e liderança dos gerentes."
     },
     {
-        id: "fiscal",
-        name: "Planejamento Tributário & Fiscal",
-        icon: "fas fa-file-invoice-dollar",
-        description: "Conformidade tributária, emissão de notas e otimização de impostos."
-    },
-    {
-        id: "processos",
-        name: "Processos Internos & Governança",
+        id: "estrutura_processos",
+        name: "Estrutura, Processos e Operações",
+        shortName: "Estrutura & Processos",
         icon: "fas fa-cogs",
-        description: "Padronização de rotinas, separação de contas e controle operacional."
+        description: "Estruturas formais, mecanismos de controle gerencial, práticas de RH e planejamento estratégico."
+    },
+    {
+        id: "familia_negocio",
+        name: "Família e Negócio",
+        shortName: "Família & Negócio",
+        icon: "fas fa-users-cog",
+        description: "Mecanismos eficazes de governança, diferenciação de papéis societários e plano de sucessão."
     },
     {
         id: "pessoas",
-        name: "Gestão de Pessoas & Custos Trabalhistas",
+        name: "Pessoas",
+        shortName: "Pessoas",
         icon: "fas fa-users",
-        description: "Folha de pagamento, encargos, pró-labore e produtividade da equipe."
+        description: "Competência ocupacional (técnica), capacitação contínua e profissionalismo comportamental da equipe."
     },
     {
-        id: "estrategia",
-        name: "Estratégia, Precificação & Crescimento",
-        icon: "fas fa-chart-line",
-        description: "Formação de preços, margem de lucro, metas e visão de futuro."
+        id: "cultura_ambiente",
+        name: "Cultura e Ambiente de Trabalho",
+        shortName: "Cultura & Ambiente",
+        icon: "fas fa-landmark",
+        description: "Valores profissionais compartilhados, coerência ética e preservação do legado familiar com inovação."
     }
 ];
 
 const DEFAULT_OPTIONS = [
-    { value: 1, label: "Nível 1 - Não implantado / Inexistente", desc: "A empresa não realiza ou não possui controle sobre este item." },
-    { value: 2, label: "Nível 2 - Em estruturação inicial / Raro", desc: "Feito de forma esporádica, manual e sem padrão definido." },
-    { value: 3, label: "Nível 3 - Parcialmente implementado", desc: "Existe rotina básica, mas ocorrem falhas ou faltam dados precisos." },
-    { value: 4, label: "Nível 4 - Bem estruturado / Quase total", desc: "Processo rotineiro e bem acompanhado, com pequenos ajustes pendentes." },
-    { value: 5, label: "Nível 5 - Efetivamente implantado e monitorado", desc: "Prática consolidada, com indicadores regulares e excelência comprovada." }
+    { value: 1, label: "1 — Não acontece", desc: "A prática não existe ou não é observada na empresa." },
+    { value: 2, label: "2 — Acontece pouco", desc: "Ocorre de maneira muito esporádica ou incipiente." },
+    { value: 3, label: "3 — Acontece parcialmente", desc: "Acontece em algumas ocasiões ou áreas, mas sem padrão definitivo." },
+    { value: 4, label: "4 — Acontece de forma consistente", desc: "Prática rotineira e bem aplicada na maior parte do tempo." },
+    { value: 5, label: "5 — Está consolidado", desc: "Totalmente incorporado à cultura, processos e rotinas da empresa." }
 ];
 
 const QUESTIONS = [
-    // --- PILAR 1: GESTÃO FINANCEIRA & FLUXO DE CAIXA (Perguntas 1 a 8) ---
+    // =========================================================================
+    // PILAR 1: GESTÃO (Perguntas 1 a 7)
+    // =========================================================================
     {
         id: 1,
-        pillarId: "financeiro",
-        title: "Pergunta 1: Conciliação Bancária Diária",
-        description: "Os extratos de todas as contas bancárias da empresa são conferidos e conciliados diariamente com o sistema de gestão ou planilha?",
-        tip: "Realizar a conciliação bancária diariamente evita furos no saldo, cobranças indevidas de tarifas e garante visibilidade real do caixa."
+        pillarId: "gestao",
+        dimension: "Envolvimento não familiar na gestão",
+        title: "Pergunta 1: Critérios Técnicos na Escolha de Gestores",
+        description: "A escolha de pessoas para cargos de gestão considera competência, experiência e capacidade de entrega, independentemente do vínculo familiar?",
+        tip: "Adotar critérios técnicos de seleção para cargos de liderança protege o patrimônio e legitima os gestores perante a equipe e o mercado, evitando o viés de bifurcação e o nepotismo desestruturado (Dyer, 1989; Chua et al., 2009)."
     },
     {
         id: 2,
-        pillarId: "financeiro",
-        title: "Pergunta 2: Projeção de Fluxo de Caixa Futuro",
-        description: "A empresa possui uma projeção de fluxo de caixa para os próximos 30, 60 e 90 dias com previsão de recebimentos e pagamentos?",
-        tip: "A projeção do fluxo de caixa permite antecipar momentos de escassez e planejar investimentos com antecedência."
+        pillarId: "gestao",
+        dimension: "Envolvimento não familiar na gestão",
+        title: "Pergunta 2: Participação de Gestores Não Familiares",
+        description: "Profissionais não familiares participam efetivamente das decisões relevantes da empresa?",
+        tip: "Integrar profissionais não familiares nas decisões estratégicas traz visões isentas de mercado, atenua vieses emocionais e compensa eventuais lacunas de competência na família (Decker et al., 2015; Fang et al., 2022)."
     },
     {
         id: 3,
-        pillarId: "financeiro",
-        title: "Pergunta 3: Controle de Inadimplência e Cobrança",
-        description: "Existe uma régua estruturada de cobrança de clientes e monitoramento periódico dos recebíveis em atraso?",
-        tip: "Automatizar a régua de cobrança reduz o índice de inadimplência e acelera a recuperação de capital de giro."
+        pillarId: "gestao",
+        dimension: "Delegação e descentralização da autoridade",
+        title: "Pergunta 3: Autonomia Compatível com Resultados",
+        description: "Os gestores possuem autonomia compatível com as responsabilidades e resultados pelos quais são cobrados?",
+        tip: "Cobrar resultados sem conceder poder decisório desmotiva lideranças qualificadas e sobrecarrega a alta direção com microgestão diária (Polat, 2020; Chua et al., 2009)."
     },
     {
         id: 4,
-        pillarId: "financeiro",
-        title: "Pergunta 4: Separação entre Contas PF e PJ (Princípio da Entidade)",
-        description: "As contas pessoais dos sócios são rigorosamente separadas das contas da pessoa jurídica, sem misturar despesas pessoais?",
-        tip: "Misturar finanças pessoais e empresariais compromete a apuração do lucro e gera sérios riscos fiscais com a Receita Federal."
+        pillarId: "gestao",
+        dimension: "Delegação e descentralização da autoridade",
+        title: "Pergunta 4: Agilidade nas Decisões do Dia a Dia",
+        description: "As decisões do dia a dia acontecem sem depender constantemente da aprovação dos proprietários?",
+        tip: "A dependência excessiva dos proprietários para rotinas operacionais engessa o ritmo da operação e impede a empresa de ganhar escala e competitividade (Howorth et al., 2016)."
     },
     {
         id: 5,
-        pillarId: "financeiro",
-        title: "Pergunta 5: Gestão de Contas a Pagar e Prazos com Fornecedores",
-        description: "Todos os compromissos futuros com fornecedores são agendados e negociados alinhados ao prazo médio de recebimento?",
-        tip: "Manter o prazo de pagamento maior ou equilibrado com o prazo de recebimento preserva a liquidez do negócio."
+        pillarId: "gestao",
+        dimension: "Profissionalização do conselho/comitê",
+        title: "Pergunta 5: Espaço Estruturado para Estratégia",
+        description: "A empresa possui um espaço estruturado para discutir estratégia, resultados e decisões relevantes?",
+        tip: "Reuniões periódicas de comitê estratégico ou conselho de gestão separam as urgências da rotina da visão estratégica de médio e longo prazo, promovendo decisões plurais e fundamentadas (Habba et al., 2022; Scherner, 2024)."
     },
     {
         id: 6,
-        pillarId: "financeiro",
-        title: "Pergunta 6: Demonstração do Resultado do Exercício (DRE Gerencial)",
-        description: "A empresa elabora mensalmente um DRE gerencial para identificar se a operação gerou lucro líquido real ou prejuízo?",
-        tip: "O DRE gerencial é o termômetro vital do negócio: demonstra receitas, custos variáveis, margem de contribuição e lucro líquido."
+        pillarId: "gestao",
+        dimension: "Profissionalismo dos gerentes",
+        title: "Pergunta 6: Competência Técnica das Lideranças",
+        description: "Os gestores possuem as competências necessárias para as responsabilidades que exercem?",
+        tip: "Mapear o perfil de competências de cada líder frente aos desafios do cargo previne gargalos de produtividade e eleva o padrão de entrega dos setores (Hall & Nordqvist, 2008)."
     },
     {
         id: 7,
-        pillarId: "financeiro",
-        title: "Pergunta 7: Reserva de Emergência e Capital de Giro",
-        description: "A empresa mantém uma reserva financeira equivalente a pelo menos 3 a 6 meses dos seus custos fixos operacionais?",
-        tip: "Uma reserva de liquidez sólida protege a empresa de oscilações de mercado e momentos de crise sem depender de empréstimos caros."
-    },
-    {
-        id: 8,
-        pillarId: "financeiro",
-        title: "Pergunta 8: Acompanhamento do Ponto de Equilíbrio (Break-Even)",
-        description: "A gestão sabe com clareza o valor exato de faturamento mínimo mensal necessário para cobrir todos os custos fixos e variáveis?",
-        tip: "Conhecer o ponto de equilíbrio define a meta mínima de vendas para que a empresa não opere no vermelho."
+        pillarId: "gestao",
+        dimension: "Profissionalismo dos gerentes",
+        title: "Pergunta 7: Avaliação e Desenvolvimento de Gestores",
+        description: "A empresa desenvolve e avalia seus gestores de acordo com as necessidades atuais e futuras do negócio?",
+        tip: "Planos de capacitação continuada e avaliações periódicas preparam as lideranças para sustentar os novos ciclos de expansão, inovação e governança da organização (Hiebl & Mayrleitner, 2019)."
     },
 
-    // --- PILAR 2: CONTROLE FISCAL & TRIBUTÁRIO (Perguntas 9 a 16) ---
+    // =========================================================================
+    // PILAR 2: ESTRUTURA, PROCESSOS E OPERAÇÕES (Perguntas 8 a 14)
+    // =========================================================================
+    {
+        id: 8,
+        pillarId: "estrutura_processos",
+        dimension: "Estruturas organizacionais e operacionais formais",
+        title: "Pergunta 8: Clareza de Responsabilidades e Limites",
+        description: "As responsabilidades, funções e limites de atuação estão claramente definidos?",
+        tip: "Um organograma formalizado com papéis, atribuições e limites de autoridade documentados previne sobreposição de funções, conflitos internos e retrabalho (Mucci, 2020; Decker et al., 2013)."
+    },
     {
         id: 9,
-        pillarId: "fiscal",
-        title: "Pergunta 9: Emissão de Notas Fiscais em 100% das Vendas",
-        description: "Todas as vendas de produtos ou prestações de serviços são acobertadas pela emissão imediata e correta da documentação fiscal?",
-        tip: "A emissão integral de notas fiscais protege o negócio de autuações pesadas e permite comprovar a solidez da receita."
+        pillarId: "estrutura_processos",
+        dimension: "Estruturas organizacionais e operacionais formais",
+        title: "Pergunta 9: Independência dos Principais Processos",
+        description: "Os principais processos estão estruturados de forma que não dependam excessivamente de determinadas pessoas?",
+        tip: "Processos documentados e padronizados evitam que a operação fique refém do conhecimento tácito ou da presença física de colaboradores específicos (Howorth et al., 2016)."
     },
     {
         id: 10,
-        pillarId: "fiscal",
-        title: "Pergunta 10: Revisão do Enquadramento Tributário Anual",
-        description: "A empresa realiza anualmente, com apoio contábil, estudo comparativo entre Simples Nacional, Lucro Presumido e Lucro Real?",
-        tip: "O planejamento tributário anual pode economizar milhares de reais em impostos pagos indevidamente."
+        pillarId: "estrutura_processos",
+        dimension: "Mecanismos formais de controle",
+        title: "Pergunta 10: Indicadores e Informações Confiáveis",
+        description: "A empresa possui informações e indicadores confiáveis e suficientes para acompanhar seus principais resultados?",
+        tip: "Contar com um sistema de gestão integrado (ERP) e dados fidedignos é a base para diagnósticos precisos e para evitar surpresas na rentabilidade e no caixa (Hiebl & Mayrleitner, 2019)."
     },
     {
         id: 11,
-        pillarId: "fiscal",
-        title: "Pergunta 11: Controle e Guarda de Documentos Fiscais e XMLs",
-        description: "Os arquivos XML das notas de entrada e saída são arquivados de forma segura em nuvem e integrados à contabilidade?",
-        tip: "A legislação exige a guarda dos XMLs por 5 anos. A perda desses arquivos dificulta a defesa em auditorias fiscais."
+        pillarId: "estrutura_processos",
+        dimension: "Mecanismos formais de controle",
+        title: "Pergunta 11: Uso dos Indicadores nas Decisões",
+        description: "Os controles e indicadores são efetivamente utilizados para identificar desvios e orientar decisões?",
+        tip: "Gerar relatórios só gera valor quando a liderança analisa desvios com tempestividade (ex: via Business Intelligence) e adota ações corretivas fundamentadas (Songini et al., 2023)."
     },
     {
         id: 12,
-        pillarId: "fiscal",
-        title: "Pergunta 12: Gestão de Retenções na Fonte e Tributos Federais/Municipais",
-        description: "As retenções de impostos (ISS, IRRF, PIS/COFINS/CSLL) são calculadas, retidas e recolhidas rigorosamente em dia?",
-        tip: "Retenções não recolhidas no prazo podem ser enquadradas em apropriação indébita previdenciária e fiscal."
+        pillarId: "estrutura_processos",
+        dimension: "Práticas profissionais de RH",
+        title: "Pergunta 12: Critérios Claros em Práticas de RH",
+        description: "Contratações, promoções, remunerações e desligamentos seguem critérios claros de competência e desempenho?",
+        tip: "Políticas salariais objetivas e sistemas de incentivo vinculados a metas reduzem o sentimento de injustiça, mitigam passivos trabalhistas e diminuem a rotatividade (turnover) da equipe (Santos & Silva, 2018)."
     },
     {
         id: 13,
-        pillarId: "fiscal",
-        title: "Pergunta 13: Monitoramento de Certidões Negativas de Débitos (CNDs)",
-        description: "A empresa emite e monitora mensalmente as CNDs da Receita Federal, FGTS, Trabalhista e Fazendas Estadual e Municipal?",
-        tip: "Monitorar CNDs evita surpresas ao solicitar crédito, emitir certidões para clientes ou participar de licitações."
+        pillarId: "estrutura_processos",
+        dimension: "Planejamento estratégico",
+        title: "Pergunta 13: Prioridades Estratégicas Conhecidas",
+        description: "A empresa possui prioridades estratégicas claramente definidas e conhecidas pelos gestores?",
+        tip: "A comunicação transparente das prioridades estratégicas assegura que todos os setores caminhem na mesma direção, alocando recursos onde há maior retorno potencial (Rieley & Clarkson, 2001)."
     },
     {
         id: 14,
-        pillarId: "fiscal",
-        title: "Pergunta 14: Cadastro Fiscal de Itens e NCM / Alíquotas Corretas",
-        description: "O cadastro de produtos ou serviços possui as classificações fiscais (NCM, CFOP, CST) validadas pela contabilidade?",
-        tip: "Classificação incorreta de NCM faz com que a empresa pague impostos a mais ou sofra cobranças retroativas."
+        pillarId: "estrutura_processos",
+        dimension: "Planejamento estratégico",
+        title: "Pergunta 14: Desdobramento em Metas e Planos de Ação",
+        description: "Os objetivos estratégicos são transformados em metas, indicadores e planos de ação acompanhados ao longo do tempo?",
+        tip: "Desdobrar grandes objetivos em metas mensuráveis de curto e médio prazo transforma a visão dos fundadores em ações práticas e executáveis no dia a dia (Kaplan & Norton, 1997; Polat, 2020)."
     },
+
+    // =========================================================================
+    // PILAR 3: FAMÍLIA E NEGÓCIO (Perguntas 15 a 18)
+    // =========================================================================
     {
         id: 15,
-        pillarId: "fiscal",
-        title: "Pergunta 15: Aproveitamento de Créditos Tributários / Benefícios",
-        description: "A gestão tributária analisa se a empresa tem direito à recuperação de tributos (ex: PIS/COFINS monofásico, ICMS)?",
-        tip: "Empresas do Simples de diversos ramos (autopeças, farmácias, cosméticos, bebidas) possuem créditos não aproveitados."
+        pillarId: "familia_negocio",
+        dimension: "Mecanismos eficazes de governança",
+        title: "Pergunta 15: Diferenciação entre Proprietário, Familiar e Gestor",
+        description: "Os papéis de proprietário, familiar e gestor estão claramente diferenciados?",
+        tip: "Diferenciar quem é proprietário/sócio, quem é membro da família e quem atua na gestão executiva é a chave para proteger a harmonia familiar e a eficiência empresarial (Habba et al., 2022)."
     },
     {
         id: 16,
-        pillarId: "fiscal",
-        title: "Pergunta 16: Cumprimento do Calendário de Obrigações Acessórias",
-        description: "Os documentos contábeis e fiscais são enviados pontualmente à contabilidade nos primeiros dias do mês seguinte?",
-        tip: "A pontualidade no envio de documentos permite que a contabilidade forneça relatórios precisos sem risco de multas por atraso."
+        pillarId: "familia_negocio",
+        dimension: "Mecanismos eficazes de governança",
+        title: "Pergunta 16: Critérios para Atuação e Conflitos de Interesse",
+        description: "Existem critérios claros para a atuação dos familiares e para situações em que os interesses da família e da empresa possam divergir?",
+        tip: "Um protocolo ou constituição familiar formalizado estabelece regras claras de entrada, remuneração e conduta, blindando a empresa de divergências pessoais (Arteaga & Menéndez-Requejo, 2017; Polat, 2020)."
     },
-
-    // --- PILAR 3: PROCESSOS INTERNOS & GOVERNANÇA (Perguntas 17 a 24) ---
     {
         id: 17,
-        pillarId: "processos",
-        title: "Pergunta 17: Mapeamento e Padronização de Procedimentos (POPs)",
-        description: "As rotinas operacionais, administrativas e de atendimento possuem procedimentos operacionais padronizados por escrito?",
-        tip: "Processos documentados reduzem a dependência de pessoas específicas e facilitam o treinamento de novos colaboradores."
+        pillarId: "familia_negocio",
+        dimension: "Plano de sucessão",
+        title: "Pergunta 17: Clareza sobre Posições-Chave e Sucessão",
+        description: "Existe clareza sobre quem poderá assumir posições-chave no futuro e quais competências serão necessárias?",
+        tip: "Planejar a sucessão com antecedência evita vácuos de poder e insegurança junto a clientes, instituições financeiras e colaboradores em momentos de transição geracional (Hillen & Lavarda, 2021)."
     },
     {
         id: 18,
-        pillarId: "processos",
-        title: "Pergunta 18: Uso de Software de Gestão Integrado (ERP)",
-        description: "A empresa utiliza um sistema ERP para integrar vendas, estoque, compras e financeiro em uma única plataforma?",
-        tip: "Planilhas isoladas geram retrabalho e inconsistência; um ERP garante rastreabilidade e segurança dos dados."
+        pillarId: "familia_negocio",
+        dimension: "Plano de sucessão",
+        title: "Pergunta 18: Preparação Gradual de Potenciais Sucessores",
+        description: "Potenciais sucessores estão sendo preparados para assumir gradualmente maiores responsabilidades?",
+        tip: "A formação gradual e prática de sucessores (familiares ou talentos internos promovidos) assegura a retenção do know-how do negócio e a perenidade do patrimônio (Yeh & Liao, 2021; Scherner, 2024)."
     },
+
+    // =========================================================================
+    // PILAR 4: PESSOAS (Perguntas 19 a 22)
+    // =========================================================================
     {
         id: 19,
-        pillarId: "processos",
-        title: "Pergunta 19: Controle e Inventário Periódico de Estoque",
-        description: "Existe contagem física periódica de estoques e conferência com o saldo registrado no sistema para apuração de perdas?",
-        tip: "Estoque parado é dinheiro imobilizado. Aferir quebras e desvios impacta diretamente o lucro líquido apurado."
+        pillarId: "pessoas",
+        dimension: "Competência ocupacional",
+        title: "Pergunta 19: Competência em Posições Estratégicas",
+        description: "As pessoas que ocupam posições-chave possuem as competências necessárias para desempenhá-las?",
+        tip: "Contar com profissionais qualificados nas posições vitais da operação, do comercial e das finanças é o diferencial decisivo para sustentar a competitividade e o crescimento sustentável (Madison et al., 2018)."
     },
     {
         id: 20,
-        pillarId: "processos",
-        title: "Pergunta 20: Política de Alçadas e Aprovações de Compras",
-        description: "As compras e pagamentos exigem cotação prévia e dupla aprovação de acordo com limites de valor pré-estabelecidos?",
-        tip: "Alçadas claras evitam gastos desnecessários e fraudes no setor de compras e contas a pagar."
+        pillarId: "pessoas",
+        dimension: "Competência ocupacional",
+        title: "Pergunta 20: Identificação de Necessidades e Treinamento",
+        description: "A empresa identifica necessidades de desenvolvimento e prepara seus profissionais de acordo com as necessidades do negócio?",
+        tip: "Treinamentos direcionados para as dores reais da operação (como programas internos de formação) elevam a produtividade e fortalecem o comprometimento da equipe (Utrilla & Grande-Torraleja, 2022)."
     },
     {
         id: 21,
-        pillarId: "processos",
-        title: "Pergunta 21: Segurança da Informação e Backups Periódicos",
-        description: "Os sistemas da empresa e arquivos importantes possuem cópias de segurança em nuvem automáticas e testadas?",
-        tip: "A perda de dados por falhas de hardware ou ataques virtuais pode paralisar totalmente a operação da empresa."
+        pillarId: "pessoas",
+        dimension: "Profissionalismo comportamental",
+        title: "Pergunta 21: Responsabilidade por Resultados e Iniciativa",
+        description: "Os colaboradores assumem responsabilidade pelos resultados e demonstram iniciativa para resolver problemas e propor melhorias?",
+        tip: "Fomentar a cultura de prestação de contas (accountability) e o protagonismo estimula a inovação e libera a diretoria para atuar na expansão dos negócios (Rieley & Clarkson, 2001)."
     },
     {
         id: 22,
-        pillarId: "processos",
-        title: "Pergunta 22: Conformidade com a LGPD e Proteção de Dados de Clientes",
-        description: "A empresa adota práticas de proteção e sigilo com os dados cadastrais e financeiros de seus clientes e parceiros?",
-        tip: "Adequação básica à LGPD mitiga riscos de vazamento e fortalece a reputação da empresa no mercado."
+        pillarId: "pessoas",
+        dimension: "Profissionalismo comportamental",
+        title: "Pergunta 22: Relações Profissionais com Critérios Semelhantes",
+        description: "As relações profissionais são conduzidas com respeito, responsabilidade e critérios semelhantes, independentemente de vínculos pessoais ou familiares?",
+        tip: "Tratamento equânime e regras profissionais idênticas para familiares e não familiares eliminam o viés de bifurcação e criam um clima organizacional justo, ético e engajador (Madison et al., 2018; Habba et al., 2022)."
     },
+
+    // =========================================================================
+    // PILAR 5: CULTURA E AMBIENTE DE TRABALHO (Perguntas 23 e 24)
+    // =========================================================================
     {
         id: 23,
-        pillarId: "processos",
-        title: "Pergunta 23: Gestão de Contratos e Renovação com Clientes e Fornecedores",
-        description: "Todos os contratos possuem controle de vigência, reajustes anuais previstos por índice e cláusulas de rescisão claras?",
-        tip: "Deixar de aplicar reajustes contratuais na data-base reduz as margens de lucro ano a ano frente à inflação."
+        pillarId: "cultura_ambiente",
+        dimension: "Valores profissionais compartilhados",
+        title: "Pergunta 23: Coerência entre Valores Declarados e Práticas",
+        description: "Existe coerência entre os valores que a empresa declara e os comportamentos que efetivamente reconhece, promove e tolera?",
+        tip: "A credibilidade da governança reside no alinhamento diário entre o discurso ético pregado pela família e as atitudes reais praticadas e toleradas na empresa (Simons, 1995; Oro & Lavarda, 2019)."
     },
     {
         id: 24,
-        pillarId: "processos",
-        title: "Pergunta 24: Reuniões Periódicas de Alinhamento Operacional",
-        description: "A liderança realiza reuniões estruturadas semanais ou mensais com a equipe para revisar pendências e gargalos?",
-        tip: "Alinhamentos constantes aumentam o senso de responsabilidade e resolvem problemas antes que afetem o cliente."
-    },
-
-    // --- PILAR 4: GESTÃO DE PESSOAS & CUSTOS TRABALHISTAS (Perguntas 25 a 32) ---
-    {
-        id: 25,
-        pillarId: "pessoas",
-        title: "Pergunta 25: Definição Formal de Pró-Labore dos Sócios",
-        description: "Os sócios possuem valor fixo mensal de pró-labore com recolhimento de INSS, separando da distribuição de lucros?",
-        tip: "O pró-labore correto comprova a remuneração pelo trabalho e protege a isenção tributária da distribuição de lucros."
-    },
-    {
-        id: 26,
-        pillarId: "pessoas",
-        title: "Pergunta 26: Previsão de Encargos, Férias e 13º Salário no Caixa",
-        description: "A empresa provisiona mensalmente os encargos trabalhistas futuros (férias + 1/3, 13º e FGTS) em conta reservada?",
-        tip: "Provisionar o passivo trabalhista evita o desespero financeiro no final do ano com o pagamento de décimo terceiro e férias."
-    },
-    {
-        id: 27,
-        pillarId: "pessoas",
-        title: "Pergunta 27: Controle Eletrônico ou Formal de Ponto e Horas Extras",
-        description: "A jornada de trabalho dos funcionários é registrada de forma precisa e auditável, evitando passivos trabalhistas?",
-        tip: "A ausência de controle fidedigno de jornada é a causa número 1 de ações trabalhistas de alto valor contra empresas."
-    },
-    {
-        id: 28,
-        pillarId: "pessoas",
-        title: "Pergunta 28: Cumprimento das Normas de Saúde e Segurança (SST / eSocial)",
-        description: "A empresa possui laudos vigentes (PGR, PCMSO) e envia os eventos de SST ao eSocial no prazo legal?",
-        tip: "As multas do eSocial por falta de envio dos laudos de segurança do trabalho incidem diretamente por funcionário."
-    },
-    {
-        id: 29,
-        pillarId: "pessoas",
-        title: "Pergunta 29: Descrição de Cargos, Funções e Salários Claros",
-        description: "Cada colaborador possui atribuições, metas e responsabilidades formalmente definidas por escrito?",
-        tip: "Clareza de funções evita desvios de função, retrabalho e desmotivação entre os colaboradores."
-    },
-    {
-        id: 30,
-        pillarId: "pessoas",
-        title: "Pergunta 30: Avaliação de Produtividade e Métricas por Colaborador",
-        description: "A empresa avalia a entrega e eficiência de cada funcionário através de indicadores objetivos e feedbacks?",
-        tip: "Medir produtividade permite premiar os melhores talentos e corrigir rapidamente desempenhos abaixo do esperado."
-    },
-    {
-        id: 31,
-        pillarId: "pessoas",
-        title: "Pergunta 31: Política de Retenção e Clima Organizacional",
-        description: "Existe um ambiente de valorização que mantém o turnover (rotatividade de pessoal) em patamares saudáveis?",
-        tip: "Alta rotatividade eleva os custos de rescisão, novos treinamentos e prejudica a qualidade do atendimento."
-    },
-    {
-        id: 32,
-        pillarId: "pessoas",
-        title: "Pergunta 32: Plano de Desenvolvimento e Treinamento Contínuo",
-        description: "A empresa investe periodicamente em capacitação técnica ou comportamental para a equipe?",
-        tip: "Equipes capacitadas cometem menos erros operacionais e elevam o nível de satisfação dos clientes."
-    },
-
-    // --- PILAR 5: ESTRATÉGIA, PRECIFICAÇÃO & CRESCIMENTO (Perguntas 33 a 40) ---
-    {
-        id: 33,
-        pillarId: "estrategia",
-        title: "Pergunta 33: Metodologia Científica de Formação de Preço de Venda",
-        description: "Os preços são calculados com base em custos diretos, impostos, despesas fixas proporcionais e margem de lucro desejada?",
-        tip: "Precificar apenas copiando a concorrência é um risco grave: você pode estar vendendo com margem negativa sem saber."
-    },
-    {
-        id: 34,
-        pillarId: "estrategia",
-        title: "Pergunta 34: Análise da Margem de Contribuição por Produto ou Serviço",
-        description: "A gestão sabe exatamente quais produtos ou serviços são os mais rentáveis e quais geram pouca ou nenhuma margem?",
-        tip: "Conhecer a margem unitária permite direcionar a força de vendas para os itens que realmente sustentam a rentabilidade."
-    },
-    {
-        id: 35,
-        pillarId: "estrategia",
-        title: "Pergunta 35: Metas Claras de Vendas e Faturamento Mensal",
-        description: "A empresa possui metas quantitativas divididas por mês, trimestre e por vendedor/canal de aquisição?",
-        tip: "Metas tangíveis mobilizam o time comercial e facilitam o acompanhamento periódico do crescimento."
-    },
-    {
-        id: 36,
-        pillarId: "estrategia",
-        title: "Pergunta 36: Custo de Aquisição de Cliente (CAC) e Ticket Médio",
-        description: "A empresa calcula quanto investe para atrair um novo cliente e acompanha o valor médio de cada transação?",
-        tip: "Otimizar o ticket médio é uma das formas mais baratas de aumentar o faturamento sem inflar os custos operacionais."
-    },
-    {
-        id: 37,
-        pillarId: "estrategia",
-        title: "Pergunta 37: Pesquisa de Satisfação do Cliente (NPS / Feedback)",
-        description: "Existe um canal estruturado para colher a opinião dos clientes sobre a qualidade do produto ou serviço entregue?",
-        tip: "Clientes satisfeitos geram indicações espontâneas e recompra com custo de marketing praticamente nulo."
-    },
-    {
-        id: 38,
-        pillarId: "estrategia",
-        title: "Pergunta 38: Análise da Concorrência e Diferencial Competitivo",
-        description: "A empresa conhece claramente a sua proposta de valor exclusiva e os pontos fortes e fracos dos concorrentes diretos?",
-        tip: "Um diferencial competitivo nítido reduz a guerra por descontos e valoriza a percepção de valor do cliente."
-    },
-    {
-        id: 39,
-        pillarId: "estrategia",
-        title: "Pergunta 39: Orçamento Anual de Investimentos (Capex & Expansão)",
-        description: "Os investimentos em equipamentos, reformas, tecnologia ou marketing são planejados previamente com base no orçamento?",
-        tip: "Investimentos por impulso comprometem o caixa operacional e podem levar à tomada de crédito com juros elevados."
-    },
-    {
-        id: 40,
-        pillarId: "estrategia",
-        title: "Pergunta 40: Reuniões de Mentoria e Aconselhamento Estratégico",
-        description: "Os gestores contam com acompanhamento periódico de mentoria contábil/empresarial para tomadas de decisão de alto impacto?",
-        tip: "Uma mentoria contábil especializada traz visão externa isenta, identifica brechas tributárias e acelera os resultados do negócio."
+        pillarId: "cultura_ambiente",
+        dimension: "Valores profissionais compartilhados",
+        title: "Pergunta 24: Preservação da História e Abertura a Mudanças",
+        description: "A empresa consegue preservar os valores importantes de sua história sem impedir mudanças necessárias para seu crescimento?",
+        tip: "Preservar a essência e a riqueza socioemocional (SEW) do negócio enquanto se modernizam processos e governança é o grande diferencial competitivo de empresas familiares longevas (Hall & Nordqvist, 2008; Teston & Filippim, 2016)."
     }
 ];
 
@@ -342,47 +278,71 @@ const MATURITY_LEVELS = [
     {
         min: 0,
         max: 39.9,
-        level: "Nível 1: Sobrevivência / Crítico",
+        level: "Nível 1: Gestão Informal / Centralizada",
         badgeColor: "badge-danger",
         tag: "Urgência Alta",
-        headline: "Alerta Vermelho: Necessidade Imediata de Reestruturação",
-        summary: "Sua empresa apresenta vulnerabilidades operacionais, fiscais e financeiras consideráveis. A ausência de controles estruturados coloca a continuidade do negócio em risco diário. Uma intervenção imediata de mentoria e organização contábil é indispensável para estancar perdas e evitar passivos irreversíveis."
+        headline: "Alerta Crítico: Forte Centralização e Vulnerabilidades de Governança",
+        summary: "Sua empresa opera em estágio predominantemente intuitivo, com forte dependência dos proprietários e escassa formalização de processos. A ausência de órgãos colegiados e de alinhamento sucessório expõe a organização a riscos de descontinuidade e atritos familiares. Uma intervenção imediata de governança é essencial para estancar perdas e profissionalizar as bases de gestão.",
+        actionPoints: [
+            "Instituir reuniões regulares de alinhamento com pauta fixa e registro de decisões.",
+            "Mapear os processos críticos para eliminar a dependência exclusiva de pessoas específicas.",
+            "Iniciar a separação formal entre as finanças pessoais dos sócios e as contas da empresa.",
+            "Identificar potenciais líderes internos para assumir rotinas operacionais descentralizadas."
+        ]
     },
     {
         min: 40,
         max: 59.9,
-        level: "Nível 2: Em Estruturação / Vulnerável",
+        level: "Nível 2: Em Transição / Profissionalização Inicial",
         badgeColor: "badge-warning",
         tag: "Atenção Necessária",
-        headline: "Fase de Transição: Controles Básicos com Gargalos Relevantes",
-        summary: "A operação já possui algumas rotinas estabelecidas, mas ainda depende muito de processos manuais ou improvisos. Há riscos fiscais latentes e oportunidade clara de estancar desperdícios, melhorar a precificação e profissionalizar a tomada de decisões através de indicadores confiáveis."
+        headline: "Fase de Transição: Primeiros Controles com Desafios de Descentralização",
+        summary: "A empresa já iniciou o movimento em direção à profissionalização, implementando algumas rotinas e buscando apoio em lideranças. Contudo, ainda enfrenta resistência na delegação de autoridade, sobreposição de papéis entre familiares e gestores e carência de indicadores integrados. O momento exige formalizar comitês estratégicos e definir regras claras de convivência societária.",
+        actionPoints: [
+            "Formalizar o Comitê Estratégico com atribuições, alçadas e responsabilidades claramente documentadas.",
+            "Estabelecer orçamento anual e metas setoriais acompanhadas com tempestividade via ERP/BI.",
+            "Definir políticas claras de RH (remuneração, avaliação e feedback) para evitar o viés de bifurcação.",
+            "Iniciar discussões estruturadas sobre o futuro da gestão e o plano de sucessão."
+        ]
     },
     {
         min: 60,
         max: 79.9,
-        level: "Nível 3: Gestão Funcional / Em Expansão",
+        level: "Nível 3: Gestão Estruturada / Governança Funcional",
         badgeColor: "badge-info",
         tag: "Bom Desempenho",
-        headline: "Negócio Estável: Pronto para Alavancagem e Otimização",
-        summary: "Sua empresa possui boa organização financeira e cumpre a maioria das exigências. O desafio agora é sair do operacional e focar na eficiência máxima: planejamento tributário refinado, otimização das margens de lucro, governança de pessoas e alinhamento estratégico para crescer com segurança."
+        headline: "Estrutura Consolidada: Gestores com Autonomia e Práticas Alinhadas",
+        summary: "Sua empresa demonstra um nível consistente de maturidade. Há delegação efetiva de autoridade, clima de confiança mútua entre membros familiares e não familiares e práticas regulares de monitoramento. O próximo salto estratégico consiste em formalizar o protocolo familiar/conselho, estruturar o plano de sucessão de longo prazo e desdobrar metas via Balanced Scorecard.",
+        actionPoints: [
+            "Formalizar a Constituição / Protocolo Familiar e instituir o Conselho de Família.",
+            "Estruturar o Plano Formal de Sucessão com trilhas de preparação para potenciais sucessores.",
+            "Integrar indicadores financeiros e não financeiros (Balanced Scorecard: clientes, processos, pessoas).",
+            "Fomentar a cultura de prestação de contas (accountability) em todos os níveis hierárquicos."
+        ]
     },
     {
         min: 80,
         max: 100,
-        level: "Nível 4: Alta Performance / Excelência",
+        level: "Nível 4: Alta Performance / Governança Consolidada",
         badgeColor: "badge-success",
         tag: "Referência de Gestão",
-        headline: "Maturidade Consolidada: Governança Sólida e Pronta para Escalar",
-        summary: "Parabéns! Sua gestão demonstra alto nível de controle, conformidade legal e visão estratégica. Seu foco agora é inovação, expansão contínua, governança corporativa e consolidação de liderança no seu segmento de mercado."
+        headline: "Maturidade de Referência: Perpetuidade do Negócio e Preservação do Legado",
+        summary: "Parabéns! Sua empresa atingiu um padrão de excelência corporativa. Consegue equilibrar com maestria a preservação da riqueza socioemocional e dos valores familiares com uma gestão meritocrática, comitês estratégicos ativos, cultura de feedback e monitoramento abrangente de desempenho econômico e não financeiro.",
+        actionPoints: [
+            "Consolidar o Conselho de Administração com a participação de conselheiros independentes.",
+            "Fomentar a inovação e expansão contínua no mercado preservando a essência e o legado dos fundadores.",
+            "Revisar periodicamente o alinhamento das expectativas patrimoniais entre as gerações familiares.",
+            "Compartilhar as melhores práticas de governança como referência no segmento de atuação."
+        ]
     }
 ];
 
 // Cargos pré-configurados com descrições executivas
 const ROLES = [
     { id: "socio_proprietario", label: "Sócio / Proprietário / Fundador", icon: "fas fa-crown" },
-    { id: "ceo_diretor", label: "CEO / Diretor Executivo", icon: "fas fa-user-tie" },
-    { id: "gerente_financeiro", label: "Gerente Financeiro / Administrativo", icon: "fas fa-chart-pie" },
-    { id: "gestor_operacional", label: "Coordenador / Gestor Operacional", icon: "fas fa-tasks" },
-    { id: "profissional_liberal", label: "Profissional Liberal / MEI / Autônomo", icon: "fas fa-briefcase" },
+    { id: "membro_familia", label: "Membro da Família (Sucessor / Acionista)", icon: "fas fa-users-cog" },
+    { id: "ceo_diretor", label: "Diretor Executivo / CEO", icon: "fas fa-user-tie" },
+    { id: "gerente_gestor", label: "Gerente / Coordenador de Área", icon: "fas fa-chart-pie" },
+    { id: "conselheiro", label: "Conselheiro / Membro do Comitê Estratégico", icon: "fas fa-handshake" },
     { id: "outro_cargo", label: "Outro Cargo de Gestão / Liderança", icon: "fas fa-user" }
 ];

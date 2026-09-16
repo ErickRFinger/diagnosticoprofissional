@@ -114,18 +114,12 @@ document.addEventListener("DOMContentLoaded", () => {
         const emailInput = document.getElementById("client-email").value.trim();
         const segmentInput = document.getElementById("client-segment").value;
 
-        if (!nameInput) {
-            showToast("Por favor, preencha o seu nome completo.", "warning");
-            document.getElementById("client-name").focus();
-            return;
-        }
-
         const selectedRoleRadio = document.querySelector('input[name="userRole"]:checked');
         const roleId = selectedRoleRadio ? selectedRoleRadio.value : "socio_proprietario";
         const roleObj = ROLES.find(r => r.id === roleId) || ROLES[0];
 
         state.userData = {
-            name: nameInput,
+            name: nameInput || "",
             company: companyInput || "Empresa Confidencial",
             role: roleObj.id,
             roleLabel: roleObj.label,
@@ -165,7 +159,7 @@ document.addEventListener("DOMContentLoaded", () => {
             return `
                 <button type="button" class="pillar-tab ${isActive ? 'active' : ''} ${isCompleted ? 'completed' : ''}" data-index="${index}">
                     <i class="${pillar.icon}"></i>
-                    <span>${index + 1}. ${pillar.name.split('&')[0].trim()}</span>
+                    <span>${index + 1}. ${pillar.shortName || pillar.name}</span>
                     ${isCompleted ? '<i class="fas fa-check-circle" style="margin-left: 4px;"></i>' : ''}
                 </button>
             `;
@@ -210,6 +204,7 @@ document.addEventListener("DOMContentLoaded", () => {
                         <span class="question-number-badge">${q.title}</span>
                         ${isAnswered ? '<span style="color: var(--accent); font-size: 0.85rem; font-weight: 600;"><i class="fas fa-check"></i> Respondida</span>' : ''}
                     </div>
+                    ${q.dimension ? `<div style="font-size: 0.8rem; color: var(--primary); font-weight: 600; margin-bottom: 0.35rem;"><i class="fas fa-layer-group"></i> ${q.dimension}</div>` : ''}
                     <h3 class="question-title">${q.title.split(':')[1] ? q.title.split(':')[1].trim() : q.title}</h3>
                     <p class="question-desc">${q.description}</p>
                     <div class="options-list">
@@ -291,13 +286,13 @@ document.addEventListener("DOMContentLoaded", () => {
     // -------------------------------------------------------------
     if (fillSampleBtn) {
         fillSampleBtn.addEventListener("click", () => {
-            // Preenche todas as 40 perguntas com valores variados realistas (1 a 5)
+            // Preenche todas as 24 perguntas com valores variados realistas (1 a 5)
             const sampleScores = [
-                3, 2, 4, 1, 3, 2, 2, 3, // Pilar 1
-                4, 2, 3, 2, 3, 2, 1, 4, // Pilar 2
-                2, 3, 2, 4, 3, 2, 3, 3, // Pilar 3
-                2, 2, 4, 3, 2, 3, 3, 2, // Pilar 4
-                2, 3, 4, 2, 3, 4, 2, 3  // Pilar 5
+                3, 2, 4, 2, 3, 4, 3, // Pilar 1: Gestão (7 perguntas)
+                4, 3, 2, 3, 3, 2, 4, // Pilar 2: Estrutura, Processos e Operações (7 perguntas)
+                2, 3, 2, 4,          // Pilar 3: Família e Negócio (4 perguntas)
+                3, 4, 3, 3,          // Pilar 4: Pessoas (4 perguntas)
+                4, 3                 // Pilar 5: Cultura e Ambiente de Trabalho (2 perguntas)
             ];
 
             QUESTIONS.forEach((q, idx) => {
@@ -335,7 +330,7 @@ document.addEventListener("DOMContentLoaded", () => {
             return;
         }
 
-        // Se todas as 40 perguntas foram respondidas, calcula os resultados
+        // Se todas as 24 perguntas foram respondidas, calcula os resultados
         calculateResults();
         renderResultsScreen();
         goToStep("results");
@@ -347,7 +342,7 @@ document.addEventListener("DOMContentLoaded", () => {
     // -------------------------------------------------------------
     function calculateResults() {
         let totalPoints = 0;
-        const maxPossiblePoints = QUESTIONS.length * 5; // 40 * 5 = 200 pontos
+        const maxPossiblePoints = QUESTIONS.length * 5; // 24 * 5 = 120 pontos
 
         // Cálculo por pilar
         const pillarScores = PILLARS.map(p => {
@@ -398,7 +393,9 @@ document.addEventListener("DOMContentLoaded", () => {
         if (!res) return;
 
         // Saudação e Cabeçalho
-        document.getElementById("results-greeting").textContent = `Diagnóstico de ${state.userData.name} • ${state.userData.company}`;
+        document.getElementById("results-greeting").textContent = state.userData.name 
+            ? `Diagnóstico de ${state.userData.name} • ${state.userData.company}`
+            : `Diagnóstico Empresarial • ${state.userData.company}`;
         document.getElementById("score-circle-value").textContent = `${res.overallPercentage}%`;
         document.getElementById("maturity-badge-text").textContent = res.maturity.level;
         document.getElementById("maturity-headline").textContent = res.maturity.headline;
@@ -422,6 +419,17 @@ document.addEventListener("DOMContentLoaded", () => {
             </div>
         `).join("");
 
+        // Diretrizes Estratégicas para o Nível de Maturidade
+        const actionsListEl = document.getElementById("maturity-actions-list");
+        if (actionsListEl && res.maturity.actionPoints) {
+            actionsListEl.innerHTML = res.maturity.actionPoints.map(point => `
+                <li style="display: flex; align-items: flex-start; gap: 0.5rem;">
+                    <i class="fas fa-check-circle" style="color: var(--primary); margin-top: 0.25rem; font-size: 0.85rem;"></i>
+                    <span>${point}</span>
+                </li>
+            `).join("");
+        }
+
         // Seção: Pontos de Melhoria Prioritários (Gaps)
         const gapsListEl = document.getElementById("gaps-list");
         if (res.gaps.length === 0) {
@@ -429,7 +437,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 <div style="padding: 1.5rem; text-align: center; color: var(--accent);">
                     <i class="fas fa-award" style="font-size: 2.5rem; margin-bottom: 0.5rem;"></i>
                     <p style="font-weight: 700; font-size: 1.1rem;">Parabéns! Nenhum ponto crítico identificado.</p>
-                    <p style="font-size: 0.9rem; color: var(--text-muted);">Sua empresa opera no padrão de excelência contábil e de gestão.</p>
+                    <p style="font-size: 0.9rem; color: var(--text-muted);">Sua empresa opera no padrão de excelência de governança corporativa.</p>
                 </div>
             `;
         } else {
@@ -456,12 +464,16 @@ document.addEventListener("DOMContentLoaded", () => {
 
         // WhatsApp CTA Button
         const whatsappBtn = document.getElementById("whatsapp-cta-btn");
-        const defaultPhone = "5511999999999"; // Pode ser alterado facilmente pela mentora
+        const defaultPhone = "5549988369445"; // Contato da Mentora Taís Trevisol Scherner
+        const participantInfo = state.userData.name 
+            ? `Meu nome é ${state.userData.name} (${state.userData.roleLabel}).\n`
+            : `Cargo/Função: ${state.userData.roleLabel}.\n`;
+
         const waMsg = encodeURIComponent(
-            `Olá! Acabei de realizar o Diagnóstico de Mentoria Contábil para a minha empresa "${state.userData.company}".\n` +
-            `Meu nome é ${state.userData.name} (${state.userData.roleLabel}).\n` +
-            `Meu índice geral foi ${res.overallPercentage}% (${res.maturity.level}).\n` +
-            `Gostaria de agendar uma sessão de mentoria para alinhar os pontos de melhoria identificados no relatório.`
+            `Olá, Taís! Acabei de realizar o Diagnóstico de Governança & Maturidade para a empresa "${state.userData.company}".\n` +
+            participantInfo +
+            `Meu índice geral foi de ${res.overallPercentage}% (${res.maturity.level}).\n` +
+            `Gostaria de agendar uma sessão de mentoria para analisar o plano de ação e os pontos prioritários da empresa.`
         );
         whatsappBtn.href = `https://api.whatsapp.com/send?phone=${defaultPhone}&text=${waMsg}`;
 
