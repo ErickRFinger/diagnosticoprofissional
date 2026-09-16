@@ -1,22 +1,21 @@
 /**
- * Gerador de Relatório Executivo em PDF para Diagnóstico e Mentoria de Empresas Familiares
- * Metodologia: Taís Trevisol Scherner (2024), M.Sc. em Administração (Estratégia e Competitividade - Unoesc)
- * Orientadora: Prof.ª Dra. Ieda Margarete Oro
- * Diagramação Executiva: Capa, Perfil do Participante, Gráfico Radar, 5 Pilares, Módulo BSC, Matriz de Prioridades e Tabela de Auditoria.
+ * Gerador de Relatório Executivo em PDF - Diagnóstico Empresarial
+ * Avaliação de Maturidade, Governança & Gestão Estratégica
+ * Visual Tech (2026)
+ *
+ * Diagramação Executiva: Capa, Identificação, Gráfico Radar, 5 Eixos Estratégicos,
+ * Módulo BSC, Matriz de Priorização e Tabela de Auditoria.
  */
 
 class DiagnosticPdfGenerator {
     constructor() {
         this.mentorConfig = {
-            mentorTitle: "Mentoria em Governança & Gestão de Empresas Familiares",
-            tagline: "Profissionalização, Sucessão e Desempenho Organizacional",
-            mentorName: "Taís Trevisol Scherner",
-            mentorCredentials: "Mestra em Administração (Estratégia e Competitividade - Unoesc)",
-            advisorName: "Prof.ª Dra. Ieda Margarete Oro",
-            institution: "Universidade do Oeste de Santa Catarina (Unoesc)",
+            reportTitle: "Relatório Executivo • Diagnóstico Empresarial",
+            tagline: "Maturidade de Gestão, Governança & Eficiência Operacional",
+            provider: "Visual Tech",
             contactPhone: "(49) 98836-9445",
-            contactEmail: "taisscher@hotmail.com",
-            disclaimer: "Documento executivo confidencial fundamentado no Modelo Multidimensional de Profissionalização (Polat, 2020; Dekker et al., 2015; Dyer, 2006; Kaplan & Norton, 1997; Scherner, 2024)."
+            contactEmail: "contato@visualtech.com.br",
+            disclaimer: "Documento executivo confidencial desenvolvido para apoio ao planejamento estratégico e tomada de decisões corporativas."
         };
     }
 
@@ -49,8 +48,8 @@ class DiagnosticPdfGenerator {
 
         document.body.appendChild(reportContainer);
 
-        const companyOrName = userData.isAnonymous ? 'Confidencial' : (userData.company || userData.name || 'Empresa_Familiar');
-        const fileName = `Dossie_Governanca_${companyOrName.replace(/\s+/g, '_')}_${new Date().toISOString().slice(0, 10)}.pdf`;
+        const companyOrName = userData.isAnonymous ? 'Confidencial' : (userData.company || userData.name || 'Empresa');
+        const fileName = `Diagnostico_Empresarial_${companyOrName.replace(/\s+/g, '_')}_${new Date().toISOString().slice(0, 10)}.pdf`;
 
         if (typeof html2pdf !== 'undefined') {
             const opt = {
@@ -85,7 +84,7 @@ class DiagnosticPdfGenerator {
             <!DOCTYPE html>
             <html>
             <head>
-                <title>Dossiê Executivo de Governança Familiar</title>
+                <title>Relatório de Diagnóstico Empresarial</title>
                 <style>
                     body { font-family: Arial, sans-serif; color: #0f172a; padding: 25px; }
                     .page-break { page-break-before: always; }
@@ -139,7 +138,7 @@ class DiagnosticPdfGenerator {
             `;
         }).join('');
 
-        // 2. Resumo dos 5 Pilares
+        // 2. Resumo dos 5 Eixos Estratégicos
         const pillarsHtml = results.pillarScores.map(p => `
             <div style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 6px; padding: 10px; margin-bottom: 8px;">
                 <div style="display: flex; justify-content: space-between; font-size: 12px; font-weight: bold; margin-bottom: 5px;">
@@ -190,22 +189,22 @@ class DiagnosticPdfGenerator {
                     </div>
                     <p style="font-size: 10px; color: #475569; margin: 3px 0;"><strong>Situação Avaliada:</strong> ${gap.question.description}</p>
                     <div style="font-size: 10.5px; color: #0369a1; background: #e0f2fe; padding: 7px 10px; border-radius: 4px; margin-top: 5px;">
-                        <strong>Orientação Prática da Mentoria:</strong> ${gap.question.tip}
+                        <strong>Orientação Prática de Gestão:</strong> ${gap.question.tip}
                     </div>
                 </div>
             `;
         }).join('') : '<p style="font-size: 11px; color: #059669;"><strong>Excelente!</strong> A empresa não apresentou respostas em níveis críticos nos 5 eixos avaliados.</p>';
 
         return `
-            <!-- CABEÇALHO INSTITUCIONAL -->
+            <!-- CABEÇALHO EXECUTIVO -->
             <div style="border-bottom: 3px solid #0284c7; padding-bottom: 12px; margin-bottom: 16px;">
                 <div style="display: flex; justify-content: space-between; align-items: center;">
                     <div>
                         <h1 style="font-size: 18px; font-weight: 800; color: #0284c7; margin: 0; text-transform: uppercase; letter-spacing: 0.5px;">
-                            Dossiê de Governança & Maturidade da Empresa Familiar
+                            ${this.mentorConfig.reportTitle}
                         </h1>
                         <p style="font-size: 11px; color: #475569; margin: 4px 0 0;">
-                            Metodologia Taís Trevisol Scherner • Universidade do Oeste de Santa Catarina (Unoesc, 2024)
+                            ${this.mentorConfig.tagline} • ${this.mentorConfig.provider}
                         </p>
                     </div>
                     <div style="text-align: right; font-size: 9.5px; color: #64748b;">
@@ -215,30 +214,28 @@ class DiagnosticPdfGenerator {
                 </div>
             </div>
 
-            <!-- EMBASAMENTO CIENTÍFICO DA PESQUISA -->
+            <!-- METODOLOGIA EXECUTIVA -->
             <div style="background-color: #f1f5f9; border-left: 4px solid #0284c7; border-radius: 4px; padding: 9px 12px; margin-bottom: 16px;">
                 <div style="font-size: 10px; font-weight: bold; color: #0284c7; text-transform: uppercase; margin-bottom: 2px;">
-                    Fundamentação Científica & Linha de Pesquisa
+                    Metodologia de Diagnóstico Corporativo
                 </div>
                 <p style="font-size: 9.5px; color: #334155; margin: 0; line-height: 1.4;">
-                    Dissertação: <em>"Envolvimento da Família no Processo de Profissionalização e no Desempenho Organizacional"</em>. 
-                    Mestrado Profissional em Administração • Unoesc Chapecó/SC • Orientadora: Prof.ª Dra. Ieda Margarete Oro. 
-                    Construto baseado no Modelo Multidimensional de Profissionalização (Polat, 2020; Dekker et al., 2015; Dyer, 2006) e no Balanced Scorecard (Kaplan & Norton, 1997; Songini et al., 2023).
+                    Avaliação estruturada em 5 eixos estratégicos de governança, eficiência operacional e liderança, correlacionando a maturidade das práticas de gestão ao desempenho financeiro e não financeiro da organização (Balanced Scorecard).
                 </p>
             </div>
 
             <!-- DADOS DO CLIENTE & EMPRESA -->
             <div style="background-color: #f8fafc; border: 1px solid #e2e8f0; border-radius: 6px; padding: 12px; margin-bottom: 16px;">
                 <h3 style="font-size: 11px; text-transform: uppercase; color: #334155; margin: 0 0 8px; border-bottom: 1px solid #e2e8f0; padding-bottom: 4px; font-weight: 800;">
-                    1. Identificação do Participante & Organização
+                    1. Identificação da Empresa & Participante
                 </h3>
                 <table style="width: 100%; border-collapse: collapse; font-size: 11px;">
                     <tr>
-                        <td style="padding: 3px 0; width: 50%;"><strong>Nome do Gestor:</strong> ${userData.isAnonymous ? 'Confidencial (Modo Anônimo)' : (userData.name || 'Não informado')}</td>
-                        <td style="padding: 3px 0; width: 50%;"><strong>Empresa Familiar:</strong> ${userData.isAnonymous ? 'Empresa Familiar Confidencial' : (userData.company || 'Não informada')}</td>
+                        <td style="padding: 3px 0; width: 50%;"><strong>Nome do Gestor:</strong> ${userData.isAnonymous ? 'Confidencial' : (userData.name || 'Não informado')}</td>
+                        <td style="padding: 3px 0; width: 50%;"><strong>Empresa / Negócio:</strong> ${userData.isAnonymous ? 'Empresa Confidencial' : (userData.company || 'Não informada')}</td>
                     </tr>
                     <tr>
-                        <td style="padding: 3px 0;"><strong>Cargo / Papel Decisório:</strong> ${userData.roleLabel || userData.role}</td>
+                        <td style="padding: 3px 0;"><strong>Cargo / Posição de Decisão:</strong> ${userData.roleLabel || userData.role}</td>
                         <td style="padding: 3px 0;"><strong>Porte da Organização:</strong> ${userData.segment || 'Não informado'}</td>
                     </tr>
                     <tr>
@@ -271,13 +268,13 @@ class DiagnosticPdfGenerator {
             <!-- GRID ANALYTICS: RADAR CHART & 5 PILARES -->
             <div style="margin-bottom: 18px; page-break-inside: avoid;">
                 <h3 style="font-size: 11px; text-transform: uppercase; color: #334155; margin: 0 0 10px; border-bottom: 1px solid #e2e8f0; padding-bottom: 4px; font-weight: 800;">
-                    2. Desempenho por Eixo Estratégico (Polat, 2020)
+                    2. Desempenho por Eixo Estratégico
                 </h3>
                 <div style="display: flex; gap: 14px; align-items: center;">
                     ${radarImgData ? `
                         <div style="width: 48%; text-align: center;">
                             <img src="${radarImgData}" style="max-width: 100%; max-height: 230px; object-fit: contain;" alt="Teia de Governança">
-                            <div style="font-size: 9px; color: #64748b; margin-top: 4px;">Gráfico Radar de Governança Familiar</div>
+                            <div style="font-size: 9px; color: #64748b; margin-top: 4px;">Gráfico Radar de Maturidade Corporativa</div>
                         </div>
                     ` : ''}
                     <div style="width: ${radarImgData ? '52%' : '100%'};">
@@ -299,7 +296,7 @@ class DiagnosticPdfGenerator {
             <!-- DIRETRIZES ESTRATÉGICAS PARA O ESTÁGIO ATUAL -->
             <div style="margin-bottom: 18px; page-break-inside: avoid;">
                 <h3 style="font-size: 11px; text-transform: uppercase; color: #334155; margin: 0 0 8px; border-bottom: 1px solid #e2e8f0; padding-bottom: 4px; font-weight: 800;">
-                    4. Recomendações Estratégicas da Mentoria
+                    4. Recomendações Estratégicas para Evolução
                 </h3>
                 <div style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 6px; padding: 10px 14px;">
                     <ul style="margin: 0; padding-left: 14px; font-size: 10.5px; color: #334155; line-height: 1.55;">
@@ -311,10 +308,10 @@ class DiagnosticPdfGenerator {
             <!-- PLANO DE AÇÃO PRIORITÁRIO (GAPS) -->
             <div style="margin-bottom: 20px; page-break-before: always;">
                 <h3 style="font-size: 11px; text-transform: uppercase; color: #334155; margin: 0 0 10px; border-bottom: 1px solid #e2e8f0; padding-bottom: 4px; font-weight: 800;">
-                    5. Plano de Ação: Gaps Críticos e Pontos de Atenção
+                    5. Plano de Ação: Gaps Prioritários e Recomendações
                 </h3>
                 <p style="font-size: 10px; color: #64748b; margin-bottom: 12px;">
-                    Práticas avaliadas com notas 1 (Não acontece), 2 (Acontece pouco) ou 3 (Acontece parcialmente), classificadas por horizonte prioritário de implementação:
+                    Práticas avaliadas com notas 1 (Não acontece), 2 (Acontece pouco) ou 3 (Acontece parcialmente), estruturadas por horizonte prioritário de implementação:
                 </p>
                 <div>
                     ${actionPlanHtml}
@@ -330,7 +327,7 @@ class DiagnosticPdfGenerator {
                     <thead>
                         <tr style="background-color: #f1f5f9;">
                             <th style="padding: 6px; border: 1px solid #cbd5e1; font-size: 10px; width: 30px; text-align: center;">#</th>
-                            <th style="padding: 6px; border: 1px solid #cbd5e1; font-size: 10px; text-align: left;">Questão & Enquadramento Metodológico</th>
+                            <th style="padding: 6px; border: 1px solid #cbd5e1; font-size: 10px; text-align: left;">Questão & Dimensão Avaliada</th>
                             <th style="padding: 6px; border: 1px solid #cbd5e1; font-size: 10px; width: 140px; text-align: center;">Maturidade</th>
                         </tr>
                     </thead>
@@ -340,20 +337,19 @@ class DiagnosticPdfGenerator {
                 </table>
             </div>
 
-            <!-- PARECER DA MENTORA & ASSINATURA -->
+            <!-- ASSINATURA CORPORATIVA -->
             <div style="margin-top: 25px; border-top: 2px solid #e2e8f0; padding-top: 15px; page-break-inside: avoid;">
                 <div style="display: flex; justify-content: space-between; align-items: flex-end;">
                     <div style="font-size: 10px; color: #64748b; max-width: 480px;">
-                        <strong style="color: #0f172a;">${this.mentorConfig.mentorTitle}</strong><br>
-                        ${this.mentorConfig.mentorName} • ${this.mentorConfig.mentorCredentials}<br>
-                        Orientação: ${this.mentorConfig.advisorName} • ${this.mentorConfig.institution}<br>
+                        <strong style="color: #0f172a;">${this.mentorConfig.reportTitle}</strong><br>
+                        ${this.mentorConfig.tagline}<br>
                         WhatsApp: ${this.mentorConfig.contactPhone} • E-mail: ${this.mentorConfig.contactEmail}<br>
                         <span style="font-size: 9px; color: #94a3b8;">${this.mentorConfig.disclaimer}</span>
                     </div>
                     <div style="text-align: center; width: 220px;">
                         <div style="border-bottom: 1px solid #94a3b8; height: 32px; margin-bottom: 4px;"></div>
-                        <div style="font-size: 10.5px; font-weight: bold; color: #0f172a;">Taís Trevisol Scherner</div>
-                        <div style="font-size: 9.5px; color: #64748b;">Parecer & Mentoria de Governança</div>
+                        <div style="font-size: 10.5px; font-weight: bold; color: #0f172a;">${this.mentorConfig.provider}</div>
+                        <div style="font-size: 9.5px; color: #64748b;">Diagnóstico Executivo 2026</div>
                     </div>
                 </div>
             </div>

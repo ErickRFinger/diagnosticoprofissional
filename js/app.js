@@ -258,7 +258,7 @@ document.addEventListener("DOMContentLoaded", () => {
         currentPillarNameEl.innerHTML = `<i class="${currentPillar.icon}"></i> ${pillarIndex + 1}. ${currentPillar.name}`;
         currentPillarDescEl.textContent = currentPillar.description;
         if (currentPillarRefEl) {
-            currentPillarRefEl.innerHTML = `<i class="fas fa-book-bookmark"></i> Base Teórica: ${currentPillar.academicRef}`;
+            currentPillarRefEl.innerHTML = `<i class="fas fa-compass"></i> ${currentPillar.strategicFocus || 'Foco Estratégico'}`;
         }
 
         questionsContainer.innerHTML = pillarQuestions.map((q) => {
@@ -551,13 +551,13 @@ document.addEventListener("DOMContentLoaded", () => {
         // Cabeçalho e Saudação
         const greetingEl = document.getElementById("results-greeting");
         if (state.userData.isAnonymous) {
-            greetingEl.textContent = `Diagnóstico de Empresa Familiar • Modo Confidencial`;
+            greetingEl.textContent = `Diagnóstico Empresarial • Modo Confidencial`;
         } else if (state.userData.name && state.userData.company) {
             greetingEl.textContent = `Diagnóstico de ${state.userData.name} • ${state.userData.company}`;
         } else if (state.userData.company) {
-            greetingEl.textContent = `Diagnóstico de Governança • ${state.userData.company}`;
+            greetingEl.textContent = `Diagnóstico Empresarial • ${state.userData.company}`;
         } else {
-            greetingEl.textContent = `Diagnóstico de ${state.userData.name || 'Empresa Familiar'}`;
+            greetingEl.textContent = `Diagnóstico de ${state.userData.name || 'Empresa'}`;
         }
 
         // Anel Circular SVG com Animação
@@ -903,11 +903,11 @@ document.addEventListener("DOMContentLoaded", () => {
         const gapsText = topGaps ? `\nPrincipais pontos de atenção identificados:\n${topGaps}\n` : '';
 
         const waMsg = encodeURIComponent(
-            `Olá, Taís! Acabei de realizar o Diagnóstico de Governança & Empresa Familiar.\n` +
+            `Olá! Acabei de realizar o Diagnóstico Empresarial de Governança & Gestão.\n` +
             participantInfo +
             `Índice Geral de Maturidade: ${res.overallPercentage}% (${res.maturity.level}).\n` +
             gapsText +
-            `Gostaria de agendar uma devolutiva de mentoria estratégica para avaliar o plano de ação e a sucessão da empresa.`
+            `Gostaria de agendar uma devolutiva estratégica para avaliar o plano de ação e as oportunidades de melhoria da empresa.`
         );
         whatsappBtn.href = `https://api.whatsapp.com/send?phone=${defaultPhone}&text=${waMsg}`;
     }
@@ -954,8 +954,8 @@ document.addEventListener("DOMContentLoaded", () => {
         if (!exportJsonBtn) return;
         exportJsonBtn.onclick = () => {
             const dataToExport = {
-                version: "2.0",
-                methodology: "Taís Trevisol Scherner - Unoesc 2024",
+                version: "3.0",
+                system: "Diagnóstico Empresarial - Visual Tech 2026",
                 exportedAt: new Date().toISOString(),
                 userData: state.userData,
                 answers: state.answers,
@@ -964,9 +964,9 @@ document.addEventListener("DOMContentLoaded", () => {
 
             const jsonStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(dataToExport, null, 2));
             const downloadAnchor = document.createElement("a");
-            const companySlug = (state.userData.company || "Empresa_Familiar").replace(/\s+/g, "_");
+            const companySlug = (state.userData.company || "Empresa").replace(/\s+/g, "_");
             downloadAnchor.setAttribute("href", jsonStr);
-            downloadAnchor.setAttribute("download", `Diagnostico_Governanca_${companySlug}_${new Date().toISOString().slice(0, 10)}.json`);
+            downloadAnchor.setAttribute("download", `Diagnostico_Empresarial_${companySlug}_${new Date().toISOString().slice(0, 10)}.json`);
             document.body.appendChild(downloadAnchor);
             downloadAnchor.click();
             downloadAnchor.remove();
