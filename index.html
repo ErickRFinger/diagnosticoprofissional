@@ -311,6 +311,41 @@
                 </div>
             </div>
 
+            <!-- =============================================================
+                 BLOCO 1: RAIO-X DE DISTRIBUIÇÃO DAS RESPOSTAS (1 A 5)
+                 ============================================================= -->
+            <div class="app-card distribution-card" id="distribution-card">
+                <div class="card-title-icon-row" style="margin-bottom: 1rem;">
+                    <div class="icon-bubble primary"><i class="fas fa-chart-column"></i></div>
+                    <div style="flex: 1;">
+                        <div class="badge-tag" style="background: rgba(2, 132, 199, 0.1); color: var(--primary); margin-bottom: 4px;">
+                            <i class="fas fa-layer-group"></i> Balanço Quantitativo do Diagnóstico
+                        </div>
+                        <h3 class="subcard-title">Raio-X das 24 Respostas: Distribuição de Maturidade (1 a 5)</h3>
+                        <p class="subcard-desc">
+                            Contagem exata de quantas respostas foram assinaladas em cada nível. Clique em qualquer nota para filtrar imediatamente as questões correspondentes:
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Barra Segmentada Proporcional Colorida -->
+                <div class="distribution-bar-wrapper">
+                    <div class="distribution-track" id="distribution-track">
+                        <!-- Segmentos coloridos injetados dinamicamente via app.js -->
+                    </div>
+                </div>
+
+                <!-- 5 Cards Clicáveis de Cada Nota (5 a 1) -->
+                <div class="distribution-cards-grid" id="distribution-cards-grid">
+                    <!-- Cards preenchidos dinamicamente via app.js -->
+                </div>
+
+                <!-- Banner Analítico do Padrão Dominante de Respostas -->
+                <div class="distribution-insight-banner" id="distribution-insight-banner">
+                    <!-- Injetado dinamicamente via app.js -->
+                </div>
+            </div>
+
             <!-- Grid de Visual Analytics: Gráfico Radar + Resumo dos 5 Eixos -->
             <div class="analytics-row-grid">
                 <!-- Card 1: Gráfico Radar (Chart.js) -->
@@ -356,6 +391,102 @@
 
                 <div class="dre-grid" id="dre-cards-grid">
                     <!-- Cards da DRE gerados dinamicamente via app.js -->
+                </div>
+            </div>
+
+            <!-- =============================================================
+                 BLOCO 2: O DOSSIÊ EXECUTIVO PRONTO (INSPIRADO NO MODELO ROTA)
+                 ============================================================= -->
+            <div class="app-card dossier-container-card" id="dossier-container-card">
+                <div class="dossier-top-bar">
+                    <div class="dossier-brand">
+                        <span class="dossier-kicker"><i class="fas fa-award"></i> PRODUTO EXECUTIVO FINAL</span>
+                        <h3 class="dossier-main-title">Dossiê Estratégico Corporativo</h3>
+                        <p class="dossier-main-sub">Sumário executivo diagramado e parecer estratégico baseado no cruzamento das 24 respostas</p>
+                    </div>
+                    <div class="dossier-actions-bar">
+                        <button type="button" id="dossier-download-pdf-btn" class="btn btn-primary">
+                            <i class="fas fa-file-pdf"></i> Baixar Dossiê (PDF)
+                        </button>
+                        <button type="button" id="dossier-print-btn" class="btn btn-secondary">
+                            <i class="fas fa-print"></i> Imprimir / Salvar
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Abas de Navegação das Pranchas do Dossiê -->
+                <div class="dossier-nav-tabs" id="dossier-nav-tabs">
+                    <button type="button" class="dossier-tab-btn active" data-tab="prancha-1">
+                        <i class="fas fa-compass"></i> Prancha I: Capa & Palavra-Essência
+                    </button>
+                    <button type="button" class="dossier-tab-btn" data-tab="prancha-2">
+                        <i class="fas fa-list-check"></i> Prancha II: Sumário das Respostas
+                    </button>
+                    <button type="button" class="dossier-tab-btn" data-tab="prancha-3">
+                        <i class="fas fa-chart-radar"></i> Prancha III: Teia & Reflexo na DRE
+                    </button>
+                    <button type="button" class="dossier-tab-btn" data-tab="prancha-4">
+                        <i class="fas fa-envelope-open-text"></i> Prancha IV: Leitura Confidencial
+                    </button>
+                    <button type="button" class="dossier-tab-btn" data-tab="prancha-5">
+                        <i class="fas fa-route"></i> Prancha V: Carta de Direção (90 Dias)
+                    </button>
+                </div>
+
+                <!-- Conteúdo das Pranchas do Dossiê -->
+                <div class="dossier-sheets-container">
+                    <!-- Prancha I: Capa Nobre & Palavra-Essência -->
+                    <div class="dossier-sheet-panel active" id="prancha-1-panel">
+                        <!-- Conteúdo dinâmico via app.js -->
+                    </div>
+
+                    <!-- Prancha II: Balanço das Respostas & Sumário -->
+                    <div class="dossier-sheet-panel" id="prancha-2-panel">
+                        <!-- Conteúdo dinâmico via app.js -->
+                    </div>
+
+                    <!-- Prancha III: Teia Radar & Reflexo na DRE -->
+                    <div class="dossier-sheet-panel" id="prancha-3-panel">
+                        <!-- Conteúdo dinâmico via app.js -->
+                    </div>
+
+                    <!-- Prancha IV: Leitura Confidencial da Consultoria -->
+                    <div class="dossier-sheet-panel" id="prancha-4-panel">
+                        <!-- Conteúdo dinâmico via app.js -->
+                    </div>
+
+                    <!-- Prancha V: Carta de Direção & Plano 90 Dias -->
+                    <div class="dossier-sheet-panel" id="prancha-5-panel">
+                        <!-- Conteúdo dinâmico via app.js -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- =============================================================
+                 BLOCO 3: AUDITORIA DETALHADA: QUAL RESPOSTA DE CADA UMA
+                 ============================================================= -->
+            <div class="app-card response-explorer-card" id="response-explorer-card">
+                <div class="card-title-icon-row" style="margin-bottom: 1rem;">
+                    <div class="icon-bubble primary"><i class="fas fa-magnifying-glass-chart"></i></div>
+                    <div style="flex: 1;">
+                        <h3 class="subcard-title">Auditoria Detalhada: Qual Resposta em Cada Questão</h3>
+                        <p class="subcard-desc">Inspecione exatamente qual alternativa foi escolhida em cada uma das 24 questões e o diagnóstico prático de cada item:</p>
+                    </div>
+                </div>
+
+                <!-- Filtros por Nota (Pills) -->
+                <div class="response-filter-pills" id="response-filter-pills">
+                    <button type="button" class="resp-filter-pill active" data-score="all">Todas as 24 Respostas (<span id="count-pill-all">24</span>)</button>
+                    <button type="button" class="resp-filter-pill score-5" data-score="5">🟩 Nível 5 (<span id="count-pill-5">0</span>)</button>
+                    <button type="button" class="resp-filter-pill score-4" data-score="4">🟦 Nível 4 (<span id="count-pill-4">0</span>)</button>
+                    <button type="button" class="resp-filter-pill score-3" data-score="3">🟨 Nível 3 (<span id="count-pill-3">0</span>)</button>
+                    <button type="button" class="resp-filter-pill score-2" data-score="2">🟧 Nível 2 (<span id="count-pill-2">0</span>)</button>
+                    <button type="button" class="resp-filter-pill score-1" data-score="1">🟥 Nível 1 (<span id="count-pill-1">0</span>)</button>
+                </div>
+
+                <!-- Lista de Cards das Perguntas com as Respostas Exatas -->
+                <div class="response-items-grid" id="response-items-grid">
+                    <!-- Injetado dinamicamente via app.js -->
                 </div>
             </div>
 

@@ -1,0 +1,844 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<title>Arquitetura de Inteligência & Metodologia • Visual Tech</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;0,9..144,700;1,9..144,400;1,9..144,500&family=Archivo:wght@400;500;600;700;800&family=Figtree:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  @page {
+    size: A4 portrait;
+    margin: 0;
+  }
+  * {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+  }
+  html, body {
+    width: 210mm;
+    background: #F4EFEA;
+    color: #382431;
+    font-family: 'Figtree', sans-serif;
+    font-size: 14px;
+    line-height: 1.55;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+
+  .sheet {
+    width: 210mm;
+    height: 297mm;
+    position: relative;
+    page-break-after: always;
+    page-break-inside: avoid;
+    overflow: hidden;
+    padding: 22mm 22mm 20mm;
+    display: flex;
+    flex-direction: column;
+    background: #F7F3EE;
+  }
+
+  /* Capa especial escura */
+  .sheet.cover {
+    background: #23121E;
+    color: #F4EFEA;
+    padding: 26mm 22mm 22mm;
+    justify-content: space-between;
+  }
+
+  .sheet.dark-sheet {
+    background: #23121E;
+    color: #F4EFEA;
+  }
+
+  /* Header & Footer padrão */
+  .doc-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid rgba(74, 39, 64, 0.15);
+    padding-bottom: 10px;
+    margin-bottom: 22px;
+    font-family: 'Archivo', sans-serif;
+    font-size: 9.5px;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: #8C6A7E;
+    font-weight: 600;
+  }
+
+  .dark-sheet .doc-header {
+    border-bottom-color: rgba(224, 197, 131, 0.2);
+    color: #D4B892;
+  }
+
+  .doc-footer {
+    margin-top: auto;
+    border-top: 1px solid rgba(74, 39, 64, 0.15);
+    padding-top: 10px;
+    display: flex;
+    justify-content: space-between;
+    font-family: 'Archivo', sans-serif;
+    font-size: 9px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: #9C7B8E;
+    font-weight: 500;
+  }
+
+  .dark-sheet .doc-footer {
+    border-top-color: rgba(224, 197, 131, 0.2);
+    color: #A68B7A;
+  }
+
+  /* Tipografia */
+  .eyebrow {
+    font-family: 'Archivo', sans-serif;
+    font-size: 10.5px;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    color: #B96A4B;
+    font-weight: 700;
+    margin-bottom: 10px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .eyebrow::before {
+    content: "";
+    width: 18px;
+    height: 2px;
+    background: #B96A4B;
+  }
+
+  .cover .eyebrow {
+    color: #E0C583;
+  }
+  .cover .eyebrow::before {
+    background: #E0C583;
+  }
+
+  h1.cover-title {
+    font-family: 'Fraunces', serif;
+    font-weight: 600;
+    font-size: 38px;
+    line-height: 1.15;
+    color: #FFF6EC;
+    letter-spacing: -0.02em;
+    margin: 20px 0 14px;
+  }
+
+  h1.cover-title span {
+    color: #E0C583;
+    font-style: italic;
+  }
+
+  .cover-sub {
+    font-size: 15.5px;
+    color: #D6C2B4;
+    line-height: 1.6;
+    max-width: 600px;
+    font-weight: 400;
+  }
+
+  h2.sheet-title {
+    font-family: 'Fraunces', serif;
+    font-size: 26px;
+    font-weight: 600;
+    color: #36172A;
+    line-height: 1.22;
+    letter-spacing: -0.01em;
+    margin-bottom: 12px;
+  }
+
+  .dark-sheet h2.sheet-title {
+    color: #FFF6EC;
+  }
+
+  .sheet-lead {
+    font-size: 13.5px;
+    color: #634B59;
+    line-height: 1.6;
+    margin-bottom: 20px;
+  }
+
+  .dark-sheet .sheet-lead {
+    color: #D6C2B4;
+  }
+
+  /* Cards e Boxes */
+  .card-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 14px;
+    margin-top: 14px;
+  }
+
+  .card-grid.three-col {
+    grid-template-columns: 1fr 1fr 1fr;
+  }
+
+  .app-card {
+    background: #FFFFFF;
+    border: 1px solid rgba(74, 39, 64, 0.12);
+    border-radius: 12px;
+    padding: 16px 18px;
+    box-shadow: 0 4px 14px rgba(74, 39, 64, 0.04);
+  }
+
+  .app-card.highlight {
+    border-color: #B96A4B;
+    background: linear-gradient(180deg, #FFFFFF, #FAF5F0);
+    border-left: 4px solid #B96A4B;
+  }
+
+  .app-card.gold-border {
+    border-left: 4px solid #CBA152;
+  }
+
+  .app-card h3 {
+    font-family: 'Fraunces', serif;
+    font-size: 16px;
+    font-weight: 600;
+    color: #36172A;
+    margin-bottom: 6px;
+  }
+
+  .app-card p {
+    font-size: 12.5px;
+    color: #634B59;
+    line-height: 1.5;
+  }
+
+  /* Callout de Alívio / Destacado */
+  .relief-callout {
+    background: linear-gradient(135deg, rgba(203, 161, 82, 0.12), rgba(185, 106, 75, 0.12));
+    border: 1.5px dashed #CBA152;
+    border-radius: 12px;
+    padding: 16px 20px;
+    margin: 16px 0;
+    display: flex;
+    gap: 16px;
+    align-items: center;
+  }
+
+  .relief-icon {
+    font-size: 28px;
+    color: #CBA152;
+    flex-shrink: 0;
+  }
+
+  .relief-text h4 {
+    font-family: 'Fraunces', serif;
+    font-size: 16px;
+    color: #36172A;
+    font-weight: 700;
+    margin-bottom: 3px;
+  }
+
+  .relief-text p {
+    font-size: 12.5px;
+    color: #5C4152;
+    line-height: 1.5;
+  }
+
+  /* Etapas Visuais */
+  .timeline-steps {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin-top: 14px;
+  }
+
+  .t-step {
+    display: flex;
+    gap: 14px;
+    background: #FFFFFF;
+    border: 1px solid rgba(74, 39, 64, 0.1);
+    border-radius: 10px;
+    padding: 14px 16px;
+    align-items: flex-start;
+  }
+
+  .t-num {
+    background: #4A2740;
+    color: #E0C583;
+    font-family: 'Archivo', sans-serif;
+    font-weight: 800;
+    font-size: 13px;
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+
+  .t-body h4 {
+    font-family: 'Fraunces', serif;
+    font-size: 15px;
+    font-weight: 600;
+    color: #36172A;
+    margin-bottom: 4px;
+  }
+
+  .t-body p {
+    font-size: 12.2px;
+    color: #634B59;
+    line-height: 1.45;
+  }
+
+  .t-badge {
+    display: inline-block;
+    font-family: 'Archivo', sans-serif;
+    font-size: 9px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    background: rgba(185, 106, 75, 0.12);
+    color: #B96A4B;
+    font-weight: 700;
+    padding: 2px 7px;
+    border-radius: 4px;
+    margin-bottom: 4px;
+  }
+
+  /* Tabela de Comparação */
+  .compare-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 14px;
+    font-size: 11.5px;
+    background: #FFFFFF;
+    border-radius: 10px;
+    overflow: hidden;
+    border: 1px solid rgba(74, 39, 64, 0.12);
+  }
+
+  .compare-table th {
+    background: #4A2740;
+    color: #F4EFEA;
+    padding: 10px 14px;
+    text-align: left;
+    font-family: 'Archivo', sans-serif;
+    font-size: 10.5px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    font-weight: 700;
+  }
+
+  .compare-table td {
+    padding: 10px 14px;
+    border-bottom: 1px solid rgba(74, 39, 64, 0.08);
+    vertical-align: top;
+    line-height: 1.45;
+  }
+
+  .compare-table tr:last-child td {
+    border-bottom: none;
+  }
+
+  .compare-table tr:nth-child(even) {
+    background: #FCFAF8;
+  }
+
+  /* Diagrama de 3 Camadas */
+  .layer-diagram {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin: 18px 0;
+  }
+
+  .layer-box {
+    border: 1.5px solid rgba(74, 39, 64, 0.15);
+    border-radius: 10px;
+    padding: 14px 18px;
+    background: #FFFFFF;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .layer-box::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 5px;
+  }
+
+  .layer-box.l1::before { background: #4A2740; }
+  .layer-box.l2::before { background: #CBA152; }
+  .layer-box.l3::before { background: #B96A4B; }
+
+  .layer-tag {
+    font-family: 'Archivo', sans-serif;
+    font-size: 9.5px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    font-weight: 700;
+    margin-bottom: 4px;
+  }
+
+  .layer-box.l1 .layer-tag { color: #4A2740; }
+  .layer-box.l2 .layer-tag { color: #B0852B; }
+  .layer-box.l3 .layer-tag { color: #B96A4B; }
+
+  .layer-title {
+    font-family: 'Fraunces', serif;
+    font-size: 15.5px;
+    font-weight: 600;
+    color: #36172A;
+    margin-bottom: 4px;
+  }
+
+  .layer-desc {
+    font-size: 12px;
+    color: #634B59;
+    line-height: 1.5;
+  }
+
+  /* Assinatura / Rodapé da Capa */
+  .cover-footer-box {
+    border-top: 1px solid rgba(224, 197, 131, 0.25);
+    padding-top: 18px;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+  }
+
+  .meta-block span {
+    display: block;
+    font-family: 'Archivo', sans-serif;
+    font-size: 9.5px;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: #D4B892;
+    margin-bottom: 3px;
+  }
+
+  .meta-block strong {
+    font-family: 'Fraunces', serif;
+    font-size: 16px;
+    color: #FFFFFF;
+    font-weight: 600;
+  }
+
+  .compass-svg {
+    width: 70px;
+    height: 70px;
+    opacity: 0.75;
+  }
+
+  /* Box de Citação / Inspiração */
+  .quote-box {
+    font-family: 'Fraunces', serif;
+    font-style: italic;
+    font-size: 14.5px;
+    line-height: 1.6;
+    color: #4A2740;
+    border-left: 3px solid #CBA152;
+    padding-left: 16px;
+    margin: 16px 0;
+  }
+
+  .check-list {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin-top: 10px;
+  }
+
+  .check-list li {
+    display: flex;
+    align-items: flex-start;
+    gap: 8px;
+    font-size: 12.5px;
+    color: #4E3544;
+  }
+
+  .check-list li::before {
+    content: "✔";
+    color: #CBA152;
+    font-weight: 800;
+    font-size: 13px;
+    flex-shrink: 0;
+    margin-top: 1px;
+  }
+
+  .dark-sheet .check-list li {
+    color: #EDE4DC;
+    line-height: 1.5;
+  }
+
+  .dark-sheet .check-list li strong {
+    color: #FFF6EC;
+    font-weight: 600;
+  }
+</style>
+</head>
+<body>
+
+<!-- =======================================================================
+     PÁGINA 1: CAPA EDITORIAL EXECUTIVA
+     ======================================================================= -->
+<div class="sheet cover">
+  <div class="doc-header" style="border-bottom-color: rgba(224,197,131,0.2); color: #D4B892;">
+    <span>VISUAL TECH • ARQUITETURA DE PRODUTOS</span>
+    <span>SETEMBRO / 2026</span>
+  </div>
+
+  <div style="margin: auto 0;">
+    <div class="eyebrow">ARQUITETURA DE INTELIGÊNCIA & METODOLOGIA</div>
+    <h1 class="cover-title">
+      Como transformamos sua <span>metodologia</span> em um Dossiê Inteligente — sem você escrever centenas de textos na mão.
+    </h1>
+    <p class="cover-sub">
+      Um guia transparente e estratégico demonstrando como o algoritmo analítico e a Inteligência Artificial trabalham juntos para ler as respostas do cliente e entregar um Dossiê de 9 páginas de altíssimo valor percebido em segundos.
+    </p>
+
+    <div style="margin-top: 30px; display: flex; gap: 20px; align-items: center;">
+      <svg class="compass-svg" viewBox="0 0 100 100" fill="none" stroke="#CBA152" stroke-width="1.5">
+        <circle cx="50" cy="50" r="44" stroke-dasharray="2 4"/>
+        <circle cx="50" cy="50" r="36"/>
+        <line x1="50" y1="6" x2="50" y2="94" stroke-width="1.8"/>
+        <line x1="6" y1="50" x2="94" y2="50" stroke-width="1.8"/>
+        <polygon points="50,14 54,46 86,50 54,54 50,86 46,54 14,50 46,46" fill="rgba(203,161,82,0.2)"/>
+        <circle cx="50" cy="50" r="4" fill="#CBA152"/>
+      </svg>
+      <div style="font-size: 12px; color: #D6C2B4; line-height: 1.5; max-width: 440px;">
+        <strong style="color: #E0C583; display: block; font-family: 'Fraunces', serif; font-size: 14px; margin-bottom: 2px;">
+          Metodologia Exclusiva & Tecnologia Escalável
+        </strong>
+        Inspirado no modelo de excelência editorial do dossiê <em>ROTA (Casa das Sábias)</em>, adaptado com rigor para a sua consultoria de <em>Auditoria de Margem, Governança & DRE</em>.
+      </div>
+    </div>
+  </div>
+
+  <div class="cover-footer-box">
+    <div class="meta-block">
+      <span>Elaborado especialmente para</span>
+      <strong>Taís Trevisol Scherner</strong>
+      <div style="font-size: 11px; color: #BFAEA4; margin-top: 2px;">Mestra em Administração • Especialista em Governança & Eficiência</div>
+    </div>
+    <div class="meta-block" style="text-align: right;">
+      <span>Desenvolvimento & Engenharia</span>
+      <strong>Erick Finger • Visual Tech</strong>
+      <div style="font-size: 11px; color: #BFAEA4; margin-top: 2px;">Visual Tech 2026 • Soluções Tecnológicas Inteligentes</div>
+    </div>
+  </div>
+</div>
+
+<!-- =======================================================================
+     PÁGINA 2: O FIM DO TRABALHO MANUAL & O SEGREDO DO ROTA
+     ======================================================================= -->
+<div class="sheet">
+  <div class="doc-header">
+    <span>01. DESVENDANDO O SEGREDO</span>
+    <span>COMO A INTELIGÊNCIA FUNCIONA</span>
+  </div>
+
+  <div class="eyebrow">A RESPOSTA PARA A SUA PRINCIPAL DÚVIDA</div>
+  <h2 class="sheet-title">"Vou ter que estruturar centenas de resultados na mão?"</h2>
+  <p class="sheet-lead">
+    A resposta direta é: <strong>definitivamente não</strong>. Em um questionário com 24 perguntas e 5 níveis de resposta, existem matematicamente mais de <strong>59 quintilhões de combinações possíveis</strong>. Nenhum consultor humano conseguiria escrever isso manualmente.
+  </p>
+
+  <div class="relief-callout">
+    <div class="relief-icon">💡</div>
+    <div class="relief-text">
+      <h4>O que aconteceu no dossiê do ROTA que você respondeu?</h4>
+      <p>
+        Você notou com muita precisão: <em>"parece que o que eu respondi ele usou outras palavras para me apresentar o dossiê"</em>. É exatamente assim que a tecnologia de ponta funciona! A IA não inventa nada do zero: ela lê o que a pessoa respondeu, cruza com a <strong>sua teoria</strong> e costura um parecer elegante e personalizado.
+      </p>
+    </div>
+  </div>
+
+  <h3 style="font-family: 'Fraunces', serif; font-size: 17px; color: #36172A; margin: 20px 0 10px;">
+    Como era feito no passado vs. Como faremos no seu produto:
+  </h3>
+
+  <table class="compare-table">
+    <thead>
+      <tr>
+        <th style="width: 25%;">Abordagem</th>
+        <th style="width: 37%;">Modelo Antigo (Árvore Manual)</th>
+        <th style="width: 38%;">Modelo Inteligente Visual Tech (ROTA)</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><strong>Criação de Conteúdo</strong></td>
+        <td>O especialista precisa escrever dezenas de parágrafos pré-fixados para cada combinação de nota.</td>
+        <td><strong>Você descreve apenas a sua teoria principal 1 única vez</strong> (o que significa nível 1, 3 e 5 de cada eixo).</td>
+      </tr>
+      <tr>
+        <td><strong>Sensação do Cliente</strong></td>
+        <td>Parece um "horóscopo genérico", com frases prontas que nem sempre conversam entre si.</td>
+        <td><strong>Sensação de exclusividade absoluta:</strong> o cliente lê suas próprias dores e desafios refletidos no relatório.</td>
+      </tr>
+      <tr>
+        <td><strong>Tempo de Entrega</strong></td>
+        <td>Dias ou semanas para o consultor compilar os dados e redigir o documento no Word.</td>
+        <td><strong>15 a 20 segundos:</strong> o cliente conclui o teste e o PDF de 9 páginas é diagramado e baixado na hora.</td>
+      </tr>
+      <tr>
+        <td><strong>Escala do Negócio</strong></td>
+        <td>Limitada à capacidade de horas do consultor (gargalo operacional).</td>
+        <td><strong>Escala infinita:</strong> 10 ou 1.000 clientes podem preencher simultaneamente com o mesmo padrão de excelência.</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div class="doc-footer">
+    <span>AUDITORIA DE MARGEM & PROCESSOS</span>
+    <span>PÁGINA 2 DE 6</span>
+  </div>
+</div>
+
+<!-- =======================================================================
+     PÁGINA 3: A ARQUITETURA EM 3 CAMADAS
+     ======================================================================= -->
+<div class="sheet">
+  <div class="doc-header">
+    <span>02. ARQUITETURA DO SISTEMA</span>
+    <span>AS 3 CAMADAS DA SOLUÇÃO</span>
+  </div>
+
+  <div class="eyebrow">A ENGENHARIA POR TRÁS DO DIAGNÓSTICO</div>
+  <h2 class="sheet-title">A Estrutura em 3 Camadas: Teoria, Algoritmo e IA</h2>
+  <p class="sheet-lead">
+    Para que o relatório final seja impecável e respeite fielmente o seu rigor técnico, nós dividimos o sistema em <strong>três camadas complementares</strong>. Nenhuma camada substitui a outra — elas se potencializam.
+  </p>
+
+  <div class="layer-diagram">
+    <div class="layer-box l1">
+      <div class="layer-tag">CAMADA 1 • A SUA AUTORIA & MÉTODO (O CÉREBRO)</div>
+      <div class="layer-title">A Metodologia Conceitual (Teoria de Taís)</div>
+      <div class="layer-desc">
+        É aqui que entra a sua inteligência: os <strong>5 Eixos Estratégicos</strong> (Gestão, Processos, Governança, Pessoas e Cultura) e as <strong>4 Linhas da DRE</strong> (Receita, Custos, Despesas e Margem). Você só precisa nos fornecer a fundamentação do que significa cada estágio. A teoria é a bússola inviolável do sistema.
+      </div>
+    </div>
+
+    <div class="layer-box l2">
+      <div class="layer-tag">CAMADA 2 • O MOTOR ALGORÍTMICO (A MATEMÁTICA)</div>
+      <div class="layer-title">Cálculo Analítico & Classificação Automática</div>
+      <div class="layer-desc">
+        Desenvolvido pela Visual Tech em código puro. Calcula os percentuais exatos de maturidade (0 a 100%), plota a <strong>Teia de Governança (Gráfico Radar)</strong>, identifica instantaneamente as maiores fortalezas e classifica os gargalos críticos entre <em>Vitórias Rápidas</em>, <em>Governança Estruturante</em> e <em>Sistemas/BI</em>. Sem margem para erros matemáticos.
+      </div>
+    </div>
+
+    <div class="layer-box l3">
+      <div class="layer-tag">CAMADA 3 • A INTELIGÊNCIA ARTIFICIAL GENERATIVA (A CANETA)</div>
+      <div class="layer-title">Síntese Personalizada & Tom de Consultoria</div>
+      <div class="layer-desc">
+        A IA atua como uma analista sênior treinada no seu método. Ela recebe os números exatos da Camada 2 + as respostas que o cliente escolheu no formulário + a sua teoria da Camada 1. Em seguida, redige a <strong>Leitura Confidencial</strong> e a <strong>Carta de Direção</strong>, usando uma linguagem sofisticada e sob medida para aquele gestor.
+      </div>
+    </div>
+  </div>
+
+  <div class="app-card highlight" style="margin-top: 10px;">
+    <h3 style="font-size: 15px;">Por que este modelo híbrido é o mais seguro do mercado?</h3>
+    <p>
+      Porque a IA <strong>não inventa notas nem métricas</strong> (isso é feito pela matemática da Camada 2). A IA é usada exclusivamente para a <strong>redação elegante e síntese empática</strong>, exatamente como você viu no relatório do ROTA. O cliente se sente ouvido e compreendido em um nível profundo.
+    </p>
+  </div>
+
+  <div class="doc-footer">
+    <span>AUDITORIA DE MARGEM & PROCESSOS</span>
+    <span>PÁGINA 3 DE 6</span>
+  </div>
+</div>
+
+<!-- =======================================================================
+     PÁGINA 4: O FLUXO DA EXPERIÊNCIA DO CLIENTE
+     ======================================================================= -->
+<div class="sheet">
+  <div class="doc-header">
+    <span>03. JORNADA DO CLIENTE</span>
+    <span>DO FORMULÁRIO AO RELATÓRIO</span>
+  </div>
+
+  <div class="eyebrow">EXPERIÊNCIA FLUÍDA E MODERNA</div>
+  <h2 class="sheet-title">Como o Cliente Vive essa Experiência em 4 Passos</h2>
+  <p class="sheet-lead">
+    Toda a complexidade técnica fica nos bastidores. Para o empresário que responde, a experiência é limpa, acolhedora e extremamente prazerosa.
+  </p>
+
+  <div class="timeline-steps">
+    <div class="t-step">
+      <div class="t-num">1</div>
+      <div class="t-body">
+        <span class="t-badge">ETAPA 1: O QUESTIONÁRIO PROGRESSIVO (ROTA)</span>
+        <h4>Apenas uma pergunta por vez na tela</h4>
+        <p>
+          O participante não vê uma lista interminável e cansativa de perguntas. A pergunta aparece em tamanho grande e legível, com 5 opções compactas. Ao clicar na nota (ou teclar 1 a 5), o sistema avança sozinho suavemente. Há a opção do <em>Modo Confidencial</em> para quem preferir não se identificar.
+        </p>
+      </div>
+    </div>
+
+    <div class="t-step">
+      <div class="t-num">2</div>
+      <div class="t-body">
+        <span class="t-badge">ETAPA 2: O PROCESSAMENTO EM TEMPO REAL</span>
+        <h4>O algoritmo cruza os 5 eixos e a DRE</h4>
+        <p>
+          Ao clicar em concluir, a tela exibe uma animação elegante de processamento (ex.: <em>"Calculando a maturidade dos processos...", "Mapeando reflexo na DRE...", "Escrevendo seu dossiê executivo..."</em>). Em menos de 20 segundos, o algoritmo e a IA concluem a análise.
+        </p>
+      </div>
+    </div>
+
+    <div class="t-step">
+      <div class="t-num">3</div>
+      <div class="t-body">
+        <span class="t-badge">ETAPA 3: A REVELAÇÃO INTERATIVA</span>
+        <h4>Dashboard visual na tela do dispositivo</h4>
+        <p>
+          O cliente visualiza na própria tela o seu Índice Geral animado, o Gráfico Radar comparativo, os cards de impacto em cada linha da DRE e o plano de ação com os maiores gargalos identificados.
+        </p>
+      </div>
+    </div>
+
+    <div class="t-step">
+      <div class="t-num">4</div>
+      <div class="t-body">
+        <span class="t-badge">ETAPA 4: O DOSSIÊ EM PDF & CONTATO WHATSAPP</span>
+        <h4>Material de altíssimo valor para download imediato</h4>
+        <p>
+          O cliente pode baixar o Dossiê completo em PDF diagramado com padrão editorial de revista de negócios. Junto a isso, um botão direto de WhatsApp já abre uma mensagem pré-formatada para agendar a reunião de devolutiva estratégica com a sua consultoria.
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <div class="doc-footer">
+    <span>AUDITORIA DE MARGEM & PROCESSOS</span>
+    <span>PÁGINA 4 DE 6</span>
+  </div>
+</div>
+
+<!-- =======================================================================
+     PÁGINA 5: ANATOMIA DO DOSSIÊ EXECUTIVO
+     ======================================================================= -->
+<div class="sheet">
+  <div class="doc-header">
+    <span>04. O PRODUTO ENTREGUE</span>
+    <span>ESTRUTURAÇÃO DO DOSSIÊ FINAL</span>
+  </div>
+
+  <div class="eyebrow">O ESPELHO DO MODELO ROTA</div>
+  <h2 class="sheet-title">Anatomia do Dossiê Final (O que vai no PDF)</h2>
+  <p class="sheet-lead">
+    Seguindo o mesmo nível de sofisticação visual e profundidade que você viu no dossiê de exemplo, o seu relatório corporativo terá uma diagramação impecável com as seguintes seções estruturadas:
+  </p>
+
+  <div class="card-grid">
+    <div class="app-card highlight">
+      <div class="t-badge">PRANCHA I & II</div>
+      <h3>Capa & Palavra-Essência</h3>
+      <p>Capa nobre com dados do cliente/empresa, data e o conceito central que resume o perfil operacional da organização (ex.: <em>Estruturante, Dinâmica, Tradicional</em>).</p>
+    </div>
+
+    <div class="app-card gold-border">
+      <div class="t-badge">PRANCHA III</div>
+      <h3>Índice Geral de Maturidade</h3>
+      <p>Percentual global de maturidade (0 a 100%) com mostrador visual, identificando o estágio da empresa: <em>Inicial, Estruturação, Consolidação ou Excelência</em>.</p>
+    </div>
+
+    <div class="app-card">
+      <div class="t-badge">PRANCHA IV</div>
+      <h3>Teia de Governança & Radar</h3>
+      <p>Gráfico radar visual mostrando o equilíbrio entre Gestão, Processos, Governança, Pessoas e Cultura comparados à meta de 100% de eficiência.</p>
+    </div>
+
+    <div class="app-card">
+      <div class="t-badge">PRANCHA V</div>
+      <h3>Reflexo Estratégico na DRE</h3>
+      <p>Mapeamento de como a maturidade dos processos impacta diretamente na <em>Receita Bruta, Custos Operacionais (CPV), Despesas SG&A e Margem EBITDA</em>.</p>
+    </div>
+
+    <div class="app-card highlight">
+      <div class="t-badge">PRANCHA VI & VII</div>
+      <h3>A Leitura Confidencial da IA</h3>
+      <p>O texto narrativo profundo (estilo ROTA), costurando o momento da empresa, os principais pontos de fricção e o caminho de evolução do fundador/diretoria.</p>
+    </div>
+
+    <div class="app-card gold-border">
+      <div class="t-badge">PRANCHA VIII & IX</div>
+      <h3>Carta de Direção & Plano 90 Dias</h3>
+      <p>Carta executiva assinada pela sua consultoria com 5 pontos prioritários de mentoria e o plano prático das primeiras ações imediatas.</p>
+    </div>
+  </div>
+
+  <div class="quote-box" style="margin-top: 18px;">
+    "O cliente não recebe apenas notas frias; ele recebe uma devolutiva que parece ter sido escrita à mão após dias de estudo individual por você."
+  </div>
+
+  <div class="doc-footer">
+    <span>AUDITORIA DE MARGEM & PROCESSOS</span>
+    <span>PÁGINA 5 DE 6</span>
+  </div>
+</div>
+
+<!-- =======================================================================
+     PÁGINA 6: PRÓXIMOS PASSOS E VALIDAÇÃO
+     ======================================================================= -->
+<div class="sheet dark-sheet">
+  <div class="doc-header">
+    <span>05. PLANO DE AÇÃO</span>
+    <span>PRÓXIMOS PASSOS PARA IMPLEMENTAR</span>
+  </div>
+
+  <div class="eyebrow" style="color: #E0C583;">O QUE PRECISAMOS DE VOCÊ</div>
+  <h2 class="sheet-title">Como Colocamos Esse Sistema no Ar</h2>
+  <p class="sheet-lead" style="color: #D6C2B4;">
+    Você não precisa se preocupar com códigos, integrações ou algoritmos. Cuidamos de toda a infraestrutura técnica. O processo é simples, rápido e transparente:
+  </p>
+
+  <div class="card-grid" style="margin-top: 14px;">
+    <div class="app-card" style="background: rgba(255,255,255,0.05); border-color: rgba(224,197,131,0.25);">
+      <div style="font-family: 'Archivo', sans-serif; font-size: 11px; letter-spacing: 0.18em; color: #E0C583; font-weight: 700; margin-bottom: 6px;">
+        O SEU PAPEL (METODOLOGIA)
+      </div>
+      <ul class="check-list" style="color: #F4EFEA;">
+        <li><strong>Validação das 24 questões:</strong> Já deixamos as 24 perguntas estruturadas nos 5 eixos com as 5 opções compactas.</li>
+        <li><strong>Definições teóricas dos eixos:</strong> Apenas um resumo de 1 ou 2 parágrafos do que significa uma nota baixa vs nota alta em cada eixo (o embasamento que você já tem pronto na sua dissertação).</li>
+        <li><strong>Aprovação visual do Dossiê:</strong> Escolher os tons e o estilo visual que você mais gosta para a sua marca.</li>
+      </ul>
+    </div>
+
+    <div class="app-card" style="background: rgba(255,255,255,0.05); border-color: rgba(203,161,82,0.4); border-left: 4px solid #CBA152;">
+      <div style="font-family: 'Archivo', sans-serif; font-size: 11px; letter-spacing: 0.18em; color: #E0C583; font-weight: 700; margin-bottom: 6px;">
+        O NOSSO PAPEL (VISUAL TECH)
+      </div>
+      <ul class="check-list" style="color: #F4EFEA;">
+        <li><strong>Engenharia do Algoritmo:</strong> Programar o cálculo automático de notas, gaps, radar e impacto na DRE.</li>
+        <li><strong>Treinamento do Prompt da IA:</strong> Configurar a Inteligência Artificial para falar com a sua voz e com a sua metodologia.</li>
+        <li><strong>Geração do PDF em Alta Fidelidade:</strong> Montar o layout editorial das 9 páginas para download instantâneo.</li>
+        <li><strong>Publicação Online:</strong> Colocar o link no ar para você enviar aos clientes com total segurança e sigilo.</li>
+      </ul>
+    </div>
+  </div>
+
+  <div style="margin-top: 24px; padding: 18px 22px; background: rgba(203,161,82,0.1); border-radius: 12px; border: 1px solid rgba(203,161,82,0.3); text-align: center;">
+    <h3 style="font-family: 'Fraunces', serif; font-size: 18px; color: #FFF6EC; margin-bottom: 6px;">
+      Pronta para ver o demonstrativo funcionando?
+    </h3>
+    <p style="font-size: 13px; color: #D6C2B4; max-width: 580px; margin: 0 auto; line-height: 1.55;">
+      Assim que você der o sinal verde nesta estrutura, nós conectamos a inteligência às 24 perguntas e geramos a primeira versão demonstrativa completa para você testar no seu celular!
+    </p>
+  </div>
+
+  <div class="doc-footer">
+    <span>AUDITORIA DE MARGEM & PROCESSOS • VISUAL TECH 2026</span>
+    <span>PÁGINA 6 DE 6</span>
+  </div>
+</div>
+
+</body>
+</html>

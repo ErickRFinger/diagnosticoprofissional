@@ -28,6 +28,8 @@ document.addEventListener("DOMContentLoaded", () => {
         activeGapFilter: "all"
     };
 
+    window.appState = state;
+
     let radarChartInstance = null;
 
     // -------------------------------------------------------------
@@ -587,6 +589,134 @@ document.addEventListener("DOMContentLoaded", () => {
             }))
             .sort((a, b) => a.score - b.score);
 
+        // 10.5 Balanço Quantitativo das Respostas (1 a 5)
+        const distribution = {
+            5: { count: 0, percentage: 0, label: "Consolidado", group: "Excelência / Rotina Plena", color: "var(--scale-5)", bg: "var(--scale-5-bg)", border: "var(--scale-5)" },
+            4: { count: 0, percentage: 0, label: "Consistente", group: "Estruturado / Formal", color: "var(--scale-4)", bg: "var(--scale-4-bg)", border: "var(--scale-4)" },
+            3: { count: 0, percentage: 0, label: "Parcialmente", group: "Em Transição / Risco", color: "var(--scale-3)", bg: "var(--scale-3-bg)", border: "var(--scale-3)" },
+            2: { count: 0, percentage: 0, label: "Acontece pouco", group: "Vulnerabilidade / Informal", color: "var(--scale-2)", bg: "var(--scale-2-bg)", border: "var(--scale-2)" },
+            1: { count: 0, percentage: 0, label: "Não acontece", group: "Gargalo Crítico / Ausente", color: "var(--scale-1)", bg: "var(--scale-1-bg)", border: "var(--scale-1)" }
+        };
+
+        QUESTIONS.forEach(q => {
+            const val = state.answers[q.id] || 1;
+            if (distribution[val]) {
+                distribution[val].count++;
+            }
+        });
+
+        Object.keys(distribution).forEach(k => {
+            distribution[k].percentage = Math.round((distribution[k].count / QUESTIONS.length) * 100);
+        });
+
+        const strengthsCount = distribution[5].count + distribution[4].count;
+        const transitionCount = distribution[3].count;
+        const criticalGapsCount = distribution[2].count + distribution[1].count;
+
+        // 10.6 Palavra-Essência & Arquétipo da Organização
+        let essenceWord = "ESTRUTURAÇÃO";
+        let archetypeTitle = "Operação em Fase de Estruturação";
+        let archetypeDesc = "A empresa apresenta expressivo volume de decisões informais e centralização. O desafio prioritário é instituir controles básicos e estancar perdas invisíveis na operação.";
+        let insightHeadline = "Atenção Crítica aos Processos Básicos";
+        let insightText = `Identificamos ${criticalGapsCount} práticas em nível crítico ou vulnerável (notas 1 e 2). É fundamental estabelecer alçadas e processos mínimos antes de tentar novas expansões.`;
+
+        if (strengthsCount >= 16) {
+            essenceWord = "CONSOLIDAÇÃO";
+            archetypeTitle = "Operação Madura em Fase de Escala & Governança";
+            archetypeDesc = "A organização opera com processos robustos, autonomia técnica dos gestores e clareza de indicadores. O momento é de refinamento fino de margens e governança avançada.";
+            insightHeadline = "Base Forte para Alavancagem e Expansão";
+            insightText = `Parabéns! ${strengthsCount} das 24 práticas avaliadas (${Math.round((strengthsCount/24)*100)}%) já operam em padrão consistente ou consolidado (notas 4 e 5). O foco é preservar a margem EBITDA e estruturar o conselho consultivo.`;
+        } else if (transitionCount >= 8 || (distribution[3].count >= distribution[1].count && distribution[3].count >= distribution[5].count)) {
+            essenceWord = "TRANSIÇÃO";
+            archetypeTitle = "Empresa em Transição Crítica (O Gargalo da Delegação)";
+            archetypeDesc = "A empresa cresceu e validou seu modelo comercial, mas sua governança interna ainda depende do esforço pessoal dos líderes. O risco de retrabalho e oscilação de margem é elevado.";
+            insightHeadline = "Ponto de Inflexão: Transição Operacional";
+            insightText = `${transitionCount} práticas estão em estágio parcial (nota 3). A empresa saiu do estágio inicial mas ainda não formalizou rotinas, gerando sobrecarga nas lideranças e oscilação de resultados.`;
+        } else if (criticalGapsCount >= 10) {
+            essenceWord = "ESTRUTURAÇÃO";
+            archetypeTitle = "Operação em Vulnerabilidade (Cultura Apaga-Incêndios)";
+            archetypeDesc = "Grande parte das rotinas não está formalizada e as decisões dependem dos proprietários. A falta de tempestividade financeira e de procedimentos expõe a empresa a riscos de caixa.";
+            insightHeadline = "Vulnerabilidade Operacional e de Margem";
+            insightText = `Atenção: ${criticalGapsCount} respostas apontam para processos inexistentes ou esporádicos (notas 1 e 2). O foco urgente deve ser a implantação de Vitórias Rápidas de controle de custos e fluxo de caixa.`;
+        } else if (distribution[5].count >= 4 && distribution[1].count >= 4) {
+            essenceWord = "ALINHAMENTO";
+            archetypeTitle = "Operação Desbalanceada (Ilhas de Excelência & Pontos Cegos)";
+            archetypeDesc = "A organização possui setores com alta maturidade convivendo com áreas desprovidas de controles básicos. Esse descompasso gera atrito entre departamentos e sangria de margem.";
+            insightHeadline = "Desbalanceamento entre Eixos Estratégicos";
+            insightText = `Há disparidade entre práticas altamente consolidadas (${distribution[5].count} respostas nota 5) e áreas com lacunas severas (${distribution[1].count} respostas nota 1). O alinhamento integrado é prioritário.`;
+        } else {
+            essenceWord = "EFICIÊNCIA";
+            archetypeTitle = "Gestão Funcional em Otimização Contínua";
+            archetypeDesc = "A empresa possui equilíbrio operacional razoável, com potencial de alavancagem rápida ao transformar práticas parciais em rotinas documentadas e integradas à DRE.";
+            insightHeadline = "Equilíbrio Operacional com Oportunidades de Margem";
+            insightText = `A organização possui ${strengthsCount} fortalezas e ${criticalGapsCount} gaps críticos. O plano de ação deve atacar os gargalos para liberar capacidade das lideranças.`;
+        }
+
+        // 10.7 Síntese da Leitura Confidencial da Consultoria
+        const compName = state.userData.company || (state.userData.name ? `de ${state.userData.name}` : "da sua organização");
+        const roleDesc = state.userData.roleLabel || "gestor(a)";
+
+        const p1 = `A presente auditoria executiva da empresa ${compName}, respondida sob a ótica de ${roleDesc}, consolida um Índice Geral de Maturidade de <strong>${overallPercentage}%</strong> (${maturity.level}), totalizando <strong>${totalPoints} de 120 pontos possíveis</strong>. Ao analisarmos o padrão de dispersão das 24 questões fundamentais, observamos que <strong>${distribution[5].count} práticas</strong> atingiram o patamar de excelência plena (Nota 5), <strong>${distribution[4].count} práticas</strong> encontram-se estruturadas de forma consistente (Nota 4), <strong>${distribution[3].count} práticas</strong> operam em transição com padrão intermediário (Nota 3) e <strong>${criticalGapsCount} práticas</strong> representam vulnerabilidades críticas (Notas 1 e 2).`;
+
+        let p2 = "";
+        if (strengthsCount >= 10) {
+            p2 = `O maior ativo estratégico do negócio reside na solidez dos processos avaliados com notas 4 e 5 (${strengthsCount} itens no total, representando ${Math.round((strengthsCount / 24) * 100)}% da operação). Essas práticas constituem a fortaleza que sustenta o faturamento e o relacionamento com o mercado. Quando a organização documenta e delega rotinas com critérios técnicos, ela blinda a primeira linha da DRE (Receita Bruta), criando a previsibilidade comercial necessária para planejar investimentos com serenidade.`;
+        } else {
+            p2 = `A operação demonstra competência comercial e capacidade de entrega, sustentada pelo esforço e dedicação diária da liderança. No entanto, o baixo número de práticas consolidadas (${strengthsCount} de 24) evidencia que os resultados atuais dependem fortemente da presença constante dos fundadores, sem um arcabouço procedural que garanta a replicação automática do padrão de qualidade.`;
+        }
+
+        let p3 = "";
+        if (transitionCount >= 6) {
+            p3 = `O principal ponto de atrito e dreno de margem concentra-se nas <strong>${transitionCount} práticas avaliadas com nota 3 (estágio parcial)</strong>. O nível 3 é a armadilha mais perigosa para médias e pequenas empresas: transmite a falsa impressão de que o processo existe, mas sua execução intermitente gera retrabalho, lentidão nas entregas e desgaste emocional das equipes. Esse vácuo operacional repercute de imediato na segunda e terceira linhas da DRE: eleva os <em>Custos Operacionais (CPV)</em> por ineficiência de tempo e inflaciona as <em>Despesas SG&A</em> pelo turnover e necessidade de supervisão constante.`;
+        } else if (criticalGapsCount >= 6) {
+            p3 = `O diagnóstico aponta <strong>${criticalGapsCount} pontos de fragilidade severa (notas 1 e 2)</strong> que drenam diretamente a rentabilidade final. A ausência de controles contábeis tempestivos, a carência de rituais colegiados de decisão e a indefinição de alçadas geram vazamentos silenciosos de caixa. Cada decisão tomada no improviso corrói pontos percentuais da <em>Margem EBITDA</em>, impedindo que o crescimento das vendas se transforme em sobra líquida de caixa.`;
+        } else {
+            p3 = `Embora a organização apresente consistência na maioria das áreas, os gaps pontuais identificados nas notas 1, 2 e 3 geram pequenos vazamentos de margem que reduzem o potencial de lucro da empresa. Eliminar esses atritos liberará tempo da diretoria para focar em parcerias estratégicas e no retorno sobre o capital próprio (ROE).`;
+        }
+
+        const p4 = `Para os próximos 90 dias, a orientação prioritária da consultoria não é criar burocracias pesadas, mas sim implantar a disciplina da governança prática. O foco deve ser atacar as <em>Vitórias Rápidas</em> nos primeiros 30 dias, formalizar o Comitê Estratégico com reuniões mensais fixas e alinhar os indicadores operacionais diretamente às quatro linhas da DRE. O sucesso da transição para o estágio de <em>${essenceWord}</em> transformará esforço isolado em valor patrimonial perene.`;
+
+        const confidentialReading = { p1, p2, p3, p4 };
+
+        // 10.8 Os 5 Pontos de Mentoria Estratégica
+        const mentorshipPoints = [
+            {
+                num: 1,
+                title: "Instituição de Reuniões Mensais de Resultados (Comitê)",
+                action: "Separar as urgências cotidianas da estratégia de longo prazo com uma reunião mensal formal de diretoria, pauta fixa e acompanhamento de indicadores.",
+                impact: "Governança & Margem EBITDA",
+                dreLine: "Margem EBITDA"
+            },
+            {
+                num: 2,
+                title: "Mapeamento das 3 Maiores Rotinas de Retrabalho",
+                action: "Documentar em formato visual simples (passo a passo de 1 página) os 3 procedimentos operacionais que mais causam dúvidas ou retrabalho na equipe.",
+                impact: "Custos Operacionais & Produtividade",
+                dreLine: "Custos CPV"
+            },
+            {
+                num: 3,
+                title: "Matriz de Alçadas e Limites de Autonomia",
+                action: "Definir limites financeiros e operacionais para cada liderança intermediária, eliminando a dependência do sócio para aprovar rotinas cotidianas.",
+                impact: "Despesas Administrativas & Agilidade",
+                dreLine: "Despesas SG&A"
+            },
+            {
+                num: 4,
+                title: "Fechamento Mensal Tempestivo da DRE Gerencial",
+                action: "Garantir que a DRE gerencial seja consolidada e apresentada até o 10º dia útil do mês subsequente, permitindo correções de curso antes do fechamento do caixa.",
+                impact: "Margem Líquida & Fluxo de Caixa",
+                dreLine: "Margem EBITDA"
+            },
+            {
+                num: 5,
+                title: "Acordo de Expectativas Societárias e Continuidade",
+                action: "Alinhar formalmente os papéis dos sócios, a política de pró-labore vs distribuição de dividendos e as regras de entrada de familiares na gestão.",
+                impact: "Perenidade & Governança Societária",
+                dreLine: "Governança"
+            }
+        ];
+
         state.calculatedResults = {
             totalPoints,
             maxPossiblePoints,
@@ -595,7 +725,18 @@ document.addEventListener("DOMContentLoaded", () => {
             pillarScores,
             dreScores,
             bscScores: dreScores, // retrocompatibilidade para componentes que leiam bscScores
-            gaps
+            gaps,
+            distribution,
+            strengthsCount,
+            transitionCount,
+            criticalGapsCount,
+            essenceWord,
+            archetypeTitle,
+            archetypeDesc,
+            insightHeadline,
+            insightText,
+            confidentialReading,
+            mentorshipPoints
         };
     }
 
@@ -708,10 +849,19 @@ document.addEventListener("DOMContentLoaded", () => {
         // 11.6 Auditoria Completa das 24 Questões
         renderAuditTable();
 
-        // 11.7 WhatsApp CTA Button
+        // 11.7 Raio-X de Distribuição das Respostas (1 a 5)
+        renderDistributionCard(res);
+
+        // 11.8 O Dossiê Executivo Corporativo
+        renderDossier(res);
+
+        // 11.9 Explorador Detalhado: Qual Resposta em Cada Questão
+        renderResponseExplorer("all");
+
+        // 11.10 WhatsApp CTA Button
         setupWhatsAppButton(res);
 
-        // 11.8 PDF Download Button
+        // 11.11 PDF Download Button
         setupPdfDownloadButton();
 
         // 11.9 Exportar JSON
@@ -898,7 +1048,7 @@ document.addEventListener("DOMContentLoaded", () => {
                         <div class="gap-badges-row">
                             <span class="gap-horizon-badge">${horizonLabel}</span>
                             <span class="gap-answer-badge">
-                                Nota: ${gap.score}/5 • ${opt ? opt.label.split('—')[1].trim() : ''}
+                                Nota: ${gap.score}/5 • ${opt ? (opt.label.includes('—') ? opt.label.split('—')[1].trim() : opt.label) : ''}
                             </span>
                         </div>
                     </div>
@@ -950,6 +1100,452 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     // -------------------------------------------------------------
+    // 14-B. RAIO-X DE DISTRIBUIÇÃO DAS RESPOSTAS (1 A 5)
+    // -------------------------------------------------------------
+    function renderDistributionCard(res) {
+        const track = document.getElementById("distribution-track");
+        const cardsGrid = document.getElementById("distribution-cards-grid");
+        const insightBanner = document.getElementById("distribution-insight-banner");
+        if (!track || !cardsGrid) return;
+
+        const dist = res.distribution;
+
+        // Barra segmentada proporcional (de 5 a 1)
+        track.innerHTML = [5, 4, 3, 2, 1].map(k => {
+            const item = dist[k];
+            if (item.count === 0) return '';
+            return `<div class="distribution-segment" style="width: ${item.percentage}%; background-color: ${item.color};" title="Nota ${k}: ${item.count} respostas (${item.percentage}%)"></div>`;
+        }).join('');
+
+        // 5 Mini cards clicáveis
+        cardsGrid.innerHTML = [5, 4, 3, 2, 1].map(k => {
+            const item = dist[k];
+            return `
+                <div class="dist-mini-card" data-score="${k}" title="Clique para ver as ${item.count} questões avaliadas com Nota ${k}">
+                    <div class="dist-badge" style="background: ${item.bg}; color: ${item.color};">
+                        Nota ${k} • ${item.label}
+                    </div>
+                    <div class="dist-count" style="color: ${item.color};">${item.count}</div>
+                    <div class="dist-label">${item.percentage}% das 24 questões</div>
+                    <div class="dist-desc">${item.group}</div>
+                </div>
+            `;
+        }).join('');
+
+        // Evento de clique para filtrar o explorador de respostas
+        cardsGrid.querySelectorAll(".dist-mini-card").forEach(card => {
+            card.addEventListener("click", () => {
+                const score = card.getAttribute("data-score");
+                cardsGrid.querySelectorAll(".dist-mini-card").forEach(c => c.classList.remove("active"));
+                card.classList.add("active");
+                renderResponseExplorer(score);
+                const explorerCard = document.getElementById("response-explorer-card");
+                if (explorerCard) {
+                    explorerCard.scrollIntoView({ behavior: "smooth", block: "start" });
+                }
+                showToast(`Filtrando: exibindo as ${dist[score].count} questões avaliadas com Nota ${score}`);
+            });
+        });
+
+        // Banner Analítico
+        if (insightBanner) {
+            insightBanner.innerHTML = `
+                <div class="insight-icon"><i class="fas fa-lightbulb"></i></div>
+                <div class="insight-content">
+                    <h4>Padrão Comportamental Dominante: ${res.insightHeadline}</h4>
+                    <p>${res.insightText}</p>
+                </div>
+            `;
+        }
+    }
+
+    // -------------------------------------------------------------
+    // 14-C. O DOSSIÊ ESTRATÉGICO CORPORATIVO (ESTILO ROTA)
+    // -------------------------------------------------------------
+    function renderDossier(res) {
+        const prancha1 = document.getElementById("prancha-1-panel");
+        const prancha2 = document.getElementById("prancha-2-panel");
+        const prancha3 = document.getElementById("prancha-3-panel");
+        const prancha4 = document.getElementById("prancha-4-panel");
+        const prancha5 = document.getElementById("prancha-5-panel");
+        if (!prancha1 || !prancha2 || !prancha3 || !prancha4 || !prancha5) return;
+
+        const currentDate = new Date().toLocaleDateString('pt-BR', { day: '2-digit', month: 'long', year: 'numeric' });
+        const compName = state.userData.company || (state.userData.name ? state.userData.name : "Organização Avaliada");
+        const gestorName = state.userData.name || "Diretoria Executiva";
+
+        // PRANCHA 1: CAPA NOBRE & PALAVRA-ESSÊNCIA
+        prancha1.innerHTML = `
+            <div class="dossier-cover-sheet">
+                <div class="cover-header-tag">
+                    <span><i class="fas fa-shield-halved"></i> AUDITORIA DE MARGEM & PROCESSOS</span>
+                    <span>VISUAL TECH • 2026</span>
+                </div>
+
+                <div class="cover-essence-section">
+                    <div class="cover-essence-label">CONCEITO CENTRAL & PALAVRA-ESSÊNCIA</div>
+                    <div class="cover-essence-word">${res.essenceWord}</div>
+                    <div class="cover-essence-desc">"${res.archetypeTitle} — ${res.archetypeDesc}"</div>
+                </div>
+
+                <div class="cover-meta-grid">
+                    <div class="cover-meta-item">
+                        <span>EMPRESA AUDITADA</span>
+                        <strong>${compName}</strong>
+                        <div style="font-size: 0.85rem; color: #D6C2B4; margin-top: 2px;">${state.userData.segment}</div>
+                    </div>
+                    <div class="cover-meta-item">
+                        <span>GESTOR / DECISOR</span>
+                        <strong>${gestorName}</strong>
+                        <div style="font-size: 0.85rem; color: #D6C2B4; margin-top: 2px;">${state.userData.roleLabel}</div>
+                    </div>
+                    <div class="cover-meta-item">
+                        <span>DATA DA AUDITORIA</span>
+                        <strong>${currentDate}</strong>
+                        <div style="font-size: 0.85rem; color: #D6C2B4; margin-top: 2px;">Protocolo nº ${Date.now().toString().slice(-6)}</div>
+                    </div>
+                    <div class="cover-meta-item">
+                        <span>RESPONSABILIDADE TÉCNICA</span>
+                        <strong>Taís Trevisol Scherner • Erick Finger</strong>
+                        <div style="font-size: 0.85rem; color: #D6C2B4; margin-top: 2px;">Governança & Arquitetura Visual Tech</div>
+                    </div>
+                </div>
+            </div>
+        `;
+
+        // PRANCHA 2: BALANÇO DAS RESPOSTAS & SUMÁRIO
+        prancha2.innerHTML = `
+            <div class="balance-summary-grid">
+                <div class="balance-metric-card">
+                    <div class="num">${res.overallPercentage}%</div>
+                    <div class="lbl">Índice Geral de Maturidade</div>
+                    <div style="font-size: 0.8rem; color: var(--text-muted); margin-top: 4px;">${res.maturity.level}</div>
+                </div>
+                <div class="balance-metric-card">
+                    <div class="num" style="color: var(--accent);">${res.strengthsCount} de 24</div>
+                    <div class="lbl">Fortalezas Consolidadas</div>
+                    <div style="font-size: 0.8rem; color: var(--text-muted); margin-top: 4px;">Notas 4 e 5 (${Math.round((res.strengthsCount/24)*100)}% da operação)</div>
+                </div>
+                <div class="balance-metric-card">
+                    <div class="num" style="color: ${res.criticalGapsCount > 5 ? 'var(--danger)' : 'var(--warning)'};">${res.criticalGapsCount}</div>
+                    <div class="lbl">Gargalos Críticos de Margem</div>
+                    <div style="font-size: 0.8rem; color: var(--text-muted); margin-top: 4px;">Notas 1 e 2 (Atenção Imediata)</div>
+                </div>
+            </div>
+
+            <div style="margin-top: 1.5rem;">
+                <h4 style="font-size: 1.1rem; color: var(--text-heading); margin-bottom: 0.75rem;">
+                    <i class="fas fa-table-list" style="color: var(--primary);"></i> Balanço Geral das 24 Questões por Nível
+                </h4>
+                <table class="balance-table">
+                    <thead>
+                        <tr>
+                            <th style="width: 140px;">Nível / Nota</th>
+                            <th>Classificação Operacional</th>
+                            <th style="width: 110px; text-align: center;">Respostas</th>
+                            <th style="width: 100px; text-align: center;">% Total</th>
+                            <th>Reflexo Estratégico na Gestão</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><span class="dist-badge" style="background: var(--scale-5-bg); color: var(--scale-5);">Nota 5 • Consolidado</span></td>
+                            <td><strong>Excelência & Rotina Plena</strong></td>
+                            <td style="text-align: center; font-weight: 800;">${res.distribution[5].count}</td>
+                            <td style="text-align: center;">${res.distribution[5].percentage}%</td>
+                            <td style="font-size: 0.85rem; color: var(--text-muted);">Práticas incorporadas à cultura, gerando eficiência e blindando a Receita.</td>
+                        </tr>
+                        <tr>
+                            <td><span class="dist-badge" style="background: var(--scale-4-bg); color: var(--scale-4);">Nota 4 • Consistente</span></td>
+                            <td><strong>Estruturado & Formalizado</strong></td>
+                            <td style="text-align: center; font-weight: 800;">${res.distribution[4].count}</td>
+                            <td style="text-align: center;">${res.distribution[4].percentage}%</td>
+                            <td style="font-size: 0.85rem; color: var(--text-muted);">Processos rotineiros com autonomia dos gestores e poucas oscilações.</td>
+                        </tr>
+                        <tr>
+                            <td><span class="dist-badge" style="background: var(--scale-3-bg); color: var(--scale-3);">Nota 3 • Parcialmente</span></td>
+                            <td><strong>Zona de Transição (Atenção)</strong></td>
+                            <td style="text-align: center; font-weight: 800; color: var(--warning);">${res.distribution[3].count}</td>
+                            <td style="text-align: center; color: var(--warning); font-weight: 700;">${res.distribution[3].percentage}%</td>
+                            <td style="font-size: 0.85rem; color: var(--text-muted);">Existe em algumas áreas mas sem padrão. Causa retrabalho e inflaciona CPV e SG&A.</td>
+                        </tr>
+                        <tr>
+                            <td><span class="dist-badge" style="background: var(--scale-2-bg); color: var(--scale-2);">Nota 2 • Acontece pouco</span></td>
+                            <td><strong>Vulnerabilidade Operacional</strong></td>
+                            <td style="text-align: center; font-weight: 800; color: var(--scale-2);">${res.distribution[2].count}</td>
+                            <td style="text-align: center; color: var(--scale-2); font-weight: 700;">${res.distribution[2].percentage}%</td>
+                            <td style="font-size: 0.85rem; color: var(--text-muted);">Prática incipiente, dependente de heróis individuais e sem controle formal.</td>
+                        </tr>
+                        <tr>
+                            <td><span class="dist-badge" style="background: var(--scale-1-bg); color: var(--scale-1);">Nota 1 • Não acontece</span></td>
+                            <td><strong>Gargalo Crítico / Inexistente</strong></td>
+                            <td style="text-align: center; font-weight: 800; color: var(--danger);">${res.distribution[1].count}</td>
+                            <td style="text-align: center; color: var(--danger); font-weight: 700;">${res.distribution[1].percentage}%</td>
+                            <td style="font-size: 0.85rem; color: var(--text-muted);">Ausência total de processo ou controle. Sangria direta de margem EBITDA e caixa.</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        `;
+
+        // PRANCHA 3: TEIA & REFLEXO NA DRE
+        prancha3.innerHTML = `
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem;">
+                <div>
+                    <h4 style="font-size: 1.05rem; color: var(--text-heading); margin-bottom: 0.75rem;">
+                        <i class="fas fa-chart-pie" style="color: var(--primary);"></i> Síntese dos 5 Eixos Estratégicos
+                    </h4>
+                    <div style="display: flex; flex-direction: column; gap: 0.85rem;">
+                        ${res.pillarScores.map(p => `
+                            <div style="background: var(--bg-main); border: 1px solid var(--border-color); border-radius: var(--radius-sm); padding: 0.85rem 1rem;">
+                                <div style="display: flex; justify-content: space-between; font-weight: 700; font-size: 0.9rem; margin-bottom: 0.4rem;">
+                                    <span><i class="${p.icon}" style="color: var(--primary);"></i> ${p.name}</span>
+                                    <span style="color: var(--primary);">${p.percentage}%</span>
+                                </div>
+                                <div class="progress-track" style="height: 6px;">
+                                    <div class="progress-bar-fill" style="width: ${p.percentage}%;"></div>
+                                </div>
+                            </div>
+                        `).join('')}
+                    </div>
+                </div>
+
+                <div>
+                    <h4 style="font-size: 1.05rem; color: var(--text-heading); margin-bottom: 0.75rem;">
+                        <i class="fas fa-file-invoice-dollar" style="color: var(--primary);"></i> Impacto nas 4 Linhas da DRE
+                    </h4>
+                    <div style="display: flex; flex-direction: column; gap: 0.85rem;">
+                        ${res.dreScores.map(d => `
+                            <div style="background: var(--bg-main); border: 1px solid var(--border-color); border-left: 4px solid ${d.color}; border-radius: var(--radius-sm); padding: 0.85rem 1rem;">
+                                <div style="display: flex; justify-content: space-between; font-weight: 700; font-size: 0.9rem;">
+                                    <span style="color: var(--text-heading);">${d.name}</span>
+                                    <span style="color: ${d.color};">${d.percentage}%</span>
+                                </div>
+                                <div style="font-size: 0.78rem; color: var(--text-muted); margin: 2px 0 6px;">${d.line}</div>
+                                <div style="font-size: 0.82rem; font-weight: 700; color: ${d.color};">${d.statusText}</div>
+                            </div>
+                        `).join('')}
+                    </div>
+                </div>
+            </div>
+        `;
+
+        // PRANCHA 4: LEITURA CONFIDENCIAL DA CONSULTORIA
+        prancha4.innerHTML = `
+            <div class="confidential-reading-sheet">
+                <div class="reading-letterhead">
+                    <div>
+                        <div style="font-size: 0.75rem; letter-spacing: 0.15em; text-transform: uppercase; color: var(--primary); font-weight: 800;">
+                            RELATÓRIO CONFIDENCIAL DE CONSULTORIA
+                        </div>
+                        <h3 class="reading-title">Diagnóstico Comportamental & Devolutiva Executiva</h3>
+                    </div>
+                    <div style="text-align: right; font-size: 0.82rem; color: var(--text-muted);">
+                        Emitido em ${currentDate}<br>
+                        <strong>Ref: ${compName}</strong>
+                    </div>
+                </div>
+
+                <div class="reading-body">
+                    <p>${res.confidentialReading.p1}</p>
+                    <p>${res.confidentialReading.p2}</p>
+                    <p>${res.confidentialReading.p3}</p>
+                    <p>${res.confidentialReading.p4}</p>
+                </div>
+            </div>
+        `;
+
+        // PRANCHA 5: CARTA DE DIREÇÃO & PLANO 90 DIAS
+        prancha5.innerHTML = `
+            <div>
+                <h4 style="font-size: 1.15rem; color: var(--text-heading); margin-bottom: 0.5rem;">
+                    <i class="fas fa-compass" style="color: var(--primary);"></i> 5 Pontos de Mentoria Estratégica Prioritária
+                </h4>
+                <p style="font-size: 0.9rem; color: var(--text-muted); margin-bottom: 1.25rem;">
+                    Ações recomendadas pela consultoria para elevar o índice de maturidade e estancar vazamentos de margem:
+                </p>
+
+                <div class="direction-points-list">
+                    ${res.mentorshipPoints.map(pt => `
+                        <div class="direction-point-item">
+                            <div class="direction-point-num">${pt.num}</div>
+                            <div style="flex: 1;">
+                                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.3rem;">
+                                    <strong style="font-size: 0.95rem; color: var(--text-heading);">${pt.title}</strong>
+                                    <span style="font-size: 0.75rem; padding: 2px 7px; border-radius: 4px; background: rgba(2, 132, 199, 0.12); color: var(--primary); font-weight: 700;">
+                                        Impacto: ${pt.impact}
+                                    </span>
+                                </div>
+                                <p style="font-size: 0.86rem; color: var(--text-main); margin: 0; line-height: 1.45;">
+                                    ${pt.action}
+                                </p>
+                            </div>
+                        </div>
+                    `).join('')}
+                </div>
+
+                <div style="margin-top: 2rem; padding: 1.5rem; background: var(--bg-main); border: 1px solid var(--border-color); border-radius: var(--radius-md); display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem;">
+                    <div>
+                        <div style="font-size: 0.8rem; font-weight: 700; color: var(--text-muted); text-transform: uppercase;">CONSULTORIA RESPONSÁVEL</div>
+                        <div style="font-size: 1.05rem; font-weight: 800; color: var(--text-heading); margin-top: 2px;">Taís Trevisol Scherner • Erick Finger</div>
+                        <div style="font-size: 0.85rem; color: var(--text-muted);">Mestra em Administração • Visual Tech 2026</div>
+                    </div>
+                    <div>
+                        <a href="https://api.whatsapp.com/send?phone=5549988369445" target="_blank" class="btn btn-success">
+                            <i class="fab fa-whatsapp"></i> Agendar Devolutiva no WhatsApp
+                        </a>
+                    </div>
+                </div>
+            </div>
+        `;
+
+        setupDossierEvents(res);
+    }
+
+    // -------------------------------------------------------------
+    // 14-D. EVENTOS DAS ABAS DO DOSSIÊ
+    // -------------------------------------------------------------
+    function setupDossierEvents(res) {
+        const tabs = document.querySelectorAll(".dossier-tab-btn");
+        const panels = document.querySelectorAll(".dossier-sheet-panel");
+
+        tabs.forEach(tab => {
+            tab.onclick = () => {
+                const targetId = `${tab.getAttribute("data-tab")}-panel`;
+                tabs.forEach(t => t.classList.remove("active"));
+                panels.forEach(p => p.classList.remove("active"));
+
+                tab.classList.add("active");
+                const targetPanel = document.getElementById(targetId);
+                if (targetPanel) {
+                    targetPanel.classList.add("active");
+                }
+            };
+        });
+
+        // Botão Baixar Dossiê (PDF)
+        const downloadBtn = document.getElementById("dossier-download-pdf-btn");
+        if (downloadBtn) {
+            downloadBtn.onclick = () => {
+                const mainDownloadBtn = document.getElementById("download-pdf-btn");
+                if (mainDownloadBtn) mainDownloadBtn.click();
+            };
+        }
+
+        // Botão Imprimir Dossiê
+        const printBtn = document.getElementById("dossier-print-btn");
+        if (printBtn) {
+            printBtn.onclick = () => {
+                window.print();
+            };
+        }
+    }
+
+    // -------------------------------------------------------------
+    // 14-E. AUDITORIA DETALHADA: QUAL RESPOSTA EM CADA QUESTÃO
+    // -------------------------------------------------------------
+    function renderResponseExplorer(activeScore = "all") {
+        const pillsContainer = document.getElementById("response-filter-pills");
+        const itemsGrid = document.getElementById("response-items-grid");
+        if (!pillsContainer || !itemsGrid) return;
+
+        const res = state.calculatedResults;
+        if (!res) return;
+
+        // Atualiza contadores das pílulas
+        const countAllEl = document.getElementById("count-pill-all");
+        if (countAllEl) countAllEl.textContent = QUESTIONS.length;
+
+        [5, 4, 3, 2, 1].forEach(k => {
+            const el = document.getElementById(`count-pill-${k}`);
+            if (el) el.textContent = res.distribution[k].count;
+        });
+
+        // Atualiza classe ativa nas pílulas
+        pillsContainer.querySelectorAll(".resp-filter-pill").forEach(pill => {
+            const pScore = pill.getAttribute("data-score");
+            pill.classList.toggle("active", String(pScore) === String(activeScore));
+
+            pill.onclick = () => {
+                renderResponseExplorer(pScore);
+            };
+        });
+
+        // Filtra as perguntas
+        const filtered = QUESTIONS.filter(q => {
+            const val = state.answers[q.id] || 1;
+            if (activeScore === "all") return true;
+            return String(val) === String(activeScore);
+        });
+
+        if (filtered.length === 0) {
+            itemsGrid.innerHTML = `
+                <div style="text-align: center; padding: 2.5rem; background: var(--bg-main); border: 1px dashed var(--border-color); border-radius: var(--radius-md);">
+                    <i class="fas fa-check-circle" style="font-size: 2rem; color: var(--accent); margin-bottom: 0.5rem;"></i>
+                    <p style="font-weight: 700; color: var(--text-heading);">Nenhuma resposta com Nota ${activeScore}</p>
+                    <p style="font-size: 0.85rem; color: var(--text-muted);">A empresa não assinalou esta nota em nenhuma das 24 questões.</p>
+                </div>
+            `;
+            return;
+        }
+
+        itemsGrid.innerHTML = filtered.map(q => {
+            const score = state.answers[q.id] || 1;
+            const opt = DEFAULT_OPTIONS.find(o => o.value === score) || DEFAULT_OPTIONS[0];
+            const dreObj = DRE_IMPACTS && DRE_IMPACTS[q.dreImpact];
+            const pillarObj = PILLARS.find(p => p.id === q.pillarId);
+
+            let borderColor = "var(--scale-5)";
+            let badgeBg = "var(--scale-5-bg)";
+            let badgeColor = "var(--scale-5)";
+            if (score <= 2) {
+                borderColor = "var(--scale-1)";
+                badgeBg = "var(--scale-1-bg)";
+                badgeColor = "var(--scale-1)";
+            } else if (score === 3) {
+                borderColor = "var(--scale-3)";
+                badgeBg = "var(--scale-3-bg)";
+                badgeColor = "var(--scale-3)";
+            } else if (score === 4) {
+                borderColor = "var(--scale-4)";
+                badgeBg = "var(--scale-4-bg)";
+                badgeColor = "var(--scale-4)";
+            }
+
+            return `
+                <div class="response-item-card" style="border-left-color: ${borderColor};">
+                    <div class="response-item-header">
+                        <div style="display: flex; align-items: center; gap: 0.5rem; flex-wrap: wrap;">
+                            <span style="font-weight: 800; color: var(--primary); font-size: 0.9rem;">Questão ${q.id} de 24</span>
+                            ${pillarObj ? `<span style="font-size: 0.75rem; background: var(--bg-main); border: 1px solid var(--border-color); padding: 2px 7px; border-radius: 4px; color: var(--text-muted);"><i class="${pillarObj.icon}"></i> ${pillarObj.name}</span>` : ''}
+                            ${dreObj ? `<span style="font-size: 0.75rem; background: rgba(2, 132, 199, 0.1); padding: 2px 7px; border-radius: 4px; color: var(--primary); font-weight: 700;"><i class="${dreObj.icon}"></i> ${dreObj.name}</span>` : ''}
+                        </div>
+                        <span class="response-chosen-badge" style="background: ${badgeBg}; color: ${badgeColor};">
+                            Nota ${score}/5 • ${opt.label}
+                        </span>
+                    </div>
+
+                    <div class="response-item-title">${q.title}</div>
+                    <div class="response-item-desc">${q.description}</div>
+
+                    <div class="response-chosen-box">
+                        <div class="response-chosen-badge" style="background: ${badgeBg}; color: ${badgeColor};">
+                            Resposta Marcada
+                        </div>
+                        <div class="response-chosen-text">
+                            <strong>${opt.label}:</strong> ${opt.desc}
+                        </div>
+                    </div>
+
+                    <div class="response-tip-box">
+                        <strong><i class="fas fa-lightbulb"></i> Recomendação de Gestão:</strong> ${q.tip}
+                    </div>
+                </div>
+            `;
+        }).join('');
+    }
+
+    // -------------------------------------------------------------
     // 15. INTEGRAÇÕES: WHATSAPP, PDF & EXPORTAÇÃO JSON
     // -------------------------------------------------------------
     function setupWhatsAppButton(res) {
@@ -961,20 +1557,28 @@ document.addEventListener("DOMContentLoaded", () => {
         if (state.userData.isAnonymous) {
             participantInfo = `Perfil: ${state.userData.roleLabel} (${state.userData.segment}) - Resposta Confidencial.\n`;
         } else if (state.userData.name && state.userData.company) {
-            participantInfo = `Meu nome é ${state.userData.name} da empresa "${state.userData.company}" (${state.userData.roleLabel}).\n`;
+            participantInfo = `Empresa: *${state.userData.company}*\nGestor(a): *${state.userData.name}* (${state.userData.roleLabel}).\n`;
         } else {
-            participantInfo = `Meu nome é ${state.userData.name || 'Gestor'} (${state.userData.roleLabel}).\n`;
+            participantInfo = `Gestor(a): *${state.userData.name || 'Gestor'}* (${state.userData.roleLabel}).\n`;
         }
 
-        const topGaps = res.gaps.slice(0, 2).map(g => `• ${g.question.title}`).join('\n');
-        const gapsText = topGaps ? `\nPrincipais gargalos identificados para otimização:\n${topGaps}\n` : '';
+        const d = res.distribution;
+        const distributionSummary = 
+            `📊 *Balanço das 24 Respostas:*\n` +
+            `• Nível 5 (Excelência): ${d[5].count} respostas (${d[5].percentage}%)\n` +
+            `• Nível 4 (Estruturado): ${d[4].count} respostas (${d[4].percentage}%)\n` +
+            `• Nível 3 (Em Transição): ${d[3].count} respostas (${d[3].percentage}%)\n` +
+            `• Nível 2 (Vulnerabilidade): ${d[2].count} respostas (${d[2].percentage}%)\n` +
+            `• Nível 1 (Gargalo Crítico): ${d[1].count} respostas (${d[1].percentage}%)\n`;
 
         const waMsg = encodeURIComponent(
-            `Olá! Acabei de concluir o Diagnóstico Empresarial da Auditoria de Margem & Processos.\n` +
+            `*AUDITORIA DE MARGEM & PROCESSOS (VISUAL TECH 2026)*\n\n` +
+            `Olá Taís! Concluí o diagnóstico empresarial e gerei o Dossiê Estratégico.\n\n` +
             participantInfo +
-            `Índice Geral de Maturidade: ${res.overallPercentage}% (${res.maturity.level}).\n` +
-            gapsText +
-            `Gostaria de agendar a devolutiva da consultoria para planejar a otimização de custos e expansão de margens na DRE.`
+            `Índice Geral de Maturidade: *${res.overallPercentage}%* (${res.maturity.level})\n` +
+            `Palavra-Essência Diagnosticada: *${res.essenceWord}*\n\n` +
+            distributionSummary + `\n` +
+            `Gostaria de agendar a reunião de devolutiva da consultoria para analisarmos o plano de 90 dias!`
         );
         whatsappBtn.href = `https://api.whatsapp.com/send?phone=${defaultPhone}&text=${waMsg}`;
     }
@@ -1121,8 +1725,14 @@ document.addEventListener("DOMContentLoaded", () => {
         }, 3500);
     }
 
+    // Expor para depuração e automação de testes
+    window.calculateResults = calculateResults;
+    window.renderResultsScreen = renderResultsScreen;
+    window.goToStep = goToStep;
+
     // Restaura rascunho anterior se houver
     if (loadDraft() && Object.keys(state.answers).length > 0) {
         updateProgress();
     }
 });
+

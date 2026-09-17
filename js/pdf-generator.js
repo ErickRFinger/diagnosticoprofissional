@@ -253,7 +253,7 @@ class DiagnosticPdfGenerator {
             </div>
 
             <!-- SCORE GERAL & ESTÁGIO -->
-            <div style="display: flex; gap: 16px; align-items: center; background: #f0fdf4; border: 1px solid #bbf7d0; border-radius: 8px; padding: 14px 18px; margin-bottom: 18px;">
+            <div style="display: flex; gap: 16px; align-items: center; background: #f0fdf4; border: 1px solid #bbf7d0; border-radius: 8px; padding: 14px 18px; margin-bottom: 16px;">
                 <div style="text-align: center; min-width: 115px; border-right: 1px solid #bbf7d0; padding-right: 16px;">
                     <div style="font-size: 34px; font-weight: 900; color: #166534; line-height: 1;">
                         ${results.overallPercentage}%
@@ -271,6 +271,72 @@ class DiagnosticPdfGenerator {
                     <p style="font-size: 10.5px; color: #374151; margin: 0; line-height: 1.45;">${results.maturity.summary}</p>
                 </div>
             </div>
+
+            <!-- PALAVRA-ESSÊNCIA & ARQUÉTIPO (ESTILO ROTA) -->
+            ${results.essenceWord ? `
+                <div style="background: linear-gradient(135deg, #1e1b2e 0%, #2d1b2d 100%); color: #F4EFEA; border-radius: 6px; padding: 12px 16px; margin-bottom: 16px; border-left: 5px solid #CBA152;">
+                    <div style="font-size: 9px; letter-spacing: 0.2em; text-transform: uppercase; color: #CBA152; font-weight: bold;">
+                        PALAVRA-ESSÊNCIA & ARQUÉTIPO OPERACIONAL
+                    </div>
+                    <div style="font-size: 22px; font-weight: 900; color: #FFF6EC; letter-spacing: 0.05em; margin: 2px 0;">
+                        ${results.essenceWord}
+                    </div>
+                    <div style="font-size: 10px; color: #D6C2B4; font-style: italic;">
+                        "${results.archetypeTitle || 'Diagnóstico Executivo'} — ${results.archetypeDesc || ''}"
+                    </div>
+                </div>
+            ` : ''}
+
+            <!-- RAIO-X & BALANÇO DAS 24 RESPOSTAS -->
+            ${results.distribution ? `
+                <div style="background: #ffffff; border: 1px solid #e2e8f0; border-radius: 6px; padding: 12px; margin-bottom: 16px; page-break-inside: avoid;">
+                    <h3 style="font-size: 11px; text-transform: uppercase; color: #334155; margin: 0 0 8px; border-bottom: 1px solid #e2e8f0; padding-bottom: 4px; font-weight: 800;">
+                        2. Raio-X das 24 Respostas: Balanço por Nível (1 a 5)
+                    </h3>
+                    <div style="display: flex; gap: 8px; margin-bottom: 10px;">
+                        ${[5, 4, 3, 2, 1].map(k => {
+                            const item = results.distribution[k];
+                            let borderC = "#10b981";
+                            let bgC = "#d1fae5";
+                            let textC = "#065f46";
+                            if (k === 4) { borderC = "#0284c7"; bgC = "#e0f2fe"; textC = "#0369a1"; }
+                            if (k === 3) { borderC = "#f59e0b"; bgC = "#fef3c7"; textC = "#92400e"; }
+                            if (k === 2) { borderC = "#f97316"; bgC = "#ffedd5"; textC = "#c2410c"; }
+                            if (k === 1) { borderC = "#ef4444"; bgC = "#fee2e2"; textC = "#b91c1c"; }
+                            return `
+                                <div style="flex: 1; border: 1px solid ${borderC}; background: ${bgC}; border-radius: 6px; padding: 6px 8px; text-align: center;">
+                                    <div style="font-size: 8.5px; font-weight: bold; color: ${textC}; text-transform: uppercase;">Nota ${k}</div>
+                                    <div style="font-size: 16px; font-weight: 900; color: ${textC}; line-height: 1.1;">${item.count}</div>
+                                    <div style="font-size: 8px; color: ${textC};">${item.percentage}%</div>
+                                </div>
+                            `;
+                        }).join('')}
+                    </div>
+                    ${results.insightHeadline ? `
+                        <div style="background: #f8fafc; border-left: 3px solid #0284c7; padding: 6px 10px; font-size: 9.5px; color: #334155; line-height: 1.4;">
+                            <strong>Padrão Dominante: ${results.insightHeadline}:</strong> ${results.insightText}
+                        </div>
+                    ` : ''}
+                </div>
+            ` : ''}
+
+            <!-- PARECER CONFIDENCIAL DA CONSULTORIA -->
+            ${results.confidentialReading ? `
+                <div style="background: #fdfefe; border: 1px solid #cbd5e1; border-left: 4px solid #0284c7; border-radius: 6px; padding: 12px 14px; margin-bottom: 16px; page-break-inside: avoid;">
+                    <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #e2e8f0; padding-bottom: 5px; margin-bottom: 8px;">
+                        <span style="font-size: 9px; font-weight: bold; letter-spacing: 0.15em; text-transform: uppercase; color: #0284c7;">
+                            PARECER CONFIDENCIAL DE CONSULTORIA
+                        </span>
+                        <span style="font-size: 8.5px; color: #64748b;">Análise Comportamental Integrada</span>
+                    </div>
+                    <div style="font-size: 9.5px; color: #1e293b; line-height: 1.55; text-align: justify;">
+                        <p style="margin: 0 0 6px;">${results.confidentialReading.p1}</p>
+                        <p style="margin: 0 0 6px;">${results.confidentialReading.p2}</p>
+                        <p style="margin: 0 0 6px;">${results.confidentialReading.p3}</p>
+                        <p style="margin: 0;">${results.confidentialReading.p4}</p>
+                    </div>
+                </div>
+            ` : ''}
 
             <!-- GRID ANALYTICS: RADAR CHART & 5 PILARES -->
             <div style="margin-bottom: 18px; page-break-inside: avoid;">
@@ -312,10 +378,30 @@ class DiagnosticPdfGenerator {
                 </div>
             </div>
 
+            <!-- 5 PONTOS DE MENTORIA ESTRATÉGICA -->
+            ${results.mentorshipPoints ? `
+                <div style="margin-bottom: 18px; page-break-inside: avoid;">
+                    <h3 style="font-size: 11px; text-transform: uppercase; color: #334155; margin: 0 0 8px; border-bottom: 1px solid #e2e8f0; padding-bottom: 4px; font-weight: 800;">
+                        5. Diretrizes da Mentoria: 5 Ações Estratégicas Prioritárias
+                    </h3>
+                    <div style="display: flex; flex-direction: column; gap: 6px;">
+                        ${results.mentorshipPoints.map(pt => `
+                            <div style="background: #f8fafc; border: 1px solid #e2e8f0; border-left: 3px solid #0284c7; border-radius: 4px; padding: 6px 10px;">
+                                <div style="display: flex; justify-content: space-between; font-size: 10px; font-weight: bold; color: #0f172a;">
+                                    <span>${pt.num}. ${pt.title}</span>
+                                    <span style="font-size: 8.5px; color: #0284c7;">${pt.impact}</span>
+                                </div>
+                                <div style="font-size: 9px; color: #475569; margin-top: 2px;">${pt.action}</div>
+                            </div>
+                        `).join('')}
+                    </div>
+                </div>
+            ` : ''}
+
             <!-- PLANO DE AÇÃO PRIORITÁRIO (GAPS) -->
             <div style="margin-bottom: 20px; page-break-before: always;">
                 <h3 style="font-size: 11px; text-transform: uppercase; color: #334155; margin: 0 0 10px; border-bottom: 1px solid #e2e8f0; padding-bottom: 4px; font-weight: 800;">
-                    5. Plano de Ação: Gaps Prioritários e Recomendações
+                    6. Plano de Ação: Gaps Prioritários e Recomendações
                 </h3>
                 <p style="font-size: 10px; color: #64748b; margin-bottom: 12px;">
                     Práticas avaliadas com notas 1 (Não acontece), 2 (Acontece pouco) ou 3 (Acontece parcialmente), estruturadas por horizonte prioritário de implementação:
