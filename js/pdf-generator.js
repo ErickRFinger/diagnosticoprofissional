@@ -42,12 +42,12 @@ class DiagnosticPdfGenerator {
 
         reportContainer.style.cssText = `
             position: relative;
-            width: 740px;
-            margin: 0 auto;
+            width: 100%;
+            margin: 0;
             background: #ffffff;
             color: #0f172a;
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
-            padding: 16px 20px;
+            padding: 12px 16px;
             line-height: 1.45;
             box-sizing: border-box;
         `;
@@ -70,8 +70,7 @@ class DiagnosticPdfGenerator {
                     useCORS: true, 
                     logging: false,
                     scrollY: 0,
-                    scrollX: 0,
-                    windowWidth: 740
+                    scrollX: 0
                 },
                 jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' },
                 pagebreak: { mode: ['css', 'legacy'] }
