@@ -1179,7 +1179,6 @@ document.addEventListener("DOMContentLoaded", () => {
             <div class="dossier-cover-sheet">
                 <div class="cover-header-tag">
                     <span><i class="fas fa-shield-halved"></i> AUDITORIA DE MARGEM & PROCESSOS</span>
-                    <span>VISUAL TECH • 2026</span>
                 </div>
 
                 <div class="cover-essence-section">
@@ -1207,7 +1206,7 @@ document.addEventListener("DOMContentLoaded", () => {
                     <div class="cover-meta-item">
                         <span>RESPONSABILIDADE TÉCNICA</span>
                         <strong>Taís Trevisol Scherner • Erick Finger</strong>
-                        <div style="font-size: 0.85rem; color: #D6C2B4; margin-top: 2px;">Governança & Arquitetura Visual Tech</div>
+                        <div style="font-size: 0.85rem; color: #D6C2B4; margin-top: 2px;">Governança & Gestão Estratégica</div>
                     </div>
                 </div>
             </div>
@@ -1388,7 +1387,7 @@ document.addEventListener("DOMContentLoaded", () => {
                     <div>
                         <div style="font-size: 0.8rem; font-weight: 700; color: var(--text-muted); text-transform: uppercase;">CONSULTORIA RESPONSÁVEL</div>
                         <div style="font-size: 1.05rem; font-weight: 800; color: var(--text-heading); margin-top: 2px;">Taís Trevisol Scherner • Erick Finger</div>
-                        <div style="font-size: 0.85rem; color: var(--text-muted);">Mestra em Administração • Visual Tech 2026</div>
+                        <div style="font-size: 0.85rem; color: var(--text-muted);">Mestra em Administração • Governança & Gestão Estratégica</div>
                     </div>
                     <div>
                         <a href="https://api.whatsapp.com/send?phone=5549988369445" target="_blank" class="btn btn-success">
@@ -1572,7 +1571,7 @@ document.addEventListener("DOMContentLoaded", () => {
             `• Nível 1 (Gargalo Crítico): ${d[1].count} respostas (${d[1].percentage}%)\n`;
 
         const waMsg = encodeURIComponent(
-            `*AUDITORIA DE MARGEM & PROCESSOS (VISUAL TECH 2026)*\n\n` +
+            `*AUDITORIA DE MARGEM & PROCESSOS*\n\n` +
             `Olá Taís! Concluí o diagnóstico empresarial e gerei o Dossiê Estratégico.\n\n` +
             participantInfo +
             `Índice Geral de Maturidade: *${res.overallPercentage}%* (${res.maturity.level})\n` +
@@ -1592,13 +1591,35 @@ document.addEventListener("DOMContentLoaded", () => {
             downloadPdfBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Gerando Dossiê Executivo...';
             showToast("Formatando relatório executivo de alta fidelidade...");
 
-            // Captura imagem do gráfico radar em base64
+            // Captura imagem do gráfico radar em base64 com contraste ideal para impressão/PDF
             let radarImgData = null;
             if (radarChartInstance) {
                 try {
+                    const isDark = state.theme === "dark";
+                    if (isDark) {
+                        radarChartInstance.options.scales.r.angleLines.color = "rgba(0, 0, 0, 0.12)";
+                        radarChartInstance.options.scales.r.grid.color = "rgba(0, 0, 0, 0.12)";
+                        radarChartInstance.options.scales.r.pointLabels.color = "#0f172a";
+                        radarChartInstance.options.plugins.legend.labels.color = "#0f172a";
+                        radarChartInstance.update('none');
+                    }
                     radarImgData = radarChartInstance.toBase64Image();
+                    if (isDark) {
+                        updateRadarChartTheme();
+                    }
                 } catch (e) {
                     console.warn("Não foi possível extrair imagem do radar chart", e);
+                }
+            }
+
+            if (!radarImgData) {
+                const canvas = document.getElementById("governance-radar-chart");
+                if (canvas) {
+                    try {
+                        radarImgData = canvas.toDataURL("image/png");
+                    } catch (e) {
+                        console.warn("Falha no fallback do canvas", e);
+                    }
                 }
             }
 
@@ -1626,7 +1647,7 @@ document.addEventListener("DOMContentLoaded", () => {
         exportJsonBtn.onclick = () => {
             const dataToExport = {
                 version: "4.0",
-                system: "Auditoria de Margem & Processos - Visual Tech 2026",
+                system: "Auditoria de Margem & Processos",
                 exportedAt: new Date().toISOString(),
                 userData: state.userData,
                 answers: state.answers,
