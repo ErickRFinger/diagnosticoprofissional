@@ -1,19 +1,18 @@
 /**
  * Base de Perguntas e Construtos para o Diagnóstico Empresarial
- * Avaliação de Maturidade, Governança & Gestão Estratégica
- * Visual Tech (2026)
+ * Auditoria de Margem & Processos (Visual Tech, 2026)
  *
- * Estrutura em 5 Eixos Estratégicos, 11 Subdimensões e 4 Perspectivas do Balanced Scorecard (BSC)
+ * Estrutura em 5 Eixos Estratégicos, 11 Subdimensões e Impacto Direto na DRE (Demonstração do Resultado)
  * Escala de maturidade de 1 a 5.
  */
 
 const DIAGNOSTIC_FRAMEWORK = {
-    productName: "Diagnóstico Empresarial",
-    subtitle: "Maturidade, Governança & Gestão Estratégica",
+    productName: "Auditoria de Margem & Processos",
+    subtitle: "Diagnóstico de Eficiência Operacional, Governança & DRE",
     provider: "Visual Tech",
     year: "2026",
-    version: "3.0",
-    methodology: "Matriz Multidimensional de Governança & Gestão Corporativa",
+    version: "4.0",
+    methodology: "Metodologia Executiva de Auditoria de Margem, Processos & Governança",
     totalQuestions: 24,
     totalPillars: 5
 };
@@ -61,47 +60,51 @@ const PILLARS = [
     }
 ];
 
-const BSC_PERSPECTIVES = {
-    financeiro: {
-        id: "financeiro",
-        name: "Financeira & Sustentabilidade",
+const DRE_IMPACTS = {
+    receita: {
+        id: "receita",
+        name: "Receita Bruta & Vendas",
+        line: "Linha 1 da DRE: Faturamento & Expansão",
         icon: "fas fa-chart-line",
         color: "#0284c7",
-        description: "Previsibilidade orçamentária, geração de caixa (EBITDA), controle de custos e retornos sobre ativo/capital (ROA/ROE).",
-        ref: "Perspectiva Financeira do Balanced Scorecard"
+        description: "Expansão de mercado, precificação estratégica, ticket médio e redução de inadimplência.",
+        metric: "Faturamento, Preço Médio e Carteira de Clientes"
     },
-    clientes: {
-        id: "clientes",
-        name: "Clientes & Mercado",
-        icon: "fas fa-bullseye",
-        color: "#10b981",
-        description: "Valor percebido dos produtos e serviços, fidelidade dos clientes, expansão de carteira e gestão de inadimplência.",
-        ref: "Perspectiva de Mercado e Stakeholders"
-    },
-    processos: {
-        id: "processos",
-        name: "Processos Internos & Produtividade",
-        icon: "fas fa-cogs",
+    custos: {
+        id: "custos",
+        name: "Custos Operacionais & CPV",
+        line: "Linha 2 da DRE: Custos de Produção / Operação",
+        icon: "fas fa-industry",
         color: "#f59e0b",
-        description: "Agilidade na tomada de decisão, padronização operacional, sistemas integrados (ERP/BI) e eliminação de retrabalho.",
-        ref: "Perspectiva de Eficiência Operacional"
+        description: "Produtividade por minuto, redução de retrabalho, giro de estoque e eliminação de desperdícios.",
+        metric: "CMMOP, Tempo Padrão e Índice de Devoluções"
     },
-    aprendizado: {
-        id: "aprendizado",
-        name: "Aprendizagem & Gestão de Pessoas",
-        icon: "fas fa-graduation-cap",
+    despesas: {
+        id: "despesas",
+        name: "Despesas de Gestão & SG&A",
+        line: "Linha 3 da DRE: Eficiência Administrativa",
+        icon: "fas fa-users-gear",
         color: "#8b5cf6",
-        description: "Desenvolvimento de competências essenciais, retenção de talentos-chave, diminuição de turnover e plano de sucessão.",
-        ref: "Perspectiva de Capital Humano e Inovação"
+        description: "Redução de turnover, processos integrados via ERP/BI, descentralização e eliminação de gargalos.",
+        metric: "Turnover, Tempestividade de Relatórios e Alçadas"
+    },
+    margem: {
+        id: "margem",
+        name: "Margem EBITDA & Lucro Líquido",
+        line: "Linha 4 da DRE: Rentabilidade Final & Caixa",
+        icon: "fas fa-sack-dollar",
+        color: "#059669",
+        description: "Preservação da margem de contribuição, retorno sobre o ativo (ROA) e retorno sobre capital (ROE).",
+        metric: "Margem EBIT, EBITDA, ROA e Lucratividade Líquida"
     }
 };
 
 const DEFAULT_OPTIONS = [
-    { value: 1, label: "1 — Não acontece", desc: "A prática não existe ou não é observada na empresa." },
-    { value: 2, label: "2 — Acontece pouco", desc: "Ocorre de maneira muito esporádica ou incipiente." },
-    { value: 3, label: "3 — Acontece parcialmente", desc: "Acontece em algumas ocasiões ou áreas, mas sem padrão definitivo." },
-    { value: 4, label: "4 — Acontece de forma consistente", desc: "Prática rotineira e bem aplicada na maior parte do tempo." },
-    { value: 5, label: "5 — Está consolidado", desc: "Totalmente incorporado à cultura, processos e rotinas da empresa." }
+    { value: 1, label: "Não acontece", desc: "Prática inexistente ou não observada na empresa." },
+    { value: 2, label: "Acontece pouco", desc: "Ocorre de maneira muito esporádica ou incipiente." },
+    { value: 3, label: "Parcialmente", desc: "Acontece em algumas ocasiões ou áreas, sem padrão definitivo." },
+    { value: 4, label: "Consistente", desc: "Prática rotineira e bem aplicada na maior parte do tempo." },
+    { value: 5, label: "Consolidado", desc: "Totalmente incorporado à cultura, processos e rotinas da empresa." }
 ];
 
 const QUESTIONS = [
@@ -112,7 +115,7 @@ const QUESTIONS = [
         id: 1,
         pillarId: "gestao",
         dimension: "Gestão Profissional e Competência",
-        bscPerspective: "aprendizado",
+        dreImpact: "despesas",
         horizon: "estruturante",
         title: "Critérios Técnicos na Escolha de Gestores",
         description: "A escolha de pessoas para cargos de gestão considera competência, experiência e capacidade de entrega, independentemente de vínculos pessoais ou de afinidade?",
@@ -122,7 +125,7 @@ const QUESTIONS = [
         id: 2,
         pillarId: "gestao",
         dimension: "Gestão Profissional e Competência",
-        bscPerspective: "processos",
+        dreImpact: "custos",
         horizon: "quick_win",
         title: "Participação Ativa de Gestores nas Decisões",
         description: "Profissionais técnicos e gestores de área participam efetivamente das decisões estratégicas e relevantes da empresa?",
@@ -132,7 +135,7 @@ const QUESTIONS = [
         id: 3,
         pillarId: "gestao",
         dimension: "Delegação e Descentralização da Autoridade",
-        bscPerspective: "processos",
+        dreImpact: "despesas",
         horizon: "quick_win",
         title: "Autonomia Compatível com Resultados",
         description: "Os gestores possuem autonomia real e alçadas compatíveis com as responsabilidades e resultados pelos quais são cobrados?",
@@ -142,7 +145,7 @@ const QUESTIONS = [
         id: 4,
         pillarId: "gestao",
         dimension: "Delegação e Descentralização da Autoridade",
-        bscPerspective: "processos",
+        dreImpact: "custos",
         horizon: "quick_win",
         title: "Agilidade nas Decisões do Dia a Dia",
         description: "As decisões operacionais cotidianas acontecem com agilidade sem depender constantemente da aprovação direta dos proprietários?",
@@ -152,7 +155,7 @@ const QUESTIONS = [
         id: 5,
         pillarId: "gestao",
         dimension: "Comitê Estratégico e Governança",
-        bscPerspective: "financeiro",
+        dreImpact: "margem",
         horizon: "estruturante",
         title: "Espaço Estruturado para Estratégia e Resultados",
         description: "A empresa possui um comitê, reunião executiva ou espaço formal estruturado para discutir estratégia, metas e decisões relevantes?",
@@ -162,7 +165,7 @@ const QUESTIONS = [
         id: 6,
         pillarId: "gestao",
         dimension: "Competência e Liderança",
-        bscPerspective: "aprendizado",
+        dreImpact: "despesas",
         horizon: "estruturante",
         title: "Competência Técnica das Lideranças",
         description: "Os gestores e líderes possuem as competências e conhecimentos necessários para as responsabilidades que exercem?",
@@ -172,7 +175,7 @@ const QUESTIONS = [
         id: 7,
         pillarId: "gestao",
         dimension: "Competência e Liderança",
-        bscPerspective: "aprendizado",
+        dreImpact: "despesas",
         horizon: "estruturante",
         title: "Avaliação e Desenvolvimento de Gestores",
         description: "A empresa desenvolve, treina e avalia seus gestores de acordo com as necessidades atuais e futuras do negócio?",
@@ -186,7 +189,7 @@ const QUESTIONS = [
         id: 8,
         pillarId: "estrutura_processos",
         dimension: "Estruturas Organizacionais Formais",
-        bscPerspective: "processos",
+        dreImpact: "custos",
         horizon: "quick_win",
         title: "Clareza de Funções, Limites e Organograma",
         description: "As responsabilidades, funções, atribuições e limites de atuação dos colaboradores e líderes estão claramente definidos e documentados?",
@@ -196,7 +199,7 @@ const QUESTIONS = [
         id: 9,
         pillarId: "estrutura_processos",
         dimension: "Estruturas Organizacionais Formais",
-        bscPerspective: "processos",
+        dreImpact: "custos",
         horizon: "sistemas",
         title: "Independência dos Principais Processos",
         description: "Os principais processos e rotinas estão estruturados de forma que não dependam exclusivamente de determinadas pessoas?",
@@ -206,7 +209,7 @@ const QUESTIONS = [
         id: 10,
         pillarId: "estrutura_processos",
         dimension: "Controles Gerenciais e Indicadores",
-        bscPerspective: "financeiro",
+        dreImpact: "margem",
         horizon: "sistemas",
         title: "Indicadores Confiáveis e Informações em Tempo Real",
         description: "A empresa possui informações, relatórios e indicadores confiáveis e suficientes para acompanhar seus principais resultados?",
@@ -216,7 +219,7 @@ const QUESTIONS = [
         id: 11,
         pillarId: "estrutura_processos",
         dimension: "Controles Gerenciais e Indicadores",
-        bscPerspective: "financeiro",
+        dreImpact: "margem",
         horizon: "sistemas",
         title: "Uso Efetivo de Indicadores na Tomada de Decisão",
         description: "Os controles e indicadores são efetivamente utilizados no dia a dia para identificar desvios e orientar decisões rápidas?",
@@ -226,7 +229,7 @@ const QUESTIONS = [
         id: 12,
         pillarId: "estrutura_processos",
         dimension: "Políticas Profissionais de RH",
-        bscPerspective: "aprendizado",
+        dreImpact: "despesas",
         horizon: "estruturante",
         title: "Critérios Claros em Práticas de RH e Remuneração",
         description: "Contratações, promoções, remunerações e desligamentos seguem critérios claros de competência, desempenho e resultados?",
@@ -236,7 +239,7 @@ const QUESTIONS = [
         id: 13,
         pillarId: "estrutura_processos",
         dimension: "Planejamento Estratégico",
-        bscPerspective: "financeiro",
+        dreImpact: "receita",
         horizon: "estruturante",
         title: "Prioridades Estratégicas Conhecidas pela Equipe",
         description: "A empresa possui prioridades e objetivos estratégicos claramente definidos e amplamente conhecidos pelos gestores e líderes?",
@@ -246,7 +249,7 @@ const QUESTIONS = [
         id: 14,
         pillarId: "estrutura_processos",
         dimension: "Planejamento Estratégico",
-        bscPerspective: "processos",
+        dreImpact: "custos",
         horizon: "sistemas",
         title: "Desdobramento em Metas e Planos de Ação",
         description: "Os objetivos estratégicos são transformados em metas setoriais, indicadores práticos e planos de ação acompanhados ao longo do ano?",
@@ -260,7 +263,7 @@ const QUESTIONS = [
         id: 15,
         pillarId: "familia_negocio",
         dimension: "Estruturas de Governança Societária",
-        bscPerspective: "financeiro",
+        dreImpact: "margem",
         horizon: "estruturante",
         title: "Diferenciação Clara entre Proprietário e Gestor",
         description: "Os papéis de sócio/acionista e de gestor operacional estão claramente diferenciados em relação a responsabilidades e remunerações?",
@@ -270,7 +273,7 @@ const QUESTIONS = [
         id: 16,
         pillarId: "familia_negocio",
         dimension: "Estruturas de Governança Societária",
-        bscPerspective: "financeiro",
+        dreImpact: "margem",
         horizon: "estruturante",
         title: "Regras Formais para Conflitos e Acordos de Sócios",
         description: "Existem critérios claros, acordos de sócios ou protocolos definidos para lidar com situações em que interesses individuais e da empresa possam divergir?",
@@ -280,7 +283,7 @@ const QUESTIONS = [
         id: 17,
         pillarId: "familia_negocio",
         dimension: "Plano de Sucessão e Continuidade",
-        bscPerspective: "aprendizado",
+        dreImpact: "despesas",
         horizon: "estruturante",
         title: "Clareza sobre Posições-Chave e Sucessão Futura",
         description: "Existe clareza e planejamento sobre quem poderá assumir as posições-chave no futuro e quais competências serão exigidas?",
@@ -290,7 +293,7 @@ const QUESTIONS = [
         id: 18,
         pillarId: "familia_negocio",
         dimension: "Plano de Sucessão e Continuidade",
-        bscPerspective: "aprendizado",
+        dreImpact: "despesas",
         horizon: "estruturante",
         title: "Preparação Gradual de Potenciais Sucessores",
         description: "Potenciais sucessores ou novos líderes estão sendo formados e preparados para assumir gradualmente maiores responsabilidades?",
@@ -304,7 +307,7 @@ const QUESTIONS = [
         id: 19,
         pillarId: "pessoas",
         dimension: "Competência e Qualificação Técnica",
-        bscPerspective: "aprendizado",
+        dreImpact: "custos",
         horizon: "quick_win",
         title: "Competência Ocupacional em Posições Estratégicas",
         description: "As pessoas que ocupam posições-chave no operacional, vendas e administrativo possuem as qualificações necessárias para desempenhá-las?",
@@ -314,7 +317,7 @@ const QUESTIONS = [
         id: 20,
         pillarId: "pessoas",
         dimension: "Competência e Qualificação Técnica",
-        bscPerspective: "aprendizado",
+        dreImpact: "custos",
         horizon: "estruturante",
         title: "Identificação de Necessidades e Treinamento",
         description: "A empresa identifica com antecedência as necessidades de desenvolvimento e capacita seus profissionais para os desafios do negócio?",
@@ -324,7 +327,7 @@ const QUESTIONS = [
         id: 21,
         pillarId: "pessoas",
         dimension: "Protagonismo e Atitude Profissional",
-        bscPerspective: "processos",
+        dreImpact: "custos",
         horizon: "quick_win",
         title: "Responsabilidade por Resultados e Iniciativa",
         description: "Os colaboradores assumem responsabilidade pelos seus resultados e demonstram iniciativa para solucionar problemas e sugerir melhorias?",
@@ -334,7 +337,7 @@ const QUESTIONS = [
         id: 22,
         pillarId: "pessoas",
         dimension: "Protagonismo e Atitude Profissional",
-        bscPerspective: "aprendizado",
+        dreImpact: "despesas",
         horizon: "estruturante",
         title: "Relações Profissionais Equânimes e Respeitosas",
         description: "As relações de trabalho são conduzidas com respeito, profissionalismo e critérios iguais de cobrança e reconhecimento para todos?",
@@ -348,7 +351,7 @@ const QUESTIONS = [
         id: 23,
         pillarId: "cultura_ambiente",
         dimension: "Valores Corporativos e Coerência",
-        bscPerspective: "clientes",
+        dreImpact: "receita",
         horizon: "quick_win",
         title: "Coerência entre Valores Declarados e Práticas",
         description: "Existe coerência real entre os valores que a empresa declara para o mercado e os comportamentos que ela efetivamente valoriza e pratica no dia a dia?",
@@ -358,7 +361,7 @@ const QUESTIONS = [
         id: 24,
         pillarId: "cultura_ambiente",
         dimension: "Valores Corporativos e Coerência",
-        bscPerspective: "clientes",
+        dreImpact: "receita",
         horizon: "quick_win",
         title: "Preservação da Identidade e Abertura à Inovação",
         description: "A empresa consegue preservar sua identidade e seus diferenciais históricos sem resistir às inovações necessárias para continuar crescendo?",
@@ -405,11 +408,11 @@ const MATURITY_LEVELS = [
         badgeColor: "badge-info",
         tag: "Bom Desempenho",
         headline: "Estrutura Consolidada: Líderes com Autonomia e Práticas Alinhadas",
-        summary: "Sua empresa demonstra sólida maturidade gerencial. Há delegação efetiva de autoridade, clima de colaboração entre as equipes e acompanhamento de indicadores. O próximo salto estratégico consiste em formalizar o conselho consultivo, desdobrar metas via Balanced Scorecard e estruturar o plano de sucessão de longo prazo.",
+        summary: "Sua empresa demonstra sólida maturidade gerencial. Há delegação efetiva de autoridade, clima de colaboração entre as equipes e acompanhamento de indicadores. O próximo salto estratégico consiste em formalizar o conselho consultivo, desdobrar metas via DRE e estruturar o plano de sucessão de longo prazo.",
         actionPoints: [
             "Consolidar a estrutura de Governança com reuniões periódicas de Conselho Consultivo.",
             "Estruturar o Plano de Continuidade e Sucessão com trilhas práticas para futuros líderes.",
-            "Integrar plenamente indicadores de clientes, processos e pessoas ao Balanced Scorecard (BSC).",
+            "Integrar plenamente indicadores operacionais e financeiros à DRE gerencial.",
             "Fomentar a cultura de prestação de contas (accountability) em todos os níveis da empresa."
         ]
     },
@@ -420,7 +423,7 @@ const MATURITY_LEVELS = [
         badgeColor: "badge-success",
         tag: "Referência de Mercado",
         headline: "Maturidade de Referência: Eficiência Operacional e Perenidade do Negócio",
-        summary: "Parabéns! Sua organização opera em padrão de excelência executiva. Consegue equilibrar com maestria a identidade da empresa com gestão meritocrática, comitês estratégicos ativos, cultura orientada a resultados e acompanhamento holístico do desempenho econômico e operacional.",
+        summary: "Parabéns! Sua organização opera em padrão de excelência executiva. Consegue equilibrar com maestria a identidade da empresa com gestão meritocrática, comitês estratégicos ativos, cultura orientada a resultados e acompanhamento holístico do desempenho na DRE.",
         actionPoints: [
             "Avaliar a expansão do Conselho com a integração de conselheiros independentes de mercado.",
             "Acelerar a inovação e o crescimento da marca preservando a cultura e os valores essenciais.",

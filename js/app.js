@@ -1,7 +1,7 @@
 /**
- * Sistema de Diagnóstico & Governança da Empresa Familiar
- * Controle de Fluxo, Temas, Questionário, Analytics (Chart.js Radar, BSC) e Diagnóstico
- * Metodologia: Taís Trevisol Scherner (Unoesc, 2024)
+ * Auditoria de Margem & Processos
+ * Diagnóstico Empresarial de Eficiência Operacional, Governança & DRE
+ * Visual Tech (2026)
  */
 
 document.addEventListener("DOMContentLoaded", () => {
@@ -12,6 +12,7 @@ document.addEventListener("DOMContentLoaded", () => {
         theme: localStorage.getItem("app_theme") || "light",
         currentStep: "welcome", // "welcome" | "quiz" | "results"
         currentPillarIndex: 0,
+        currentQuestionIndex: 0,
         userData: {
             isAnonymous: false,
             name: "",
@@ -49,18 +50,24 @@ document.addEventListener("DOMContentLoaded", () => {
     const clientEmailInput = document.getElementById("client-email");
     const clientSegmentSelect = document.getElementById("client-segment");
 
-    const questionsContainer = document.getElementById("questions-container");
-    const pillarTabsContainer = document.getElementById("pillar-tabs");
-    const currentPillarNameEl = document.getElementById("current-pillar-name");
-    const currentPillarDescEl = document.getElementById("current-pillar-desc");
-    const currentPillarRefEl = document.getElementById("current-pillar-ref");
+    // Elementos da Questão Ativa (1 por vez, pergunta maior, respostas compactas)
+    const singleQuestionCard = document.getElementById("single-question-card");
+    const activeQBadge = document.getElementById("active-q-badge");
+    const activeQDimension = document.getElementById("active-q-dimension");
+    const activeQDre = document.getElementById("active-q-dre");
+    const activeQStatus = document.getElementById("active-q-status");
+    const activeQTitle = document.getElementById("active-q-title");
+    const activeQDesc = document.getElementById("active-q-desc");
+    const activeOptionsContainer = document.getElementById("active-options-container");
+    const currentQNumEl = document.getElementById("current-q-num");
 
+    const pillarTabsContainer = document.getElementById("pillar-tabs");
     const progressBarFill = document.getElementById("progress-bar-fill");
     const progressCountEl = document.getElementById("progress-count");
     const progressPercentEl = document.getElementById("progress-percent");
 
-    const prevPillarBtn = document.getElementById("prev-pillar-btn");
-    const nextPillarBtn = document.getElementById("next-pillar-btn");
+    const prevQuestionBtn = document.getElementById("prev-question-btn");
+    const nextQuestionBtn = document.getElementById("next-question-btn");
     const finishQuizBtn = document.getElementById("finish-quiz-btn");
     const fillSampleBtn = document.getElementById("fill-sample-btn");
     const resetAnswersBtn = document.getElementById("reset-answers-btn");
@@ -207,7 +214,9 @@ document.addEventListener("DOMContentLoaded", () => {
 
         saveDraft();
         goToStep("quiz");
-        renderQuizPillar(0);
+        const firstUnanswered = QUESTIONS.findIndex(q => state.answers[q.id] === undefined);
+        state.currentQuestionIndex = firstUnanswered !== -1 ? firstUnanswered : 0;
+        renderSingleQuestion(state.currentQuestionIndex);
         updateProgress();
         window.scrollTo({ top: 0, behavior: "smooth" });
     });
@@ -223,7 +232,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     // -------------------------------------------------------------
-    // 6. RENDERIZAÇÃO DO QUESTIONÁRIO POR PILARES
+    // 6. RENDERIZAÇÃO PROGRESSIVA DO QUESTIONÁRIO (1 POR VEZ)
     // -------------------------------------------------------------
     function renderPillarTabs() {
         if (!pillarTabsContainer) return;
@@ -231,7 +240,8 @@ document.addEventListener("DOMContentLoaded", () => {
             const pillarQuestions = QUESTIONS.filter(q => q.pillarId === pillar.id);
             const answeredInPillar = pillarQuestions.filter(q => state.answers[q.id] !== undefined).length;
             const isCompleted = answeredInPillar === pillarQuestions.length;
-            const isActive = index === state.currentPillarIndex;
+            const currentQ = QUESTIONS[state.currentQuestionIndex];
+            const isActive = currentQ && currentQ.pillarId === pillar.id;
 
             return `
                 <button type="button" class="pillar-tab ${isActive ? 'active' : ''} ${isCompleted ? 'completed' : ''}" data-index="${index}">
@@ -244,114 +254,159 @@ document.addEventListener("DOMContentLoaded", () => {
 
         pillarTabsContainer.querySelectorAll(".pillar-tab").forEach(tab => {
             tab.addEventListener("click", () => {
-                const index = parseInt(tab.getAttribute("data-index"), 10);
-                renderQuizPillar(index);
+                const pIndex = parseInt(tab.getAttribute("data-index"), 10);
+                const targetPillar = PILLARS[pIndex];
+                const qIdx = QUESTIONS.findIndex(q => q.pillarId === targetPillar.id);
+                if (qIdx !== -1) {
+                    renderSingleQuestion(qIdx);
+                }
             });
         });
     }
 
-    function renderQuizPillar(pillarIndex) {
-        state.currentPillarIndex = pillarIndex;
-        const currentPillar = PILLARS[pillarIndex];
-        const pillarQuestions = QUESTIONS.filter(q => q.pillarId === currentPillar.id);
+    function renderSingleQuestion(questionIndex) {
+        if (questionIndex < 0) questionIndex = 0;
+        if (questionIndex >= QUESTIONS.length) questionIndex = QUESTIONS.length - 1;
 
-        currentPillarNameEl.innerHTML = `<i class="${currentPillar.icon}"></i> ${pillarIndex + 1}. ${currentPillar.name}`;
-        currentPillarDescEl.textContent = currentPillar.description;
-        if (currentPillarRefEl) {
-            currentPillarRefEl.innerHTML = `<i class="fas fa-compass"></i> ${currentPillar.strategicFocus || 'Foco Estratégico'}`;
+        state.currentQuestionIndex = questionIndex;
+        const q = QUESTIONS[questionIndex];
+        const pillarIndex = PILLARS.findIndex(p => p.id === q.pillarId);
+        state.currentPillarIndex = pillarIndex !== -1 ? pillarIndex : 0;
+
+        // Metadados
+        if (currentQNumEl) currentQNumEl.textContent = questionIndex + 1;
+        if (activeQBadge) activeQBadge.textContent = `Questão ${questionIndex + 1} de 24`;
+        if (activeQDimension) {
+            activeQDimension.innerHTML = `<i class="fas fa-layer-group"></i> ${q.dimension || 'Eficiência Operacional'}`;
         }
 
-        questionsContainer.innerHTML = pillarQuestions.map((q) => {
-            const currentAnswer = state.answers[q.id];
-            const isAnswered = currentAnswer !== undefined;
-            const bscObj = BSC_PERSPECTIVES[q.bscPerspective];
+        // Impacto na DRE
+        if (activeQDre) {
+            const dreObj = DRE_IMPACTS && DRE_IMPACTS[q.dreImpact];
+            if (dreObj) {
+                activeQDre.innerHTML = `<i class="${dreObj.icon}"></i> DRE: ${dreObj.name}`;
+                activeQDre.style.display = "inline-flex";
+            } else {
+                activeQDre.style.display = "none";
+            }
+        }
 
-            const optionsHtml = DEFAULT_OPTIONS.map(opt => `
-                <label class="option-item" data-val="${opt.value}">
-                    <input type="radio" name="question_${q.id}" value="${opt.value}" ${currentAnswer === opt.value ? 'checked' : ''}>
-                    <div class="option-label-box">
-                        <div class="option-score-indicator">${opt.value}</div>
-                        <div class="option-text-container">
-                            <div class="option-title-text">${opt.label}</div>
-                            <div class="option-sub-text">${opt.desc}</div>
-                        </div>
-                    </div>
-                </label>
+        // Status da resposta
+        updateActiveQuestionStatus(q.id);
+
+        // Pergunta em destaque MAIOR
+        if (activeQTitle) activeQTitle.textContent = q.title;
+        if (activeQDesc) activeQDesc.textContent = q.description;
+
+        // Respostas MENORES e compactas (5 opções)
+        const currentAnswer = state.answers[q.id];
+        if (activeOptionsContainer) {
+            activeOptionsContainer.innerHTML = DEFAULT_OPTIONS.map(opt => `
+                <div class="compact-option-btn ${currentAnswer === opt.value ? 'selected' : ''}" data-val="${opt.value}">
+                    <div class="compact-score-circle">${opt.value}</div>
+                    <div class="compact-option-label">${opt.label}</div>
+                    <div class="compact-option-desc">${opt.desc}</div>
+                </div>
             `).join("");
 
-            return `
-                <div class="question-card ${isAnswered ? 'answered' : 'unanswered'}" id="card-q-${q.id}">
-                    <div class="question-header">
-                        <div class="question-meta-tags">
-                            <span class="question-number-badge">Questão ${q.id} de 24</span>
-                            ${q.dimension ? `<span class="question-dimension-badge"><i class="fas fa-layer-group"></i> ${q.dimension}</span>` : ''}
-                            ${bscObj ? `<span class="question-bsc-badge"><i class="${bscObj.icon}"></i> BSC: ${bscObj.name.split('&')[0].trim()}</span>` : ''}
-                        </div>
-                        <div id="badge-status-q-${q.id}">
-                            ${isAnswered ? '<span style="color: var(--accent); font-size: 0.85rem; font-weight: 700;"><i class="fas fa-check"></i> Respondida</span>' : ''}
-                        </div>
-                    </div>
-
-                    <h3 class="question-title">${q.title}</h3>
-                    <p class="question-desc">${q.description}</p>
-                    
-                    <div class="options-list">
-                        ${optionsHtml}
-                    </div>
-                </div>
-            `;
-        }).join("");
-
-        // Listeners das opções
-        pillarQuestions.forEach(q => {
-            const radios = document.querySelectorAll(`input[name="question_${q.id}"]`);
-            radios.forEach(radio => {
-                radio.addEventListener("change", (e) => {
-                    const val = parseInt(e.target.value, 10);
-                    state.answers[q.id] = val;
-
-                    const card = document.getElementById(`card-q-${q.id}`);
-                    if (card) {
-                        card.classList.remove("unanswered");
-                        card.classList.add("answered");
-                        const statusBadge = document.getElementById(`badge-status-q-${q.id}`);
-                        if (statusBadge) {
-                            statusBadge.innerHTML = '<span style="color: var(--accent); font-size: 0.85rem; font-weight: 700;"><i class="fas fa-check"></i> Respondida</span>';
-                        }
-                    }
-
-                    saveDraft();
-                    updateProgress();
-                    renderPillarTabs();
+            // Adiciona evento de clique nas opções
+            activeOptionsContainer.querySelectorAll(".compact-option-btn").forEach(btn => {
+                btn.addEventListener("click", () => {
+                    const val = parseInt(btn.getAttribute("data-val"), 10);
+                    selectAnswerAndAutoAdvance(q.id, val);
                 });
             });
-        });
-
-        // Atualiza botões
-        prevPillarBtn.style.display = pillarIndex > 0 ? "inline-flex" : "none";
-        if (pillarIndex === PILLARS.length - 1) {
-            nextPillarBtn.style.display = "none";
-            finishQuizBtn.style.display = "inline-flex";
-        } else {
-            nextPillarBtn.style.display = "inline-flex";
-            finishQuizBtn.style.display = "none";
         }
 
+        updateNavigationButtons();
         renderPillarTabs();
-        window.scrollTo({ top: 120, behavior: "smooth" });
+        window.scrollTo({ top: 100, behavior: "smooth" });
     }
 
-    prevPillarBtn.addEventListener("click", () => {
-        if (state.currentPillarIndex > 0) {
-            renderQuizPillar(state.currentPillarIndex - 1);
+    function updateActiveQuestionStatus(qId) {
+        if (!activeQStatus) return;
+        const ans = state.answers[qId];
+        if (ans !== undefined) {
+            activeQStatus.innerHTML = `<span style="color: var(--accent); font-size: 0.85rem; font-weight: 700;"><i class="fas fa-check-circle"></i> Respondida (Nota ${ans}/5)</span>`;
+        } else {
+            activeQStatus.innerHTML = `<span style="color: var(--text-muted); font-size: 0.85rem;"><i class="far fa-circle"></i> Aguardando resposta</span>`;
         }
-    });
+    }
 
-    nextPillarBtn.addEventListener("click", () => {
-        if (state.currentPillarIndex < PILLARS.length - 1) {
-            renderQuizPillar(state.currentPillarIndex + 1);
+    function selectAnswerAndAutoAdvance(questionId, val) {
+        state.answers[questionId] = val;
+
+        // Destaca imediatamente o botão clicado
+        if (activeOptionsContainer) {
+            activeOptionsContainer.querySelectorAll(".compact-option-btn").forEach(b => {
+                const bVal = parseInt(b.getAttribute("data-val"), 10);
+                b.classList.toggle("selected", bVal === val);
+            });
         }
-    });
+
+        updateActiveQuestionStatus(questionId);
+        saveDraft();
+        updateProgress();
+        renderPillarTabs();
+
+        // Auto-avanço suave para a próxima pergunta (260ms)
+        setTimeout(() => {
+            if (state.currentQuestionIndex < QUESTIONS.length - 1) {
+                renderSingleQuestion(state.currentQuestionIndex + 1);
+            } else {
+                updateNavigationButtons();
+                const allAnswered = QUESTIONS.every(q => state.answers[q.id] !== undefined);
+                if (allAnswered) {
+                    showToast("Todas as 24 questões foram respondidas! Pronto para concluir o diagnóstico.", "info");
+                }
+            }
+        }, 260);
+    }
+
+    function updateNavigationButtons() {
+        const qIndex = state.currentQuestionIndex;
+        const total = QUESTIONS.length;
+        const allAnswered = QUESTIONS.every(q => state.answers[q.id] !== undefined);
+
+        // Botão Pergunta Anterior
+        if (prevQuestionBtn) {
+            prevQuestionBtn.style.visibility = qIndex > 0 ? "visible" : "hidden";
+        }
+
+        // Botão Próxima Pergunta
+        if (nextQuestionBtn) {
+            if (qIndex === total - 1) {
+                nextQuestionBtn.style.display = "none";
+            } else {
+                nextQuestionBtn.style.display = "inline-flex";
+            }
+        }
+
+        // Botão Concluir
+        if (finishQuizBtn) {
+            if (qIndex === total - 1 || allAnswered) {
+                finishQuizBtn.style.display = "inline-flex";
+            } else {
+                finishQuizBtn.style.display = "none";
+            }
+        }
+    }
+
+    if (prevQuestionBtn) {
+        prevQuestionBtn.addEventListener("click", () => {
+            if (state.currentQuestionIndex > 0) {
+                renderSingleQuestion(state.currentQuestionIndex - 1);
+            }
+        });
+    }
+
+    if (nextQuestionBtn) {
+        nextQuestionBtn.addEventListener("click", () => {
+            if (state.currentQuestionIndex < QUESTIONS.length - 1) {
+                renderSingleQuestion(state.currentQuestionIndex + 1);
+            }
+        });
+    }
 
     // -------------------------------------------------------------
     // 7. PROGRESSO EM TEMPO REAL
@@ -361,9 +416,11 @@ document.addEventListener("DOMContentLoaded", () => {
         const answeredCount = Object.keys(state.answers).length;
         const percentage = Math.round((answeredCount / total) * 100);
 
-        progressBarFill.style.width = `${percentage}%`;
-        progressCountEl.innerHTML = `<i class="fas fa-tasks"></i> ${answeredCount} de ${total} respondidas`;
-        progressPercentEl.textContent = `${percentage}% concluído`;
+        if (progressBarFill) progressBarFill.style.width = `${percentage}%`;
+        if (progressCountEl) {
+            progressCountEl.innerHTML = `<i class="fas fa-tasks"></i> Questão <strong id="current-q-num">${state.currentQuestionIndex + 1}</strong> de ${total} (${answeredCount} respondidas)`;
+        }
+        if (progressPercentEl) progressPercentEl.textContent = `${percentage}% concluído`;
     }
 
     // -------------------------------------------------------------
@@ -374,6 +431,7 @@ document.addEventListener("DOMContentLoaded", () => {
             const draft = {
                 userData: state.userData,
                 answers: state.answers,
+                currentQuestionIndex: state.currentQuestionIndex,
                 currentPillarIndex: state.currentPillarIndex,
                 updatedAt: new Date().toISOString()
             };
@@ -391,6 +449,9 @@ document.addEventListener("DOMContentLoaded", () => {
             if (draft && draft.answers) {
                 state.answers = draft.answers;
                 if (draft.userData) state.userData = { ...state.userData, ...draft.userData };
+                if (typeof draft.currentQuestionIndex === "number") {
+                    state.currentQuestionIndex = draft.currentQuestionIndex;
+                }
                 return true;
             }
         } catch (e) {
@@ -401,13 +462,13 @@ document.addEventListener("DOMContentLoaded", () => {
 
     if (fillSampleBtn) {
         fillSampleBtn.addEventListener("click", () => {
-            // Preenche as 24 questões com valores equilibrados e realistas (caso prático similar à dissertação)
+            // Preenche as 24 questões com valores representativos e equilibrados
             const sampleScores = [
-                3, 4, 3, 2, 4, 3, 3, // Pilar 1: Gestão (7 perguntas)
-                4, 3, 2, 3, 3, 3, 2, // Pilar 2: Estrutura & Processos (7 perguntas)
-                3, 2, 2, 3,          // Pilar 3: Família & Negócio (4 perguntas)
-                4, 3, 3, 3,          // Pilar 4: Pessoas (4 perguntas)
-                4, 4                 // Pilar 5: Cultura & Ambiente (2 perguntas)
+                3, 4, 3, 2, 4, 3, 3, // Gestão (7 perguntas)
+                4, 3, 2, 3, 3, 3, 2, // Processos (7 perguntas)
+                3, 2, 2, 3,          // Governança (4 perguntas)
+                4, 3, 3, 3,          // Pessoas (4 perguntas)
+                4, 4                 // Cultura (2 perguntas)
             ];
 
             QUESTIONS.forEach((q, idx) => {
@@ -415,19 +476,22 @@ document.addEventListener("DOMContentLoaded", () => {
             });
 
             saveDraft();
-            renderQuizPillar(state.currentPillarIndex);
+            renderSingleQuestion(state.currentQuestionIndex);
             updateProgress();
-            showToast("24 questões preenchidas com dados de exemplo da pesquisa!");
+            renderPillarTabs();
+            showToast("24 questões preenchidas com dados de demonstração!");
         });
     }
 
     if (resetAnswersBtn) {
         resetAnswersBtn.addEventListener("click", () => {
-            if (confirm("Deseja limpar todas as respostas desta avaliação?")) {
+            if (confirm("Deseja limpar todas as respostas desta avaliação e reiniciar?")) {
                 state.answers = {};
+                state.currentQuestionIndex = 0;
                 localStorage.removeItem("diagnostic_draft_v2");
-                renderQuizPillar(state.currentPillarIndex);
+                renderSingleQuestion(0);
                 updateProgress();
+                renderPillarTabs();
                 showToast("Respostas reiniciadas!");
             }
         });
@@ -436,35 +500,28 @@ document.addEventListener("DOMContentLoaded", () => {
     // -------------------------------------------------------------
     // 9. FINALIZAÇÃO E CÁLCULO ESTRATÉGICO
     // -------------------------------------------------------------
-    finishQuizBtn.addEventListener("click", () => {
-        const unanswered = QUESTIONS.filter(q => state.answers[q.id] === undefined);
+    if (finishQuizBtn) {
+        finishQuizBtn.addEventListener("click", () => {
+            const unanswered = QUESTIONS.filter(q => state.answers[q.id] === undefined);
 
-        if (unanswered.length > 0) {
-            const firstUnanswered = unanswered[0];
-            const pillarIndex = PILLARS.findIndex(p => p.id === firstUnanswered.pillarId);
+            if (unanswered.length > 0) {
+                const firstUnanswered = unanswered[0];
+                const qIdx = QUESTIONS.findIndex(q => q.id === firstUnanswered.id);
 
-            showToast(`Atenção: faltam ${unanswered.length} questões. Navegando para o pilar correspondente...`, "warning");
-            renderQuizPillar(pillarIndex);
+                showToast(`Atenção: faltam ${unanswered.length} perguntas para concluir o diagnóstico. Respondendo questão ${firstUnanswered.id}...`, "warning");
+                renderSingleQuestion(qIdx !== -1 ? qIdx : 0);
+                return;
+            }
 
-            setTimeout(() => {
-                const card = document.getElementById(`card-q-${firstUnanswered.id}`);
-                if (card) {
-                    card.scrollIntoView({ behavior: "smooth", block: "center" });
-                    card.style.boxShadow = "0 0 0 4px var(--danger)";
-                    setTimeout(() => card.style.boxShadow = "", 3000);
-                }
-            }, 350);
-            return;
-        }
-
-        calculateResults();
-        renderResultsScreen();
-        goToStep("results");
-        window.scrollTo({ top: 0, behavior: "smooth" });
-    });
+            calculateResults();
+            renderResultsScreen();
+            goToStep("results");
+            window.scrollTo({ top: 0, behavior: "smooth" });
+        });
+    }
 
     // -------------------------------------------------------------
-    // 10. MOTOR DE CÁLCULO: PILARES, BSC & GAPS
+    // 10. MOTOR DE CÁLCULO: PILARES, DRE & GAPS
     // -------------------------------------------------------------
     function calculateResults() {
         let totalPoints = 0;
@@ -475,7 +532,7 @@ document.addEventListener("DOMContentLoaded", () => {
             const pQuestions = QUESTIONS.filter(q => q.pillarId === p.id);
             const pMax = pQuestions.length * 5;
             const pEarned = pQuestions.reduce((acc, q) => acc + (state.answers[q.id] || 0), 0);
-            const pPercentage = Math.round((pEarned / pMax) * 100);
+            const pPercentage = pMax > 0 ? Math.round((pEarned / pMax) * 100) : 0;
 
             totalPoints += pEarned;
 
@@ -492,29 +549,29 @@ document.addEventListener("DOMContentLoaded", () => {
         // 10.2 Nível de Maturidade
         const maturity = MATURITY_LEVELS.find(lvl => overallPercentage >= lvl.min && overallPercentage <= lvl.max) || MATURITY_LEVELS[0];
 
-        // 10.3 Pontuação nas 4 Perspectivas do Balanced Scorecard (BSC)
-        const bscScores = Object.values(BSC_PERSPECTIVES).map(b => {
-            const bQuestions = QUESTIONS.filter(q => q.bscPerspective === b.id);
-            const bMax = bQuestions.length * 5;
-            const bEarned = bQuestions.reduce((acc, q) => acc + (state.answers[q.id] || 0), 0);
-            const bPercentage = Math.round((bEarned / bMax) * 100);
+        // 10.3 Pontuação nas 4 Linhas da DRE (Demonstração do Resultado)
+        const dreScores = Object.values(DRE_IMPACTS).map(dre => {
+            const dreQuestions = QUESTIONS.filter(q => q.dreImpact === dre.id);
+            const dreMax = dreQuestions.length * 5;
+            const dreEarned = dreQuestions.reduce((acc, q) => acc + (state.answers[q.id] || 0), 0);
+            const drePercentage = dreMax > 0 ? Math.round((dreEarned / dreMax) * 100) : 0;
 
-            let statusText = "Em Desenvolvimento";
+            let statusText = "Em Otimização";
             let statusColor = "var(--warning)";
-            if (bPercentage >= 75) {
+            if (drePercentage >= 75) {
                 statusText = "Impacto Positivo Consolidado";
                 statusColor = "var(--accent)";
-            } else if (bPercentage < 50) {
-                statusText = "Gargalo Crítico de Desempenho";
+            } else if (drePercentage < 50) {
+                statusText = "Gargalo Crítico de Margem";
                 statusColor = "var(--danger)";
             }
 
             return {
-                ...b,
-                questionsCount: bQuestions.length,
-                earnedPoints: bEarned,
-                maxPoints: bMax,
-                percentage: bPercentage,
+                ...dre,
+                questionsCount: dreQuestions.length,
+                earnedPoints: dreEarned,
+                maxPoints: dreMax,
+                percentage: drePercentage,
                 statusText,
                 statusColor
             };
@@ -536,7 +593,8 @@ document.addEventListener("DOMContentLoaded", () => {
             overallPercentage,
             maturity,
             pillarScores,
-            bscScores,
+            dreScores,
+            bscScores: dreScores, // retrocompatibilidade para componentes que leiam bscScores
             gaps
         };
     }
@@ -603,25 +661,32 @@ document.addEventListener("DOMContentLoaded", () => {
             </div>
         `).join("");
 
-        // 11.3 Módulo Balanced Scorecard (BSC)
-        const bscGrid = document.getElementById("bsc-cards-grid");
-        if (bscGrid) {
-            bscGrid.innerHTML = res.bscScores.map(b => `
-                <div class="bsc-card" style="border-top: 4px solid ${b.color};">
-                    <div class="bsc-card-top">
-                        <div class="bsc-icon-bubble" style="background-color: ${b.color}20; color: ${b.color};">
-                            <i class="${b.icon}"></i>
+        // 11.3 Módulo DRE (Demonstração do Resultado)
+        const dreGrid = document.getElementById("dre-cards-grid");
+        const listToRender = res.dreScores || res.bscScores;
+        if (dreGrid && listToRender) {
+            dreGrid.innerHTML = listToRender.map(dre => `
+                <div class="dre-card" style="border-top: 4px solid ${dre.color};">
+                    <div class="dre-card-top">
+                        <div class="dre-icon-bubble" style="background-color: ${dre.color}20; color: ${dre.color};">
+                            <i class="${dre.icon}"></i>
                         </div>
-                        <span class="bsc-card-score" style="color: ${b.color};">${b.percentage}%</span>
+                        <span class="dre-card-score" style="color: ${dre.color};">${dre.percentage}%</span>
                     </div>
-                    <div class="bsc-card-name">${b.name}</div>
-                    <div class="bsc-card-desc">${b.description}</div>
-                    <div class="progress-track" style="height: 6px; margin-bottom: 0.5rem;">
-                        <div class="progress-bar-fill" style="width: ${b.percentage}%; background: ${b.color};"></div>
+                    ${dre.line ? `<div class="dre-card-line">${dre.line}</div>` : ''}
+                    <div class="dre-card-name">${dre.name}</div>
+                    <div class="dre-card-desc">${dre.description}</div>
+                    <div class="progress-track" style="height: 6px; margin-bottom: 0.65rem;">
+                        <div class="progress-bar-fill" style="width: ${dre.percentage}%; background: ${dre.color};"></div>
                     </div>
-                    <div class="bsc-impact-status" style="background-color: ${b.color}15; color: ${b.color};">
-                        ${b.statusText}
+                    <div class="dre-impact-status" style="background-color: ${dre.color}15; color: ${dre.color};">
+                        ${dre.statusText}
                     </div>
+                    ${dre.metric ? `
+                        <div class="dre-metric-tag">
+                            <i class="fas fa-bullseye" style="color: var(--primary);"></i> <strong>Foco:</strong> ${dre.metric}
+                        </div>
+                    ` : ''}
                 </div>
             `).join("");
         }
@@ -859,6 +924,7 @@ document.addEventListener("DOMContentLoaded", () => {
             const score = state.answers[q.id] || 0;
             const opt = DEFAULT_OPTIONS.find(o => o.value === score);
             const optLabel = opt ? opt.label : `Nota ${score}/5`;
+            const dreObj = DRE_IMPACTS && DRE_IMPACTS[q.dreImpact];
 
             let pillStyle = "background: var(--scale-5-bg); color: var(--scale-5);";
             if (score <= 2) pillStyle = "background: var(--scale-1-bg); color: var(--scale-1);";
@@ -868,7 +934,8 @@ document.addEventListener("DOMContentLoaded", () => {
                 <tr>
                     <td style="text-align: center; font-weight: 800; color: var(--primary);">${q.id}</td>
                     <td>
-                        <strong>${q.dimension || 'Dimensão de Polat'}</strong>
+                        <strong>${q.dimension || 'Dimensão de Eficiência'}</strong>
+                        ${dreObj ? `<br><span style="display: inline-block; margin-top: 3px; font-size: 0.72rem; color: var(--primary); font-weight: 700;"><i class="${dreObj.icon}"></i> ${dreObj.name}</span>` : ''}
                     </td>
                     <td>
                         <strong>${q.title}</strong><br>
@@ -888,7 +955,7 @@ document.addEventListener("DOMContentLoaded", () => {
     function setupWhatsAppButton(res) {
         const whatsappBtn = document.getElementById("whatsapp-cta-btn");
         if (!whatsappBtn) return;
-        const defaultPhone = "5549988369445"; // Contato da Mentora Taís Trevisol Scherner
+        const defaultPhone = "5549988369445";
 
         let participantInfo = "";
         if (state.userData.isAnonymous) {
@@ -900,14 +967,14 @@ document.addEventListener("DOMContentLoaded", () => {
         }
 
         const topGaps = res.gaps.slice(0, 2).map(g => `• ${g.question.title}`).join('\n');
-        const gapsText = topGaps ? `\nPrincipais pontos de atenção identificados:\n${topGaps}\n` : '';
+        const gapsText = topGaps ? `\nPrincipais gargalos identificados para otimização:\n${topGaps}\n` : '';
 
         const waMsg = encodeURIComponent(
-            `Olá! Acabei de realizar o Diagnóstico Empresarial de Governança & Gestão.\n` +
+            `Olá! Acabei de concluir o Diagnóstico Empresarial da Auditoria de Margem & Processos.\n` +
             participantInfo +
             `Índice Geral de Maturidade: ${res.overallPercentage}% (${res.maturity.level}).\n` +
             gapsText +
-            `Gostaria de agendar uma devolutiva estratégica para avaliar o plano de ação e as oportunidades de melhoria da empresa.`
+            `Gostaria de agendar a devolutiva da consultoria para planejar a otimização de custos e expansão de margens na DRE.`
         );
         whatsappBtn.href = `https://api.whatsapp.com/send?phone=${defaultPhone}&text=${waMsg}`;
     }
@@ -954,8 +1021,8 @@ document.addEventListener("DOMContentLoaded", () => {
         if (!exportJsonBtn) return;
         exportJsonBtn.onclick = () => {
             const dataToExport = {
-                version: "3.0",
-                system: "Diagnóstico Empresarial - Visual Tech 2026",
+                version: "4.0",
+                system: "Auditoria de Margem & Processos - Visual Tech 2026",
                 exportedAt: new Date().toISOString(),
                 userData: state.userData,
                 answers: state.answers,
@@ -966,7 +1033,7 @@ document.addEventListener("DOMContentLoaded", () => {
             const downloadAnchor = document.createElement("a");
             const companySlug = (state.userData.company || "Empresa").replace(/\s+/g, "_");
             downloadAnchor.setAttribute("href", jsonStr);
-            downloadAnchor.setAttribute("download", `Diagnostico_Empresarial_${companySlug}_${new Date().toISOString().slice(0, 10)}.json`);
+            downloadAnchor.setAttribute("download", `Auditoria_Margem_Processos_${companySlug}_${new Date().toISOString().slice(0, 10)}.json`);
             document.body.appendChild(downloadAnchor);
             downloadAnchor.click();
             downloadAnchor.remove();
@@ -1009,25 +1076,25 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     // -------------------------------------------------------------
-    // 16. ATALHOS DE TECLADO (1 a 5 para responder rápido)
+    // 16. ATALHOS DE TECLADO (1 a 5 para responder rápido e setas para navegar)
     // -------------------------------------------------------------
     document.addEventListener("keydown", (e) => {
         if (state.currentStep !== "quiz") return;
+        if (e.target.tagName === "INPUT" || e.target.tagName === "TEXTAREA" || e.target.tagName === "SELECT") return;
+
         if (["1", "2", "3", "4", "5"].includes(e.key)) {
-            // Evita disparar se o usuário estiver digitando em um input
-            if (e.target.tagName === "INPUT" || e.target.tagName === "TEXTAREA") return;
-
             const val = parseInt(e.key, 10);
-            const currentPillar = PILLARS[state.currentPillarIndex];
-            const pillarQuestions = QUESTIONS.filter(q => q.pillarId === currentPillar.id);
-            const firstUnanswered = pillarQuestions.find(q => state.answers[q.id] === undefined);
-
-            if (firstUnanswered) {
-                const radio = document.querySelector(`input[name="question_${firstUnanswered.id}"][value="${val}"]`);
-                if (radio) {
-                    radio.checked = true;
-                    radio.dispatchEvent(new Event("change"));
-                }
+            const currentQ = QUESTIONS[state.currentQuestionIndex];
+            if (currentQ) {
+                selectAnswerAndAutoAdvance(currentQ.id, val);
+            }
+        } else if (e.key === "ArrowLeft") {
+            if (state.currentQuestionIndex > 0) {
+                renderSingleQuestion(state.currentQuestionIndex - 1);
+            }
+        } else if (e.key === "ArrowRight") {
+            if (state.currentQuestionIndex < QUESTIONS.length - 1) {
+                renderSingleQuestion(state.currentQuestionIndex + 1);
             }
         }
     });

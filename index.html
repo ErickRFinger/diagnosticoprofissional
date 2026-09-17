@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Diagnóstico Empresarial | Avaliação Executiva de Governança & Gestão Estratégica</title>
+    <title>Auditoria de Margem & Processos | Diagnóstico Empresarial de Eficiência, Governança & DRE</title>
     
     <!-- Favicon & Ícones de Navegador -->
     <link rel="icon" type="image/svg+xml" href="favicon.svg">
@@ -20,7 +20,7 @@
     <!-- FontAwesome 6 (Ícones) -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
-    <!-- Chart.js para o Gráfico Radar de Governança -->
+    <!-- Chart.js para o Gráfico Radar -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
 
     <!-- html2pdf.js para Exportação do Relatório Executivo -->
@@ -36,11 +36,11 @@
         <div class="nav-container">
             <a href="#" class="brand-logo" id="nav-brand-link">
                 <div class="brand-icon">
-                    <i class="fas fa-chart-line"></i>
+                    <i class="fas fa-file-invoice-dollar"></i>
                 </div>
                 <div>
-                    <div class="brand-title">Diagnóstico Empresarial</div>
-                    <div class="brand-subtitle">Maturidade de Gestão, Governança & Estratégia</div>
+                    <div class="brand-title">Auditoria de Margem & Processos</div>
+                    <div class="brand-subtitle">Diagnóstico Empresarial de Eficiência, Governança & DRE</div>
                 </div>
             </a>
 
@@ -68,12 +68,12 @@
         <section id="welcome-screen">
             <div class="welcome-hero">
                 <div class="badge-tag">
-                    <i class="fas fa-layer-group"></i> Sistema de Inteligência Corporativa
+                    <i class="fas fa-calculator"></i> Auditoria de Margem, Processos & DRE
                 </div>
-                <h1 class="welcome-title">Avalie a Governança & a Maturidade da sua Empresa</h1>
+                <h1 class="welcome-title">Diagnóstico Empresarial de Margem & Eficiência de Processos</h1>
                 <p class="welcome-desc">
-                    Identifique pontos cegos na gestão, gargalos na delegação de autoridade, ausência de controles e desafios de continuidade. 
-                    Responda às <strong>24 perguntas essenciais</strong> distribuídas em 5 eixos estratégicos e receba instantaneamente um dossiê executivo com matriz de priorização e impacto no Balanced Scorecard (BSC).
+                    Identifique gargalos na operação, desperdícios, falta de controles e oportunidades de expansão de lucro. 
+                    Responda às <strong>24 perguntas essenciais</strong> e visualize o diagnóstico completo com matriz de priorização e <strong>impacto direto na DRE (Demonstração do Resultado)</strong>.
                 </p>
 
                 <!-- Prévia dos 5 Eixos Estratégicos -->
@@ -187,7 +187,7 @@
                     </div>
 
                     <div style="margin-top: 2.25rem; text-align: center;">
-                        <button type="submit" class="btn btn-primary btn-lg" style="min-width: 300px;">
+                        <button type="submit" class="btn btn-primary btn-lg" style="min-width: 320px;">
                             <span>Iniciar Diagnóstico (24 Questões)</span>
                             <i class="fas fa-arrow-right"></i>
                         </button>
@@ -197,13 +197,13 @@
         </section>
 
         <!-- =============================================================
-             TELA 2: QUESTIONÁRIO INTERATIVO (24 QUESTÕES)
+             TELA 2: QUESTIONÁRIO PROGRESSIVO (PASSO A PASSO, 1 POR VEZ)
              ============================================================= -->
         <section id="quiz-screen" style="display: none;">
             <!-- Barra Superior Fixa de Progresso -->
             <div class="quiz-sticky-header">
                 <div class="quiz-progress-top">
-                    <span id="progress-count"><i class="fas fa-tasks"></i> 0 de 24 respondidas</span>
+                    <span id="progress-count"><i class="fas fa-tasks"></i> Questão <strong id="current-q-num">1</strong> de 24</span>
                     <span id="progress-percent">0% concluído</span>
                 </div>
                 <div class="progress-track">
@@ -231,35 +231,41 @@
                 </div>
             </div>
 
-            <!-- Cabeçalho do Eixo Ativo -->
-            <div class="app-card" style="margin-bottom: 1.5rem;">
-                <div class="pillar-section-header">
-                    <div>
-                        <div class="pillar-academic-badge" id="current-pillar-ref">
-                            <!-- Foco Estratégico -->
-                        </div>
-                        <h2 class="pillar-section-title" id="current-pillar-name">
-                            <!-- Nome do Eixo -->
-                        </h2>
+            <!-- Card da Questão Ativa (Grande destaque para a pergunta, respostas menores) -->
+            <div class="app-card single-question-card" id="single-question-card">
+                <!-- Metadados da Questão -->
+                <div class="question-meta-bar">
+                    <div class="question-meta-tags">
+                        <span class="question-number-badge" id="active-q-badge">Questão 1 de 24</span>
+                        <span class="question-dimension-badge" id="active-q-dimension">Dimensão</span>
+                        <span class="question-dre-badge" id="active-q-dre"><i class="fas fa-file-invoice-dollar"></i> Linha da DRE</span>
                     </div>
-                    <p class="pillar-section-desc" id="current-pillar-desc">
-                        <!-- Descrição do Eixo -->
-                    </p>
+                    <div id="active-q-status"></div>
                 </div>
 
-                <!-- Container onde são injetadas as perguntas do eixo atual -->
-                <div id="questions-container">
-                    <!-- Perguntas renderizadas dinamicamente -->
+                <!-- Pergunta em destaque MAIOR -->
+                <div class="question-content-box">
+                    <h2 class="question-hero-title" id="active-q-title">Título da Questão</h2>
+                    <p class="question-hero-desc" id="active-q-desc">Descrição detalhada do cenário operacional avaliado nesta questão.</p>
                 </div>
 
-                <!-- Barra de Ações (Avançar / Voltar Eixo) -->
+                <!-- Respostas compactas MENORES (Escala de 1 a 5) -->
+                <div class="options-compact-grid" id="active-options-container">
+                    <!-- 5 opções geradas dinamicamente com estilo compacto -->
+                </div>
+
+                <!-- Barra de Navegação Passo a Passo -->
                 <div class="quiz-actions-bar">
-                    <button type="button" id="prev-pillar-btn" class="btn btn-secondary" style="display: none;">
-                        <i class="fas fa-arrow-left"></i> Eixo Anterior
+                    <button type="button" id="prev-question-btn" class="btn btn-secondary" style="visibility: hidden;">
+                        <i class="fas fa-arrow-left"></i> Pergunta Anterior
                     </button>
-                    <div class="actions-spacer"></div>
-                    <button type="button" id="next-pillar-btn" class="btn btn-primary">
-                        <span>Próximo Eixo</span> <i class="fas fa-arrow-right"></i>
+                    <div class="actions-spacer">
+                        <span style="font-size: 0.85rem; color: var(--text-muted); font-weight: 600;">
+                            Dica: clique em uma nota ou use o teclado (1 a 5) para avançar
+                        </span>
+                    </div>
+                    <button type="button" id="next-question-btn" class="btn btn-primary" style="display: inline-flex;">
+                        <span>Próxima Pergunta</span> <i class="fas fa-arrow-right"></i>
                     </button>
                     <button type="button" id="finish-quiz-btn" class="btn btn-success btn-lg" style="display: none;">
                         <i class="fas fa-check-double"></i> Concluir e Gerar Diagnóstico
@@ -269,7 +275,7 @@
         </section>
 
         <!-- =============================================================
-             TELA 3: RESULTADOS, DIAGNÓSTICO & ANALYTICS
+             TELA 3: RESULTADOS, DIAGNÓSTICO & DRE
              ============================================================= -->
         <section id="results-screen" style="display: none;">
             
@@ -311,8 +317,8 @@
                 <div class="app-card chart-card">
                     <div class="chart-header">
                         <div>
-                            <h3 class="chart-title"><i class="fas fa-chart-pie" style="color: var(--primary);"></i> Teia de Governança (Gráfico Radar)</h3>
-                            <p class="chart-subtitle">Equilíbrio comparativo de maturidade entre os 5 eixos estratégicos da empresa</p>
+                            <h3 class="chart-title"><i class="fas fa-chart-pie" style="color: var(--primary);"></i> Teia de Governança & Processos (Gráfico Radar)</h3>
+                            <p class="chart-subtitle">Equilíbrio comparativo de maturidade entre os 5 eixos operacionais da empresa</p>
                         </div>
                     </div>
                     <div class="radar-chart-wrapper">
@@ -325,7 +331,7 @@
                     <div class="chart-header">
                         <div>
                             <h3 class="chart-title"><i class="fas fa-layer-group" style="color: var(--primary);"></i> Desempenho por Eixo Estratégico</h3>
-                            <p class="chart-subtitle">Pontuação acumulada e percentual atingido em cada dimensão de gestão</p>
+                            <p class="chart-subtitle">Pontuação acumulada e percentual atingido em cada pilar de eficiência</p>
                         </div>
                     </div>
                     <div class="pillars-score-grid" id="pillars-score-grid">
@@ -334,22 +340,22 @@
                 </div>
             </div>
 
-            <!-- MÓDULO DE IMPACTO NO BALANCED SCORECARD (BSC) -->
-            <div class="app-card bsc-section-card">
-                <div class="bsc-section-header">
+            <!-- MÓDULO DE IMPACTO NA DRE (DEMONSTRAÇÃO DO RESULTADO) -->
+            <div class="app-card dre-section-card">
+                <div class="dre-section-header">
                     <div>
                         <div class="badge-tag" style="background: rgba(2, 132, 199, 0.1); color: var(--primary);">
-                            <i class="fas fa-sitemap"></i> Desempenho Organizacional Holístico
+                            <i class="fas fa-file-invoice-dollar"></i> Demonstração do Resultado do Exercício
                         </div>
-                        <h3 class="bsc-main-title">Impacto Estimado no Balanced Scorecard (BSC)</h3>
-                        <p class="bsc-main-desc">
-                            A estruturação dos processos e a maturidade da governança potencializam diretamente os resultados da empresa nas 4 perspectivas corporativas:
+                        <h3 class="dre-main-title">Impacto Estratégico na DRE (Demonstração do Resultado)</h3>
+                        <p class="dre-main-desc">
+                            Como a maturidade dos processos, da governança e da liderança reflete diretamente em cada linha da DRE da sua empresa:
                         </p>
                     </div>
                 </div>
 
-                <div class="bsc-grid" id="bsc-cards-grid">
-                    <!-- Cards BSC gerados dinamicamente via app.js -->
+                <div class="dre-grid" id="dre-cards-grid">
+                    <!-- Cards da DRE gerados dinamicamente via app.js -->
                 </div>
             </div>
 
@@ -357,9 +363,9 @@
             <div class="mentorship-cta-card">
                 <div class="cta-inner">
                     <div class="cta-text-content">
-                        <h3 class="cta-title">Leve a Gestão da sua Empresa ao Próximo Nível</h3>
+                        <h3 class="cta-title">Agende a Devolutiva da sua Auditoria de Margem e Processos</h3>
                         <p class="cta-subtitle">
-                            Agende uma devolutiva estratégica com especialistas para estruturar o plano de ação, governança corporativa, processos internos e continuidade do seu negócio.
+                            Converse com nossos especialistas para transformar este diagnóstico em um plano prático de redução de custos, otimização de margens e governança na sua DRE.
                         </p>
                     </div>
                     <div class="cta-actions-grid">
@@ -367,7 +373,7 @@
                             <i class="fas fa-file-pdf"></i> Baixar Relatório Executivo Completo (PDF)
                         </button>
                         <a href="#" id="whatsapp-cta-btn" target="_blank" class="btn btn-success btn-lg">
-                            <i class="fab fa-whatsapp"></i> Falar com Especialista no WhatsApp
+                            <i class="fab fa-whatsapp"></i> Falar com a Consultoria no WhatsApp
                         </a>
                         <button type="button" id="export-json-btn" class="btn btn-secondary" title="Exportar dados do diagnóstico em formato JSON para arquivamento ou comparação futura">
                             <i class="fas fa-download"></i> Salvar Avaliação (JSON)
@@ -385,7 +391,7 @@
                     <div class="icon-bubble primary"><i class="fas fa-compass"></i></div>
                     <div>
                         <h3 class="subcard-title">Diretrizes Estratégicas Recomendadas para o seu Estágio</h3>
-                        <p class="subcard-desc">Iniciativas prioritárias recomendadas para alavancar a maturidade e a eficiência da sua organização:</p>
+                        <p class="subcard-desc">Iniciativas prioritárias recomendadas para alavancar a margem e a eficiência da sua organização:</p>
                     </div>
                 </div>
                 <ul id="maturity-actions-list" class="strategic-actions-list">
@@ -400,7 +406,7 @@
                     <div style="flex: 1;">
                         <h3 class="gaps-title">Plano de Ação Prioritário: Gaps Identificados</h3>
                         <p class="gaps-desc">
-                            Práticas avaliadas com notas 1, 2 ou 3 classificadas por horizonte de execução com orientações práticas de gestão:
+                            Práticas avaliadas com notas 1, 2 ou 3 classificadas por horizonte de execução com orientações práticas de gestão de margem e processo:
                         </p>
                     </div>
                 </div>
@@ -433,7 +439,7 @@
                             <thead>
                                 <tr>
                                     <th style="width: 45px; text-align: center;">#</th>
-                                    <th>Eixo / Dimensão Avaliada</th>
+                                    <th>Eixo / Dimensão</th>
                                     <th>Pergunta / Situação Operacional</th>
                                     <th style="width: 170px; text-align: center;">Maturidade Informada</th>
                                 </tr>

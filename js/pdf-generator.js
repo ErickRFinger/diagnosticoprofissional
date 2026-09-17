@@ -10,12 +10,12 @@
 class DiagnosticPdfGenerator {
     constructor() {
         this.mentorConfig = {
-            reportTitle: "Relatório Executivo • Diagnóstico Empresarial",
-            tagline: "Maturidade de Gestão, Governança & Eficiência Operacional",
-            provider: "Visual Tech",
+            reportTitle: "Relatório Executivo • Auditoria de Margem & Processos",
+            tagline: "Diagnóstico Empresarial de Eficiência Operacional, Governança & DRE",
+            provider: "Visual Tech (2026)",
             contactPhone: "(49) 98836-9445",
             contactEmail: "contato@visualtech.com.br",
-            disclaimer: "Documento executivo confidencial desenvolvido para apoio ao planejamento estratégico e tomada de decisões corporativas."
+            disclaimer: "Documento executivo confidencial desenvolvido para auditoria de processos, governança e otimização das margens na DRE."
         };
     }
 
@@ -49,7 +49,7 @@ class DiagnosticPdfGenerator {
         document.body.appendChild(reportContainer);
 
         const companyOrName = userData.isAnonymous ? 'Confidencial' : (userData.company || userData.name || 'Empresa');
-        const fileName = `Diagnostico_Empresarial_${companyOrName.replace(/\s+/g, '_')}_${new Date().toISOString().slice(0, 10)}.pdf`;
+        const fileName = `Auditoria_Margem_Processos_${companyOrName.replace(/\s+/g, '_')}_${new Date().toISOString().slice(0, 10)}.pdf`;
 
         if (typeof html2pdf !== 'undefined') {
             const opt = {
@@ -84,7 +84,7 @@ class DiagnosticPdfGenerator {
             <!DOCTYPE html>
             <html>
             <head>
-                <title>Relatório de Diagnóstico Empresarial</title>
+                <title>Relatório • Auditoria de Margem & Processos</title>
                 <style>
                     body { font-family: Arial, sans-serif; color: #0f172a; padding: 25px; }
                     .page-break { page-break-before: always; }
@@ -115,6 +115,7 @@ class DiagnosticPdfGenerator {
             const score = answers[q.id] || 0;
             const opt = DEFAULT_OPTIONS.find(o => o.value === score);
             const optLabel = opt ? opt.label : `Nota ${score}/5`;
+            const dreObj = DRE_IMPACTS && DRE_IMPACTS[q.dreImpact];
 
             let badgeStyle = "background-color: #f1f5f9; color: #475569;";
             if (score <= 2) badgeStyle = "background-color: #fee2e2; color: #991b1b; font-weight: bold;";
@@ -126,7 +127,8 @@ class DiagnosticPdfGenerator {
                     <td style="padding: 6px; border: 1px solid #e2e8f0; font-size: 10px; text-align: center; font-weight: bold; color: #0284c7;">${q.id}</td>
                     <td style="padding: 6px; border: 1px solid #e2e8f0; font-size: 10.5px;">
                         <strong>${q.title}</strong>
-                        ${q.dimension ? `<br><span style="color: #0284c7; font-size: 9.5px; font-weight: bold;">[${q.dimension}]</span>` : ''}<br>
+                        ${q.dimension ? `<br><span style="color: #64748b; font-size: 9px; font-weight: bold;">[${q.dimension}]</span>` : ''}
+                        ${dreObj ? `<span style="color: #0284c7; font-size: 9px; font-weight: bold; margin-left: 5px;">[DRE: ${dreObj.name}]</span>` : ''}<br>
                         <span style="color: #475569;">${q.description}</span>
                     </td>
                     <td style="padding: 6px; border: 1px solid #e2e8f0; font-size: 10px; text-align: center;">
@@ -151,20 +153,25 @@ class DiagnosticPdfGenerator {
             </div>
         `).join('');
 
-        // 3. Módulo Balanced Scorecard (BSC)
-        const bscHtml = results.bscScores ? results.bscScores.map(b => `
+        // 3. Módulo DRE (Demonstração do Resultado)
+        const dreList = results.dreScores || results.bscScores;
+        const dreHtml = dreList ? dreList.map(b => `
             <div style="border: 1px solid #e2e8f0; border-top: 3px solid ${b.color}; background: #ffffff; border-radius: 6px; padding: 10px; margin-bottom: 8px;">
                 <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px;">
-                    <strong style="font-size: 11.5px; color: #0f172a;">${b.name}</strong>
+                    <div>
+                        ${b.line ? `<span style="font-size: 8px; text-transform: uppercase; font-weight: bold; color: #0284c7; display: block;">${b.line}</span>` : ''}
+                        <strong style="font-size: 11px; color: #0f172a;">${b.name}</strong>
+                    </div>
                     <span style="font-size: 12px; font-weight: bold; color: ${b.color};">${b.percentage}%</span>
                 </div>
-                <p style="font-size: 10px; color: #64748b; margin: 2px 0 6px;">${b.description}</p>
+                <p style="font-size: 9.5px; color: #64748b; margin: 2px 0 6px;">${b.description}</p>
                 <div style="background: #f1f5f9; height: 5px; border-radius: 3px; overflow: hidden; margin-bottom: 6px;">
                     <div style="background: ${b.color}; height: 100%; width: ${b.percentage}%;"></div>
                 </div>
                 <div style="font-size: 9.5px; font-weight: bold; color: ${b.color};">
                     ${b.statusText}
                 </div>
+                ${b.metric ? `<div style="font-size: 8px; color: #64748b; margin-top: 4px;"><strong>Indicadores:</strong> ${b.metric}</div>` : ''}
             </div>
         `).join('') : '';
 
@@ -217,10 +224,10 @@ class DiagnosticPdfGenerator {
             <!-- METODOLOGIA EXECUTIVA -->
             <div style="background-color: #f1f5f9; border-left: 4px solid #0284c7; border-radius: 4px; padding: 9px 12px; margin-bottom: 16px;">
                 <div style="font-size: 10px; font-weight: bold; color: #0284c7; text-transform: uppercase; margin-bottom: 2px;">
-                    Metodologia de Diagnóstico Corporativo
+                    Metodologia de Diagnóstico & Auditoria Empresarial
                 </div>
                 <p style="font-size: 9.5px; color: #334155; margin: 0; line-height: 1.4;">
-                    Avaliação estruturada em 5 eixos estratégicos de governança, eficiência operacional e liderança, correlacionando a maturidade das práticas de gestão ao desempenho financeiro e não financeiro da organização (Balanced Scorecard).
+                    Avaliação estruturada em 5 eixos estratégicos de governança, eficiência operacional e liderança, correlacionando a maturidade das práticas de gestão diretamente ao reflexo financeiro em cada linha da DRE (Receita Bruta, Custos Operacionais, Despesas Administrativas e Margem Líquida/EBITDA).
                 </p>
             </div>
 
@@ -283,13 +290,13 @@ class DiagnosticPdfGenerator {
                 </div>
             </div>
 
-            <!-- MÓDULO BALANCED SCORECARD (BSC) -->
+            <!-- MÓDULO DRE (DEMONSTRAÇÃO DO RESULTADO) -->
             <div style="margin-bottom: 18px; page-break-inside: avoid;">
                 <h3 style="font-size: 11px; text-transform: uppercase; color: #334155; margin: 0 0 10px; border-bottom: 1px solid #e2e8f0; padding-bottom: 4px; font-weight: 800;">
-                    3. Impacto no Desempenho Organizacional (Balanced Scorecard)
+                    3. Impacto Estratégico na DRE (Demonstração do Resultado)
                 </h3>
                 <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
-                    ${bscHtml}
+                    ${dreHtml}
                 </div>
             </div>
 
